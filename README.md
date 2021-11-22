@@ -1,6 +1,6 @@
 # loki
 
-![Version: 2.5.1-bb.1](https://img.shields.io/badge/Version-2.5.1--bb.1-informational?style=flat-square) ![AppVersion: v2.3.0](https://img.shields.io/badge/AppVersion-v2.3.0-informational?style=flat-square)
+![Version: 2.5.1-bb.2](https://img.shields.io/badge/Version-2.5.1--bb.2-informational?style=flat-square) ![AppVersion: v2.3.0](https://img.shields.io/badge/AppVersion-v2.3.0-informational?style=flat-square)
 
 Loki: like Prometheus, but for logs.
 
@@ -10,8 +10,8 @@ Loki: like Prometheus, but for logs.
 * <https://github.com/grafana/loki>
 
 ## Learn More
-- [Application Overview](docs/overview.md)
-- [Other Documentation](docs/)
+* [Application Overview](docs/overview.md)
+* [Other Documentation](docs/)
 
 ## Pre-Requisites
 
@@ -103,8 +103,8 @@ helm install loki chart/
 | replicas | int | `1` |  |
 | resources.limits.cpu | string | `"250m"` |  |
 | resources.limits.memory | string | `"256Mi"` |  |
-| resources.requests.cpu | string | `"100m"` |  |
-| resources.requests.memory | string | `"128Mi"` |  |
+| resources.requests.cpu | string | `"250m"` |  |
+| resources.requests.memory | string | `"256Mi"` |  |
 | securityContext.fsGroup | int | `10001` |  |
 | securityContext.runAsGroup | int | `10001` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
@@ -137,4 +137,4 @@ helm install loki chart/
 
 ## Contributing
 
-Please see the [contributing guide](https://repo1.dso.mil/platform-one/big-bang/bigbang/-/blob/master/CONTRIBUTING.md) if you are interested in contributing to Big Bang.
+Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
