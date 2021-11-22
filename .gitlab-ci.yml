@@ -1,8 +1,0 @@
-include:
-  - project: 'platform-one/big-bang/pipeline-templates/pipeline-templates'
-    ref: master
-    file: '/templates/package-tests.yml'
-variables:
-  PACKAGE_NAMESPACE: "logging"
-  PACKAGE_HELM_NAME: "loki"
-
