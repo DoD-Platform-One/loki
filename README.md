@@ -1,6 +1,6 @@
 # loki
 
-![Version: 2.5.1-bb.2](https://img.shields.io/badge/Version-2.5.1--bb.2-informational?style=flat-square) ![AppVersion: v2.3.0](https://img.shields.io/badge/AppVersion-v2.3.0-informational?style=flat-square)
+![Version: 2.5.1-bb.3](https://img.shields.io/badge/Version-2.5.1--bb.3-informational?style=flat-square) ![AppVersion: v2.3.0](https://img.shields.io/badge/AppVersion-v2.3.0-informational?style=flat-square)
 
 Loki: like Prometheus, but for logs.
 
