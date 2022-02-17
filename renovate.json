@@ -27,7 +27,7 @@
             "matchStrings": [
                 "- Loki:\\s*(?<currentValue>.+)"
             ],
-            "depNameTemplate": "ironbank/opensource/grafana/grafana-loki",
+            "depNameTemplate": "ironbank/opensource/grafana/loki",
             "datasourceTemplate": "docker",
             "registryUrlTemplate": "https://registry1.dso.mil"
         }
