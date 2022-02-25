@@ -1,6 +1,6 @@
 # loki
 
-![Version: 2.5.1-bb.4](https://img.shields.io/badge/Version-2.5.1--bb.4-informational?style=flat-square) ![AppVersion: v2.3.0](https://img.shields.io/badge/AppVersion-v2.3.0-informational?style=flat-square)
+![Version: 2.10.1-bb.0](https://img.shields.io/badge/Version-2.10.1--bb.0-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
 
 Loki: like Prometheus, but for logs.
 
@@ -37,8 +37,8 @@ helm install loki chart/
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| image.repository | string | `"registry1.dso.mil/ironbank/opensource/grafana/grafana-loki"` |  |
-| image.tag | string | `"2.3.0"` |  |
+| image.repository | string | `"registry1.dso.mil/ironbank/opensource/grafana/loki"` |  |
+| image.tag | string | `"2.4.2"` |  |
 | image.pullPolicy | string | `"IfNotPresent"` |  |
 | image.pullSecrets[0] | string | `"private-registry"` |  |
 | ingress.enabled | bool | `false` |  |
@@ -46,7 +46,6 @@ helm install loki chart/
 | ingress.hosts[0].host | string | `"chart-example.local"` |  |
 | ingress.hosts[0].paths | list | `[]` |  |
 | ingress.tls | list | `[]` |  |
-| imagePullSecrets | object | `{}` |  |
 | affinity | object | `{}` |  |
 | annotations | object | `{}` |  |
 | tracing.jaegerAgentHost | string | `nil` |  |
@@ -55,11 +54,13 @@ helm install loki chart/
 | config.ingester.chunk_block_size | int | `262144` |  |
 | config.ingester.chunk_retain_period | string | `"1m"` |  |
 | config.ingester.max_transfer_retries | int | `0` |  |
+| config.ingester.wal.dir | string | `"/data/loki/wal"` |  |
 | config.ingester.lifecycler.ring.kvstore.store | string | `"inmemory"` |  |
 | config.ingester.lifecycler.ring.replication_factor | int | `1` |  |
 | config.limits_config.enforce_metric_name | bool | `false` |  |
 | config.limits_config.reject_old_samples | bool | `true` |  |
 | config.limits_config.reject_old_samples_max_age | string | `"168h"` |  |
+| config.limits_config.unordered_writes | bool | `true` |  |
 | config.schema_config.configs[0].from | string | `"2020-10-24"` |  |
 | config.schema_config.configs[0].store | string | `"boltdb-shipper"` |  |
 | config.schema_config.configs[0].object_store | string | `"filesystem"` |  |
@@ -69,7 +70,7 @@ helm install loki chart/
 | config.server.http_listen_port | int | `3100` |  |
 | config.storage_config.boltdb_shipper.active_index_directory | string | `"/data/loki/boltdb-shipper-active"` |  |
 | config.storage_config.boltdb_shipper.cache_location | string | `"/data/loki/boltdb-shipper-cache"` |  |
-| config.storage_config.boltdb_shipper.cache_ttl | string | `"24h"` |  |
+| config.storage_config.boltdb_shipper.cache_ttl | string | `"168h"` |  |
 | config.storage_config.boltdb_shipper.shared_store | string | `"filesystem"` |  |
 | config.storage_config.filesystem.directory | string | `"/data/loki/chunks"` |  |
 | config.chunk_store_config.max_look_back_period | string | `"0s"` |  |
@@ -127,6 +128,32 @@ helm install loki chart/
 | serviceMonitor.interval | string | `""` |  |
 | serviceMonitor.additionalLabels | object | `{}` |  |
 | serviceMonitor.annotations | object | `{}` |  |
+| serviceMonitor.prometheusRule.enabled | bool | `false` |  |
+| serviceMonitor.prometheusRule.additionalLabels | object | `{}` |  |
+| serviceMonitor.prometheusRule.rules[0].alert | string | `"LokiProcessTooManyRestarts"` |  |
+| serviceMonitor.prometheusRule.rules[0].expr | string | `"changes(process_start_time_seconds{job=~\"loki\"}[15m]) > 2"` |  |
+| serviceMonitor.prometheusRule.rules[0].for | string | `"0m"` |  |
+| serviceMonitor.prometheusRule.rules[0].labels.severity | string | `"warning"` |  |
+| serviceMonitor.prometheusRule.rules[0].annotations.summary | string | `"Loki process too many restarts (instance {{ $labels.instance }})"` |  |
+| serviceMonitor.prometheusRule.rules[0].annotations.description | string | `"A loki process had too many restarts (target {{ $labels.instance }})\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| serviceMonitor.prometheusRule.rules[1].alert | string | `"LokiRequestErrors"` |  |
+| serviceMonitor.prometheusRule.rules[1].expr | string | `"100 * sum(rate(loki_request_duration_seconds_count{status_code=~\"5..\"}[1m])) by (namespace, job, route) / sum(rate(loki_request_duration_seconds_count[1m])) by (namespace, job, route) > 10"` |  |
+| serviceMonitor.prometheusRule.rules[1].for | string | `"15m"` |  |
+| serviceMonitor.prometheusRule.rules[1].labels.severity | string | `"critical"` |  |
+| serviceMonitor.prometheusRule.rules[1].annotations.summary | string | `"Loki request errors (instance {{ $labels.instance }})"` |  |
+| serviceMonitor.prometheusRule.rules[1].annotations.description | string | `"The {{ $labels.job }} and {{ $labels.route }} are experiencing errors\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| serviceMonitor.prometheusRule.rules[2].alert | string | `"LokiRequestPanic"` |  |
+| serviceMonitor.prometheusRule.rules[2].expr | string | `"sum(increase(loki_panic_total[10m])) by (namespace, job) > 0"` |  |
+| serviceMonitor.prometheusRule.rules[2].for | string | `"5m"` |  |
+| serviceMonitor.prometheusRule.rules[2].labels.severity | string | `"critical"` |  |
+| serviceMonitor.prometheusRule.rules[2].annotations.summary | string | `"Loki request panic (instance {{ $labels.instance }})"` |  |
+| serviceMonitor.prometheusRule.rules[2].annotations.description | string | `"The {{ $labels.job }} is experiencing {{ printf \"%.2f\" $value }}% increase of panics\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
+| serviceMonitor.prometheusRule.rules[3].alert | string | `"LokiRequestLatency"` |  |
+| serviceMonitor.prometheusRule.rules[3].expr | string | `"(histogram_quantile(0.99, sum(rate(loki_request_duration_seconds_bucket{route!~\"(?i).*tail.*\"}[5m])) by (le)))  > 1"` |  |
+| serviceMonitor.prometheusRule.rules[3].for | string | `"5m"` |  |
+| serviceMonitor.prometheusRule.rules[3].labels.severity | string | `"critical"` |  |
+| serviceMonitor.prometheusRule.rules[3].annotations.summary | string | `"Loki request latency (instance {{ $labels.instance }})"` |  |
+| serviceMonitor.prometheusRule.rules[3].annotations.description | string | `"The {{ $labels.job }} {{ $labels.route }} is experiencing {{ printf \"%.2f\" $value }}s 99th percentile latency\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"` |  |
 | initContainers | list | `[]` |  |
 | extraContainers | list | `[]` |  |
 | extraVolumes | list | `[]` |  |
