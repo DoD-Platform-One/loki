@@ -1,2 +1,5 @@
 imagePullSecrets:
 - name: private-registry
+
+persistence:
+  enabled: true

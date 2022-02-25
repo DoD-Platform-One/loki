@@ -2,7 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.5.1-bb4]
+## [2.10.1-bb.0]
+### Changed
+- Updated `chart/` base to upstream chart version `loki-2.10.1`
+- Updated Loki image to version `2.4.2`
+
+## [2.5.1-bb.4]
 ### Changed
 - Updated NetworkPolicy to allow Prometheus to query Loki
 
