@@ -1,6 +1,6 @@
 # loki
 
-![Version: 2.10.1-bb.0](https://img.shields.io/badge/Version-2.10.1--bb.0-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
+![Version: 2.10.1-bb.1](https://img.shields.io/badge/Version-2.10.1--bb.1-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
 
 Loki: like Prometheus, but for logs.
 
@@ -86,6 +86,7 @@ helm install loki chart/
 | networkPolicies.enabled | bool | `false` |  |
 | networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
 | monitoring.enabled | bool | `false` |  |
+| istio.enabled | bool | `false` |  |
 | client | object | `{}` |  |
 | nodeSelector | object | `{}` |  |
 | persistence.enabled | bool | `false` |  |
