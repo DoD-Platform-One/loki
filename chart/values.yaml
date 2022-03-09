@@ -140,6 +140,9 @@ networkPolicies:
 monitoring:
   enabled: false
 
+istio:
+  enabled: false
+
 ## The app name of loki clients
 client: {}
   # name:
