@@ -1,6 +1,6 @@
 # loki
 
-![Version: 2.10.1-bb.1](https://img.shields.io/badge/Version-2.10.1--bb.1-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
+![Version: 2.10.1-bb.2](https://img.shields.io/badge/Version-2.10.1--bb.2-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
 
 Loki: like Prometheus, but for logs.
 
@@ -52,6 +52,8 @@ helm install loki chart/
 | config.auth_enabled | bool | `false` |  |
 | config.ingester.chunk_idle_period | string | `"3m"` |  |
 | config.ingester.chunk_block_size | int | `262144` |  |
+| config.ingester.flush_check_period | string | `"5s"` |  |
+| config.ingester.flush_op_timeout | string | `"100m"` |  |
 | config.ingester.chunk_retain_period | string | `"1m"` |  |
 | config.ingester.max_transfer_retries | int | `0` |  |
 | config.ingester.wal.dir | string | `"/data/loki/wal"` |  |
@@ -103,10 +105,10 @@ helm install loki chart/
 | readinessProbe.httpGet.port | string | `"http-metrics"` |  |
 | readinessProbe.initialDelaySeconds | int | `45` |  |
 | replicas | int | `1` |  |
-| resources.limits.cpu | string | `"250m"` |  |
-| resources.limits.memory | string | `"256Mi"` |  |
-| resources.requests.cpu | string | `"250m"` |  |
-| resources.requests.memory | string | `"256Mi"` |  |
+| resources.limits.cpu | string | `"300m"` |  |
+| resources.limits.memory | string | `"1Gi"` |  |
+| resources.requests.cpu | string | `"300m"` |  |
+| resources.requests.memory | string | `"1Gi"` |  |
 | securityContext.fsGroup | int | `10001` |  |
 | securityContext.runAsGroup | int | `10001` |  |
 | securityContext.runAsNonRoot | bool | `true` |  |
