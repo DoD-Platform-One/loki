@@ -1,0 +1,110 @@
+{{ if and .Values.gel.enabled .Values.gel.tokengen.enable }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "enterprise-logs.tokengenFullname" . }}
+  labels:
+    {{- include "enterprise-logs.tokengenLabels" . | nindent 4 }}
+    {{- with .Values.gel.tokengen.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.gel.tokengen.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    "helm.sh/hook": post-install
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 6
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      labels:
+        {{- include "enterprise-logs.tokengenSelectorLabels" . | nindent 8 }}
+        {{- with .Values.gel.tokengen.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        {{- with .Values.gel.tokengen.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.gel.tokengen.priorityClassName }}
+      priorityClassName: {{ .Values.gel.tokengen.priorityClassName }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.gel.tokengen.securityContext | nindent 8 }}
+      {{- if .Values.gel.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.gel.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      initContainers:
+        - name: enterprise-logs
+          image: {{ template "enterprise-logs.image" . }}
+          imagePullPolicy: {{ .Values.gel.image.pullPolicy }}
+          args:
+            - -config.file=/etc/loki/config/loki.yaml
+            - -target=tokengen
+            - -tokengen.token-file=/shared/admin-token
+            {{- range $key, $value := .Values.gel.tokengen.extraArgs }}
+            - "-{{ $key }}={{ $value }}"
+            {{- end }}
+          volumeMounts:
+            {{- if .Values.gel.tokengen.extraVolumeMounts }}
+              {{ toYaml .Values.gel.tokengen.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+            - name: shared
+              mountPath: /shared
+            - name: config
+              mountPath: /etc/loki/config
+            - name: license
+              mountPath: /etc/enterprise-logs/license
+          env:
+            {{- if .Values.gel.tokengen.env }}
+              {{ toYaml .Values.gel.tokengen.env | nindent 12 }}
+            {{- end }}
+      containers:
+        - name: create-secret
+          image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.22.2
+          imagePullPolicy: {{ .Values.gel.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -euc
+            - kubectl create secret generic gel-admin-token --from-file=token=/shared/admin-token --from-literal=grafana-token="$(base64 <(echo :$(cat /shared/admin-token)))"
+          volumeMounts:
+            {{- if .Values.gel.tokengen.extraVolumeMounts }}
+              {{ toYaml .Values.gel.tokengen.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+            - name: shared
+              mountPath: /shared
+            - name: config
+              mountPath: /etc/loki/config
+            - name: license
+              mountPath: /etc/enterprise-logs/license
+      restartPolicy: OnFailure
+      serviceAccount: {{ include "loki.serviceAccountName" . }}
+      serviceAccountName: {{ include "loki.serviceAccountName" .  }}
+      volumes:
+        - name: config
+          secret:
+          {{- if .Values.gel.useExternalConfig }}
+            secretName: {{ .Values.gel.externalConfigName }}
+          {{- else }}
+            secretName: loki-config
+          {{- end }}
+        - name: license
+          secret:
+          {{- if .Values.gel.useExternalLicense }}
+            secretName: {{ .Values.gel.externalLicenseName }}
+          {{- else }}
+            secretName: enterprise-logs-license
+          {{- end }}
+        - name: shared
+          emptyDir: {}
+        {{- if .Values.gel.tokengen.extraVolumes }}
+        {{ toYaml .Values.gel.tokengen.extraVolumes | nindent 8 }}
+        {{- end }}
+{{- end }}
