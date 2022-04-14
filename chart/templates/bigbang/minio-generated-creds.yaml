@@ -1,0 +1,11 @@
+{{- if .Values.minio.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: minio-user
+  namespace: {{ .Release.Namespace }}
+type: Opaque
+data:
+  CONSOLE_ACCESS_KEY: {{ .Values.minio.tenants.defaultUserCredentials.username | b64enc }}
+  CONSOLE_SECRET_KEY: {{ (.Values.minio.tenants.defaultUserCredentials.password | default (randAlphaNum 8)) | b64enc }}
+{{- end }}

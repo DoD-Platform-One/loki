@@ -1,0 +1,33 @@
+{{- if and .Values.istio.enabled .Values.istio.api.enabled -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "minio-operator.fullname" . }}-api
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "minio-operator.fullname" . }}
+    {{- include "minio-operator.labels" . | nindent 4 }}
+  {{- if .Values.istio.api.labels }}
+    {{ toYaml .Values.istio.api.labels | indent 4 }}
+  {{- end }}
+  {{- if .Values.istio.api.annotations }}
+  annotations:
+    {{ toYaml .Values.istio.api.annotations | indent 2 }}
+  {{- end }}
+spec:
+  gateways:
+  {{- range .Values.istio.api.gateways }}
+  - {{ . }}
+  {{- end }}
+  hosts:
+  {{- range .Values.istio.api.hosts }}
+  - {{ tpl . $}}
+  {{- end }}
+  http:
+    - route:
+        - destination:
+            # Note: the minio operator creates the service for the tenant with a fixed name
+            host: minio
+            port:
+              number: {{ include "api.servicePort" . | trim }}
+{{- end }}

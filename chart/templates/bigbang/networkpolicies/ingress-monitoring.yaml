@@ -23,6 +23,6 @@ spec:
         matchLabels:
           app.kubernetes.io/name: prometheus
     ports:
-    - port: {{ .Values.service.port }}
+    - port: 3100
       protocol: TCP
 {{- end }}
