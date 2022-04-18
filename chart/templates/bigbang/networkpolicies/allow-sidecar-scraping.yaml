@@ -16,9 +16,7 @@ spec:
     ports:
     - port: 15020
       protocol: TCP
-  podSelector:
-    matchLabels:
-      app: loki
+  podSelector: {}
   policyTypes:
   - Ingress
 {{- end }}

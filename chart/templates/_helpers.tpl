@@ -142,3 +142,15 @@ gateway admin-api
   {{- printf "%s-%s" $memberlist  "memberlist" -}}
   {{- end }}
 {{- end }}
+
+
+{{/*
+loki netpol matchLabels
+*/}}
+{{- define "loki.matchLabels" -}}
+  {{- if .Values.loki.enabled }}
+  app: loki
+  {{- else }}
+  app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- end }}
+{{- end }}
