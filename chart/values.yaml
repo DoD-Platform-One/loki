@@ -293,9 +293,9 @@ gel:
   # a pointer.
   image: &image
     # -- The container registry to use
-    registry: registry.dso.mil
+    registry: registry1.dso.mil
     # -- The image repository to use
-    repository: platform-one/big-bang/apps/sandbox/loki/enterprise-logs
+    repository: ironbank/grafana/grafana-enterprise-logs
     # -- The version of Grafana Enterprise Logs
     tag: v1.3.0
     # -- Defines the policy how and when images are pulled
