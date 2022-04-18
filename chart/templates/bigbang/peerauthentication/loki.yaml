@@ -1,0 +1,20 @@
+{{- if and .Values.istio.enabled  .Values.loki.enabled }}
+apiVersion: "security.istio.io/v1beta1"
+kind: PeerAuthentication
+metadata:
+  name: loki
+  namespace: {{ .Release.Namespace }}
+spec:
+  mtls:
+    mode: {{ .Values.istio.mtls.mode }}
+  selector:
+    matchLabels:
+      app: {{ template "loki.name" . }}
+      release: {{ .Release.Name }}
+  {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") .Values.loki.serviceMonitor.enabled }}
+  # Monitoring exception
+  portLevelMtls:
+    "{{ .Values.loki.config.server.http_listen_port }}":
+      mode: PERMISSIVE
+  {{- end }}
+{{- end }}
