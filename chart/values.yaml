@@ -126,6 +126,8 @@ networkPolicies:
   enabled: false
   controlPlaneCidr: 0.0.0.0/0
 
+fullnameOverride: logging-loki
+
 loki:
   # -- Enable Loki chart in single binary mode.
   # Recommended for smaller or non-production environments
