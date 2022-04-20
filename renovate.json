@@ -11,9 +11,11 @@
     "packageRules": [
         {
             "matchDatasources": ["docker"],
-            "groupName": "Ironbank"
+            "groupName": "Ironbank",
+            "registryUrls": ["https://registry1.dso.mil"]
         }
     ],
+    "ignoreDeps": ["docker.io/nginxinc/nginx-unprivileged"],
     "regexManagers": [
         {
             "fileMatch": ["^chart/values\\.yaml$"],
