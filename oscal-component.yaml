@@ -1,0 +1,102 @@
+component-definition:
+  uuid: 2A787CB1-380C-4B30-83D3-6A65D91C4E7C
+  metadata: 
+    title: Loki Component
+    last-modified: '2022-10-19T12:00:00Z'
+    version: "20211019"
+    oscal-version: 1.0.0
+    parties:
+      # Should be consistent across all of the packages, but where is ground truth?
+    - uuid: 72134592-08C2-4A77-ABAD-C880F109367A 
+      type: organization
+      name: Platform One
+      links:
+      - href: <https://p1.dso.mil>
+        rel: website
+  components: # for BB, this would be all the pieces of big bang
+  - uuid: 991BD5DF-A3E7-42D6-AC4F-9A8D01E96F91
+    type: software
+    title: Loki
+    description: |
+      Deployment of Loki as a lighter weight replacement for elasticsearch
+    purpose: Provides storage and indexing for logs in the cluster
+    responsible-roles:
+    - role-id: provider
+      party-uuids:
+      - 72134592-08C2-4A77-ABAD-C880F109367A # matches parties entry for p1
+    control-implementations:
+    - uuid: 5108E5FC-C45F-477B-A542-9C5611A92485
+      source: https://raw.githubusercontent.com/usnistgov/oscal-content/master/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json
+      description:
+        Controls implemented by Loki for inheritance by applications
+      implemented-requirements:
+      - uuid: DEA798EE-6B68-4BB8-80DE-1BC85952F26C
+        control-id: ac-5
+        description: >-
+          GEL implements RBAC to define system authorization and separation of duties
+      - uuid: 642C8714-73E3-4A59-A89A-ACF2A36AAB6D
+        control-id: ac-6
+        description: >-
+          GEL implements RBAC to employ principle of least privilege
+      - uuid: 7BA2A7E8-D7AA-4229-8A32-53DE9147B4A8
+        control-id: ac-6.1
+        description: >-
+          GEL implements RBAC to employ principle of least privilege
+      - uuid: 02388229-428F-4896-92A1-AE93210057EC
+        control-id: ac-6.9
+        description: >-
+          Privileged events that modify the application are logged in the application itself
+      - uuid: 1A3EA794-360A-492B-8FEB-EE666FCE2010
+        control-id: ac-6.10
+        description: >-
+          GEL layers an additional RBAC layer that prohibits non-privileged users from executing privileged functions
+      - uuid: E3221BCB-EFF6-4E6C-9856-3C228735A7D2
+        control-id: ac-21
+        description: >-
+          GEL layers an additional RBAC layer that prohibits non-privileged users from executing privileged functions
+      - uuid: AB29AE94-C867-4BBE-AAB4-8BF21DBD31D9
+        control-id: au-4
+        description: >-
+          Uses scalable object storage
+      - uuid: B552D3B6-0C38-4B59-9D97-FB1D748EE8EA
+        control-id: au-6
+        description: >-
+          Provides audit record query and analysis capabilities. Organization will implement record review and analysis
+      - uuid: D45A7DA4-A9F9-46CD-AFA4-991824D2BAF5
+        control-id: au-6.1
+        description: >-
+          Provides audit record query and analysis capabilities. Organization will implement record review and analysis
+      - uuid: 9CCC7BF3-2710-4E00-BC22-2C272FCEC771
+        control-id: au7.1
+        description: >-
+          Loki provides an API for retrieving and filtering logs.
+      - uuid: 80BCE3BD-97D2-4525-A80C-4759F3B756AD
+        control-id: au-9
+        description: >-
+          Access to metrics can be restricted to org-defined personnel behind a private endpoint and not given to mission owners.
+      - uuid: E3771199-CBA3-46D0-8632-F745E9B6BFAE
+        control-id: au-9.2
+        description: >-
+          Supports any object storage
+      - uuid: 4D71EA77-3904-4CE4-AFDC-5123C88A8BD7
+        control-id: au-9.4
+        description: >-
+          Enterprise version (GEL) implements RBAC
+      - uuid: D75DF925-E6CE-49D8-8AB0-BD07DAF559E9
+        control-id: au-11
+        description: >-
+          Can configure audit record storage retention policy for defined periods of time via the store(s) Loki is configured to use.
+      - uuid: 0833500E-517A-4F52-BD2F-64DE658E22C4
+        control-id: au-12.1
+        description: >-
+          Provides time-series event compilation capabilities
+  back-matter:
+    resources:
+    - uuid: 95F7C84A-2FD9-4E1C-BB29-7B788ADB716D
+      title: Loki
+      rlinks:
+      - href: https://github.com/grafana/loki
+    - uuid: 1D5F676C-4C34-49DD-8573-2DFC9C948D3A
+      title: Big Bang Loki package
+      rlinks:
+        - href: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/loki
