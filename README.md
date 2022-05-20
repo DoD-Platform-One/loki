@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.3-bb.0](https://img.shields.io/badge/Version-3.0.3--bb.0-informational?style=flat-square) ![AppVersion: v2.4.2](https://img.shields.io/badge/AppVersion-v2.4.2-informational?style=flat-square)
+![Version: 3.0.4-bb.0](https://img.shields.io/badge/Version-3.0.4--bb.0-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -58,7 +58,7 @@ helm install loki chart/
 | fullnameOverride | string | `"logging-loki"` |  |
 | loki.enabled | bool | `true` | Enable Loki chart in single binary mode. Recommended for smaller or non-production environments |
 | loki.image.repository | string | `"registry1.dso.mil/ironbank/opensource/grafana/loki"` |  |
-| loki.image.tag | string | `"2.4.2"` |  |
+| loki.image.tag | string | `"2.5.0"` |  |
 | loki.image.pullPolicy | string | `"IfNotPresent"` |  |
 | loki.image.pullSecrets[0] | string | `"private-registry"` |  |
 | loki.extraPorts[0] | object | `{"name":"grpc","port":9095,"protocol":"TCP","targetPort":"grpc"}` | Extra ports for loki pods. Additional ports exposed to support HA communication |
@@ -77,7 +77,7 @@ helm install loki chart/
 | loki-simple-scalable.fullnameOverride | string | `"logging-loki"` |  |
 | loki-simple-scalable.loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki-simple-scalable.loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki-simple-scalable.loki.image.tag | string | `"2.4.2"` | Overrides the image tag whose default is the chart's appVersion |
+| loki-simple-scalable.loki.image.tag | string | `"2.5.0"` | Overrides the image tag whose default is the chart's appVersion |
 | loki-simple-scalable.loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki-simple-scalable.write.replicas | int | `2` | Number of replicas for the write |
 | loki-simple-scalable.write.resources.limits.cpu | string | `"300m"` |  |

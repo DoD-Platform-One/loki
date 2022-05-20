@@ -1,5 +1,5 @@
 global:
-  image: 
+  image:
     # registry: registry1.dso.mil
     # repository: ironbank/opensource/grafana/grafana-loki
     # tag: 2.3.0
@@ -138,7 +138,7 @@ loki:
   enabled: true
   image:
     repository: registry1.dso.mil/ironbank/opensource/grafana/loki
-    tag: 2.4.2
+    tag: 2.5.0
     pullPolicy: IfNotPresent
     pullSecrets:
       - private-registry
@@ -162,7 +162,7 @@ loki:
   livenessProbe:
     initialDelaySeconds: 80
 
-  resources: 
+  resources:
     limits:
       cpu: 100m
       memory: 256Mi
@@ -189,7 +189,7 @@ loki-simple-scalable:
       # -- Docker image repository
       repository: ironbank/opensource/grafana/loki
       # -- Overrides the image tag whose default is the chart's appVersion
-      tag: 2.4.2
+      tag: 2.5.0
       # -- Docker image pull policy
       pullPolicy: IfNotPresent
 
@@ -197,7 +197,7 @@ loki-simple-scalable:
   write:
     # -- Number of replicas for the write
     replicas: 2
-    resources: 
+    resources:
       limits:
         cpu: 300m
         memory: 2Gi
@@ -208,7 +208,7 @@ loki-simple-scalable:
   read:
     # -- Number of replicas for the read
     replicas: 2
-    resources: 
+    resources:
       limits:
         cpu: 300m
         memory: 2Gi
@@ -592,5 +592,3 @@ gel:
     tolerations: []
     # -- Grace period to allow the compactor to shutdown before it is killed
     terminationGracePeriodSeconds: 300
-
-

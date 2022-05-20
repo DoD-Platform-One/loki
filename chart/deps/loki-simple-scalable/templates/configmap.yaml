@@ -6,6 +6,6 @@ metadata:
   labels:
     {{- include "loki.labels" . | nindent 4 }}
 data:
-  loki.yaml: |
-    {{- tpl (toYaml .Values.loki.config) . | nindent 4 }}
+  config.yaml: |
+    {{- tpl (mergeOverwrite (tpl .Values.loki.config . | fromYaml) .Values.loki.structuredConfig | toYaml) . | nindent 4 }}
 {{- end -}}
