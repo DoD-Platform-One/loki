@@ -8,3 +8,6 @@ loki-simple-scalable:
 
 gel:
   enabled: false
+
+bbtests:
+  enabled: true

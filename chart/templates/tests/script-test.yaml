@@ -1,0 +1,7 @@
+{{- include "gluon.tests.script-configmap.overrides" (list . "loki-test.script-configmap") }}
+{{- define "loki-test.script-configmap" }}
+{{- end }}
+---
+{{- include "gluon.tests.script-runner.overrides" (list . "loki-test.script-runner") -}}
+{{- define "loki-test.script-runner" -}}
+{{- end }}

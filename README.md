@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.4-bb.0](https://img.shields.io/badge/Version-3.0.4--bb.0-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.4-bb.1](https://img.shields.io/badge/Version-3.0.4--bb.1-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -183,6 +183,12 @@ helm install loki chart/
 | gel.compactor.nodeSelector | object | `{}` | Node selector for compactor Pods |
 | gel.compactor.tolerations | list | `[]` | Tolerations for compactor Pods |
 | gel.compactor.terminationGracePeriodSeconds | int | `300` | Grace period to allow the compactor to shutdown before it is killed |
+| bbtests.enabled | bool | `false` |  |
+| bbtests.cypress.artifacts | bool | `true` |  |
+| bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
+| bbtests.cypress.envs.cypress_grafana_url | string | `"http://monitoring-grafana.monitoring.svc.cluster.local"` |  |
+| bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:1.17.0"` |  |
+| bbtests.scripts.envs.LOKI_URL | string | `"http://{{ template \"tempo.fullname\" . }}.{{ .Release.Namespace }}.svc:3100"` |  |
 
 ## Contributing
 

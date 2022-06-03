@@ -1,0 +1,5 @@
+{{- if eq .Values.bbtests.cypress.envs.cypress_check_datasource "true" }}
+{{- include "gluon.tests.cypress-configmap.base" .}}
+---
+{{- include "gluon.tests.cypress-runner.base" .}}
+{{- end }}
