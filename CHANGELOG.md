@@ -2,8 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.4-bb.3]
+### Updated
+- Added mTLS exception for GRPC communication
+
 ## [3.0.4-bb.2]
-### Update
+### Updated
 - Update loki-simple-scalable PeerAuthentication template to use matchLabels
 
 ## [3.0.4-bb.1]
