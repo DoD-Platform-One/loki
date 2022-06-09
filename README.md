@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.4-bb.2](https://img.shields.io/badge/Version-3.0.4--bb.2-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.4-bb.3](https://img.shields.io/badge/Version-3.0.4--bb.3-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -148,7 +148,7 @@ helm install loki chart/
 | gel.adminApi.annotations | object | `{}` | Additional annotations for the `admin-api` Deployment |
 | gel.adminApi.service | object | `{"annotations":{},"labels":{}}` | Additional labels and annotations for the `admin-api` Service |
 | gel.adminApi.securityContext | object | `{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run container as user `enterprise-logs(uid=10001)` `fsGroup` must not be specified, because these security options are applied on container level not on Pod level. |
-| gel.adminApi.resources | object | `{}` | Request and limit Kubernetes resources -- Values are defined in small.yaml and large.yaml |
+| gel.adminApi.resources | object | `{}` | Request and limit Kubernetes resources Values are defined in small.yaml and large.yaml |
 | gel.adminApi.extraVolumes | list | `[]` | Additional volumes for Pods |
 | gel.adminApi.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | gel.adminApi.affinity | object | `{}` | Affinity for admin-api Pods |
@@ -162,7 +162,7 @@ helm install loki chart/
 | gel.gateway.annotations | object | `{}` | Additional annotations for the `gateway` Pod |
 | gel.gateway.service | object | `{"annotations":{},"labels":{}}` | Additional labels and annotations for the `gateway` Service |
 | gel.gateway.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run container as user `enterprise-logs(uid=10001)` |
-| gel.gateway.resources | object | `{}` | Request and limit Kubernetes resources -- Values are defined in small.yaml and large.yaml |
+| gel.gateway.resources | object | `{}` | Request and limit Kubernetes resources Values are defined in small.yaml and large.yaml |
 | gel.gateway.extraVolumes | list | `[]` | Additional volumes for Pods |
 | gel.gateway.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | gel.gateway.affinity | object | `{}` | Affinity for gateway Pods |
@@ -176,7 +176,7 @@ helm install loki chart/
 | gel.compactor.annotations | object | `{}` | Additional annotations for the `compactor` Pod |
 | gel.compactor.service | object | `{"annotations":{},"labels":{}}` | Additional labels and annotations for the `compactor` Service |
 | gel.compactor.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
-| gel.compactor.resources | object | `{}` | Request and limit Kubernetes resources -- Values are defined in small.yaml and large.yaml |
+| gel.compactor.resources | object | `{}` | Request and limit Kubernetes resources Values are defined in small.yaml and large.yaml |
 | gel.compactor.extraVolumes | list | `[]` | Additional volumes for Pods |
 | gel.compactor.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | gel.compactor.affinity | object | `{"podAntiAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"podAffinityTerm":{"labelSelector":{"matchExpressions":[{"key":"target","operator":"In","values":["compactor"]}]},"topologyKey":"kubernetes.io/hostname"},"weight":100}]}}` | Affinity for compactor Pods |

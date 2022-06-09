@@ -10,10 +10,13 @@ spec:
   selector:
     matchLabels:
       {{- include "loki.matchLabels" . | nindent 6 }}
-  {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (index .Values "loki-simple-scalable").serviceMonitor.enabled }}
-  # Monitoring exception
   portLevelMtls:
+    # Monitoring exception
+    {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (index .Values "loki-simple-scalable").serviceMonitor.enabled }}
     "3100":
       mode: PERMISSIVE
-  {{- end }}
+    {{- end }}
+    # GRPC exception to support Loki internal communication
+    "9095":
+      mode: PERMISSIVE
 {{- end }}

@@ -402,7 +402,7 @@ gel:
       initialDelaySeconds: 45
 
     # -- Request and limit Kubernetes resources
-    # -- Values are defined in small.yaml and large.yaml
+    # Values are defined in small.yaml and large.yaml
     resources: {}
 
     initContainers: []
@@ -462,7 +462,7 @@ gel:
       initialDelaySeconds: 45
 
     # -- Request and limit Kubernetes resources
-    # -- Values are defined in small.yaml and large.yaml
+    # Values are defined in small.yaml and large.yaml
     resources: {}
 
     env: []
@@ -513,7 +513,7 @@ gel:
       type: RollingUpdate
 
     # -- Request and limit Kubernetes resources
-    # -- Values are defined in small.yaml and large.yaml
+    # Values are defined in small.yaml and large.yaml
     resources: {}
 
     persistentVolume:
