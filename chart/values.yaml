@@ -359,6 +359,14 @@ gel:
 
     priorityClassName: null
 
+    image:
+      # -- Registry for kubectl image
+      registry: registry1.dso.mil
+      # -- Repository for kubectl image
+      repository: ironbank/opensource/kubernetes/kubectl
+      # -- Tag for kubectl image
+      tag: v1.22.2
+
   # -- Configuration for the `admin-api` target
   adminApi:
     # -- Define the amount of instances
