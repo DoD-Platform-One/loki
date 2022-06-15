@@ -68,7 +68,7 @@ spec:
             {{- end }}
       containers:
         - name: create-secret
-          image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.22.2
+          image: {{ printf "%s/%s:%s" .Values.gel.tokengen.image.registry .Values.gel.tokengen.image.repository .Values.gel.tokengen.image.tag }}
           imagePullPolicy: {{ .Values.gel.image.pullPolicy }}
           command:
             - /bin/bash

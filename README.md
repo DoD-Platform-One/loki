@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.4-bb.3](https://img.shields.io/badge/Version-3.0.4--bb.3-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.4-bb.4](https://img.shields.io/badge/Version-3.0.4--bb.4-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -132,7 +132,7 @@ helm install loki chart/
 | gel.externalLicenseName | string | `"enterprise-logs-license"` |  |
 | gel.externalLicenseVersion | string | `"0"` |  |
 | gel.license | object | `{"cluster_name":null,"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'license.contents=./license.jwt'` |
-| gel.tokengen | object | `{"annotations":{},"enable":true,"env":[],"extraArgs":{},"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"priorityClassName":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `tokengen` target |
+| gel.tokengen | object | `{"annotations":{},"enable":true,"env":[],"extraArgs":{},"extraVolumeMounts":[],"extraVolumes":[],"image":{"registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.22.2"},"labels":{},"priorityClassName":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `tokengen` target |
 | gel.tokengen.enable | bool | `true` | Whether the job should be part of the deployment |
 | gel.tokengen.extraArgs | object | `{}` | Additional CLI arguments for the `tokengen` target |
 | gel.tokengen.env | list | `[]` | Additional Kubernetes environment |
@@ -141,6 +141,9 @@ helm install loki chart/
 | gel.tokengen.extraVolumes | list | `[]` | Additional volumes for Pods |
 | gel.tokengen.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | gel.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
+| gel.tokengen.image.registry | string | `"registry1.dso.mil"` | Registry for kubectl image |
+| gel.tokengen.image.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Repository for kubectl image |
+| gel.tokengen.image.tag | string | `"v1.22.2"` | Tag for kubectl image |
 | gel.adminApi | object | `{"affinity":{},"annotations":{},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"initContainers":[],"labels":{},"livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"nodeSelector":{},"persistence":{"subPath":null},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"securityContext":{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"service":{"annotations":{},"labels":{}},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[]}` | Configuration for the `admin-api` target |
 | gel.adminApi.replicas | int | `1` | Define the amount of instances |
 | gel.adminApi.extraArgs | object | `{}` | Additional CLI arguments for the `admin-api` target |
