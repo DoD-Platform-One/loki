@@ -16,9 +16,9 @@ spec:
   type: ClusterIP
   ports:
     - name: http-metrics
-      port: 3100
+      port: {{ .Values.gel.adminApi.service.port }}
       protocol: TCP
-      targetPort: http-metrics
+      targetPort: {{ .Values.gel.adminApi.service.targetPort }}
     - name: grpc
       port: 9095
       protocol: TCP

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: loki
-version: 3.0.4-bb.4
+version: 3.0.4-bb.5
 appVersion: v2.5.0
 kubeVersion: "^1.10.0-0"
 description: "BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs."
