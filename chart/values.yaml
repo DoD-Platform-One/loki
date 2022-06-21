@@ -379,6 +379,8 @@ gel:
     annotations: {}
     # -- Additional labels and annotations for the `admin-api` Service
     service:
+      port: 3100
+      targetPort: 3100
       labels: {}
       annotations: {}
     # -- Run container as user `enterprise-logs(uid=10001)`
@@ -442,6 +444,8 @@ gel:
     annotations: {}
     # -- Additional labels and annotations for the `gateway` Service
     service:
+      port: 80
+      targetPort: 3100
       labels: {}
       annotations: {}
     # -- Run container as user `enterprise-logs(uid=10001)`

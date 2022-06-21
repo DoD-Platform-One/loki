@@ -15,9 +15,9 @@ spec:
   type: ClusterIP
   ports:
     - name: http-metrics
-      port: 3100
+      port: {{ .Values.gel.gateway.service.port }}
       protocol: TCP
-      targetPort: http-metrics
+      targetPort: {{ .Values.gel.gateway.service.targetPort }}
   selector:
     {{- include "enterprise-logs.gatewaySelectorLabels" . | nindent 4 }}
 {{- end }}

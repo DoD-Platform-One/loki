@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.4-bb.4](https://img.shields.io/badge/Version-3.0.4--bb.4-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.4-bb.5](https://img.shields.io/badge/Version-3.0.4--bb.5-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -144,12 +144,12 @@ helm install loki chart/
 | gel.tokengen.image.registry | string | `"registry1.dso.mil"` | Registry for kubectl image |
 | gel.tokengen.image.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Repository for kubectl image |
 | gel.tokengen.image.tag | string | `"v1.22.2"` | Tag for kubectl image |
-| gel.adminApi | object | `{"affinity":{},"annotations":{},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"initContainers":[],"labels":{},"livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"nodeSelector":{},"persistence":{"subPath":null},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"securityContext":{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"service":{"annotations":{},"labels":{}},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[]}` | Configuration for the `admin-api` target |
+| gel.adminApi | object | `{"affinity":{},"annotations":{},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"initContainers":[],"labels":{},"livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"nodeSelector":{},"persistence":{"subPath":null},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"securityContext":{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"service":{"annotations":{},"labels":{},"port":3100,"targetPort":3100},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[]}` | Configuration for the `admin-api` target |
 | gel.adminApi.replicas | int | `1` | Define the amount of instances |
 | gel.adminApi.extraArgs | object | `{}` | Additional CLI arguments for the `admin-api` target |
 | gel.adminApi.labels | object | `{}` | Additional labels for the `admin-api` Deployment |
 | gel.adminApi.annotations | object | `{}` | Additional annotations for the `admin-api` Deployment |
-| gel.adminApi.service | object | `{"annotations":{},"labels":{}}` | Additional labels and annotations for the `admin-api` Service |
+| gel.adminApi.service | object | `{"annotations":{},"labels":{},"port":3100,"targetPort":3100}` | Additional labels and annotations for the `admin-api` Service |
 | gel.adminApi.securityContext | object | `{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run container as user `enterprise-logs(uid=10001)` `fsGroup` must not be specified, because these security options are applied on container level not on Pod level. |
 | gel.adminApi.resources | object | `{}` | Request and limit Kubernetes resources Values are defined in small.yaml and large.yaml |
 | gel.adminApi.extraVolumes | list | `[]` | Additional volumes for Pods |
@@ -158,12 +158,12 @@ helm install loki chart/
 | gel.adminApi.nodeSelector | object | `{}` | Node selector for admin-api Pods |
 | gel.adminApi.tolerations | list | `[]` | Tolerations for admin-api Pods |
 | gel.adminApi.terminationGracePeriodSeconds | int | `60` | Grace period to allow the admin-api to shutdown before it is killed |
-| gel.gateway | object | `{"affinity":{},"annotations":{},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"initContainers":[],"labels":{},"livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"nodeSelector":{},"persistence":{"subPath":null},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"service":{"annotations":{},"labels":{}},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[],"useDefaultProxyURLs":true}` | Configuration for the `gateway` target |
+| gel.gateway | object | `{"affinity":{},"annotations":{},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"initContainers":[],"labels":{},"livenessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"nodeSelector":{},"persistence":{"subPath":null},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"service":{"annotations":{},"labels":{},"port":80,"targetPort":3100},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[],"useDefaultProxyURLs":true}` | Configuration for the `gateway` target |
 | gel.gateway.replicas | int | `1` | Define the amount of instances |
 | gel.gateway.extraArgs | object | `{}` | Additional CLI arguments for the `gateway` target |
 | gel.gateway.labels | object | `{}` | Additional labels for the `gateway` Pod |
 | gel.gateway.annotations | object | `{}` | Additional annotations for the `gateway` Pod |
-| gel.gateway.service | object | `{"annotations":{},"labels":{}}` | Additional labels and annotations for the `gateway` Service |
+| gel.gateway.service | object | `{"annotations":{},"labels":{},"port":80,"targetPort":3100}` | Additional labels and annotations for the `gateway` Service |
 | gel.gateway.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run container as user `enterprise-logs(uid=10001)` |
 | gel.gateway.resources | object | `{}` | Request and limit Kubernetes resources Values are defined in small.yaml and large.yaml |
 | gel.gateway.extraVolumes | list | `[]` | Additional volumes for Pods |
