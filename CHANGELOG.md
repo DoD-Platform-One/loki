@@ -4,8 +4,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [3.0.5-bb.0]
 ### Added
-- Bumped big-bang/base tag to 1.4.0
-- Bumped grafana-enterprise-logs tag to 1.18.0
+- Bumped grafana-enterprise-logs tag to 1.4.0
+- Bumped big-bang/base tag to 1.18.0
 
 ## [3.0.4-bb.5]
 ### Added
