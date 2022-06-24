@@ -69,18 +69,16 @@ loki:
   # -- Loki architecture.  Options are monolith and scalable
   strategy: scalable
 
-  # Must match cluster name in GEL license
-  releaseName: <LICENSE CLUSTER NAME>
-
-  enterprise:
-    enabled: true
-    licenseContents: <GEL LICENSE>
-
   values:
     gel:
+      enabled: true
       gateway:
         service:
           port: 3101
+      license:
+        contents: <GEL LICENSE>
+        # Must match cluster name in GEL license
+	cluster_name: <LICENSE CLUSTER NAME>
 
     minio:
       tenants:
