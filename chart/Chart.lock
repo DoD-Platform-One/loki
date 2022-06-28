@@ -1,7 +1,7 @@
 dependencies:
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
-  version: 0.2.8
+  version: 0.2.10
 - name: loki-simple-scalable
   repository: file://./deps/loki-simple-scalable
   version: 0.4.0
@@ -11,5 +11,5 @@ dependencies:
 - name: minio-instance
   repository: file://./deps/minio
   version: 4.4.12-bb.1
-digest: sha256:64f0d58143d29e483449799e6b8291ea4e6f0e86657d72057b30c2be248a676e
-generated: "2022-05-20T11:56:03.189077-05:00"
+digest: sha256:1493395aee170b04f80fb2a07ff6256af0d43dc7e553fb0eeff65a6f168c256c
+generated: "2022-06-28T12:22:28.443284-06:00"
