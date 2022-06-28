@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.5-bb.0](https://img.shields.io/badge/Version-3.0.5--bb.0-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.5-bb.1](https://img.shields.io/badge/Version-3.0.5--bb.1-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -190,7 +190,7 @@ helm install loki chart/
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
 | bbtests.cypress.envs.cypress_grafana_url | string | `"http://monitoring-grafana.monitoring.svc.cluster.local"` |  |
-| bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:1.18.0"` |  |
+| bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:2.0.0"` |  |
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ template \"loki.fullname\" . }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
 

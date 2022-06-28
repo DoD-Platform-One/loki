@@ -613,7 +613,7 @@ bbtests:
       cypress_check_datasource: 'false'
       cypress_grafana_url: 'http://monitoring-grafana.monitoring.svc.cluster.local'
   scripts:
-    image: registry1.dso.mil/ironbank/big-bang/base:1.18.0
+    image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
     envs:
       LOKI_URL: 'http://{{ template "loki.fullname" . }}.{{ .Release.Namespace }}.svc:3100'
       LOKI_VERSION: '{{ .Values.loki.image.tag }}'
