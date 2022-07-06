@@ -297,7 +297,7 @@ gel:
     # -- The image repository to use
     repository: ironbank/grafana/grafana-enterprise-logs
     # -- The version of Grafana Enterprise Logs
-    tag: 1.4.0
+    tag: 1.4.1
     # -- Defines the policy how and when images are pulled
     pullPolicy: IfNotPresent
     # -- Additional image pull secrets
