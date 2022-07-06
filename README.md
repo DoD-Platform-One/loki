@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.5-bb.1](https://img.shields.io/badge/Version-3.0.5--bb.1-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.5-bb.2](https://img.shields.io/badge/Version-3.0.5--bb.2-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
@@ -117,10 +117,10 @@ helm install loki chart/
 | gel.enabled | bool | `false` | Enable Grafana Enterprise Logs chart |
 | gel.nameOverride | string | `nil` | Overrides the chart's name |
 | gel.fullnameOverride | string | `nil` | Overrides the chart's computed fullname |
-| gel.image | object | `{"pullPolicy":"IfNotPresent","pullSecrets":[],"registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"1.4.0"}` | Definition of the Docker image for Grafana Enterprise Logs If the image block is overwritten in a custom values file, it is also required to update the values in the `loki-distributed.loki.image` block. This can be done by copying the values, or like here, by using an anchor and a pointer. |
+| gel.image | object | `{"pullPolicy":"IfNotPresent","pullSecrets":[],"registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"1.4.1"}` | Definition of the Docker image for Grafana Enterprise Logs If the image block is overwritten in a custom values file, it is also required to update the values in the `loki-distributed.loki.image` block. This can be done by copying the values, or like here, by using an anchor and a pointer. |
 | gel.image.registry | string | `"registry1.dso.mil"` | The container registry to use |
 | gel.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | The image repository to use |
-| gel.image.tag | string | `"1.4.0"` | The version of Grafana Enterprise Logs |
+| gel.image.tag | string | `"1.4.1"` | The version of Grafana Enterprise Logs |
 | gel.image.pullPolicy | string | `"IfNotPresent"` | Defines the policy how and when images are pulled |
 | gel.image.pullSecrets | list | `[]` | Additional image pull secrets |
 | gel.serviceAccount | object | `{"create":true}` | Definition of the ServiceAccount for containers Any additional configuration of the ServiceAccount has to be done in `loki-distributed.serviceAccount`. |
