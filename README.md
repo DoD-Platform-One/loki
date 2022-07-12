@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.0.5-bb.2](https://img.shields.io/badge/Version-3.0.5--bb.2-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
+![Version: 3.0.5-bb.3](https://img.shields.io/badge/Version-3.0.5--bb.3-informational?style=flat-square) ![AppVersion: v2.5.0](https://img.shields.io/badge/AppVersion-v2.5.0-informational?style=flat-square)
 
 BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs.
 
