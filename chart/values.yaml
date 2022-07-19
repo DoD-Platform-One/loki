@@ -359,6 +359,9 @@ gel:
 
     priorityClassName: null
 
+    # -- Tolerations for tokengen Job
+    tolerations: []
+
     image:
       # -- Registry for kubectl image
       registry: registry1.dso.mil

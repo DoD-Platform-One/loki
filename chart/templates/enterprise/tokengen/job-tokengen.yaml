@@ -87,6 +87,10 @@ spec:
       restartPolicy: OnFailure
       serviceAccount: {{ include "loki.serviceAccountName" . }}
       serviceAccountName: {{ include "loki.serviceAccountName" .  }}
+      {{- with .Values.gel.tokengen.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: config
           secret:
