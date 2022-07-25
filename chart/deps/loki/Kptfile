@@ -5,7 +5,7 @@ metadata:
 upstream:
   type: git
   git:
-    commit: bcd11416f10f5ed0b04e9f1b6432f79d1ec1c265
+    commit: 45b3816e0080551b1e0b38a4e80b0badfa060b28
     repo: https://github.com/grafana/helm-charts
     directory: charts/loki
     ref: main
