@@ -1,7 +1,7 @@
 apiVersion: v2
 name: loki
-version: 3.0.5-bb.4
-appVersion: v2.5.0
+version: 4.0.0-bb.0
+appVersion: v2.6.0
 kubeVersion: "^1.10.0-0"
 description: "BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs."
 home: https://grafana.com/loki
@@ -18,11 +18,11 @@ dependencies:
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
   - name: loki-simple-scalable
     repository: file://./deps/loki-simple-scalable
-    version: 0.4.0
+    version: 1.7.5
     condition: loki-simple-scalable.enabled
   - name: loki
     repository: file://./deps/loki
-    version: 2.11.1
+    version: 2.13.1
     condition: loki.enabled
   - name: minio-instance
     alias: minio
@@ -32,4 +32,4 @@ dependencies:
 
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 2.5.0
+    - Loki: 2.6.0

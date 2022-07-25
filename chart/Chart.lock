@@ -4,12 +4,12 @@ dependencies:
   version: 0.2.10
 - name: loki-simple-scalable
   repository: file://./deps/loki-simple-scalable
-  version: 0.4.0
+  version: 1.7.5
 - name: loki
   repository: file://./deps/loki
-  version: 2.11.1
+  version: 2.13.1
 - name: minio-instance
   repository: file://./deps/minio
   version: 4.4.12-bb.1
-digest: sha256:1493395aee170b04f80fb2a07ff6256af0d43dc7e553fb0eeff65a6f168c256c
-generated: "2022-06-28T12:22:28.443284-06:00"
+digest: sha256:f4ec090227b27bfcdfa74378478c8b67b6a5344182a36f91bdd103f4140b834d
+generated: "2022-07-25T10:58:36.2252007-06:00"

@@ -1,6 +1,6 @@
 image:
   repository: grafana/loki
-  tag: 2.5.0
+  tag: 2.6.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -49,17 +49,21 @@ tracing:
 config:
   # existingSecret:
   auth_enabled: false
+
+  memberlist:
+    join_members:
+      # the value must be defined as string to be evaluated when secret manifest is being generating
+      - '{{ include "loki.fullname" . }}-memberlist'
+
   ingester:
     chunk_idle_period: 3m
     chunk_block_size: 262144
     chunk_retain_period: 1m
     max_transfer_retries: 0
     wal:
-      dir: /var/loki/wal
+      dir: /data/loki/wal
     lifecycler:
       ring:
-        kvstore:
-          store: inmemory
         replication_factor: 1
 
       ## Different ring configs can be used. E.g. Consul
@@ -87,21 +91,22 @@ config:
         period: 24h
   server:
     http_listen_port: 3100
+    grpc_listen_port: 9095
   storage_config:
     boltdb_shipper:
-      active_index_directory: /var/loki/boltdb-shipper-active
-      cache_location: /var/loki/boltdb-shipper-cache
+      active_index_directory: /data/loki/boltdb-shipper-active
+      cache_location: /data/loki/boltdb-shipper-cache
       cache_ttl: 24h         # Can be increased for faster performance over longer query periods, uses more disk space
       shared_store: filesystem
     filesystem:
-      directory: /var/loki/chunks
+      directory: /data/loki/chunks
   chunk_store_config:
     max_look_back_period: 0s
   table_manager:
     retention_deletes_enabled: false
     retention_period: 0s
   compactor:
-    working_directory: /var/loki/boltdb-shipper-compactor
+    working_directory: /data/loki/boltdb-shipper-compactor
     shared_store: filesystem
 # Needed for Alerting: https://grafana.com/docs/loki/latest/rules/
 # This is just a simple example, for more details: https://grafana.com/docs/loki/latest/configuration/#ruler_config
@@ -120,6 +125,8 @@ config:
 ## Additional Loki container arguments, e.g. log level (debug, info, warn, error)
 extraArgs: {}
   # log.level: debug
+
+extraEnvFrom: []
 
 livenessProbe:
   httpGet:
@@ -147,12 +154,14 @@ persistence:
   accessModes:
   - ReadWriteOnce
   size: 10Gi
+  labels: {}
   annotations: {}
   # selector:
   #   matchLabels:
   #     app.kubernetes.io/name: loki
   # subPath: ""
   # existingClaim:
+  # storageClassName:
 
 ## Pod Labels
 podLabels: {}
@@ -192,6 +201,9 @@ securityContext:
   runAsGroup: 10001
   runAsNonRoot: true
   runAsUser: 10001
+
+containerSecurityContext:
+  readOnlyRootFilesystem: true
 
 service:
   type: ClusterIP

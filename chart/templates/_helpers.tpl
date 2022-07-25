@@ -2,7 +2,8 @@
 Expand the name of the chart.
 */}}
 {{- define "loki.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- $default := ternary "enterprise-logs" "loki" .Values.global.enterprise.enabled }}
+{{- coalesce .Values.nameOverride $default | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -14,7 +15,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- $name := include "loki.name" . }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -22,6 +23,18 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{/* Create a default storage config that uses filesystem storage
+This is required for CI, but Loki will not be queryable with this default
+applied, thus it is encouraged that users override this.
+*/}}
+{{- define "loki.storageConfig" -}}
+{{- if .Values.loki.storageConfig -}}
+{{- .Values.loki.storageConfig | toYaml | nindent 4 -}}
+{{- else }}
+{{- .Values.loki.defaultStorageConfig | toYaml | nindent 4 }}
+{{- end}}
+{{- end}}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -55,29 +68,91 @@ Create the name of the service account to use
 */}}
 {{- define "loki.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "loki.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "loki.name" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Docker image name for Loki
+Base template for building docker image reference
 */}}
-{{- define "loki.lokiImage" -}}
-{{- $registry := coalesce .global.registry .service.registry .loki.registry -}}
-{{- $repository := coalesce .service.repository .loki.repository -}}
-{{- $tag := coalesce .service.tag .loki.tag .defaultVersion | toString -}}
+{{- define "loki.baseImage" }}
+{{- $registry := .global.registry | default .service.registry -}}
+{{- $repository := .service.repository -}}
+{{- $tag := .service.tag | default .defaultVersion | toString -}}
 {{- printf "%s/%s:%s" $registry $repository $tag -}}
 {{- end -}}
 
 {{/*
-Docker image name
+Docker image name for Loki
 */}}
-{{- define "loki.image" -}}
-{{- $registry := coalesce .global.registry .service.registry -}}
-{{- $tag := .service.tag | toString -}}
-{{- printf "%s/%s:%s" $registry .service.repository (.service.tag | toString) -}}
+{{- define "loki.lokiImage" -}}
+{{- $dict := dict "service" .Values.loki.image "global" .Values.global.image "defaultVersion" .Chart.AppVersion -}}
+{{- include "loki.baseImage" $dict -}}
+{{- end -}}
+
+{{/*
+Generated storage config for loki common config
+*/}}
+{{- define "loki.commonStorageConfig" -}}
+{{- if .Values.minio.enabled -}}
+s3:
+  s3: s3://minio:minio123@minio.{{ .Release.Namespace }}.svc/{{ $.Values.global.storage.bucketNames.chunks }}
+  s3forcepathstyle: true
+  insecure: true
+{{- else if eq .Values.global.storage.type "s3" -}}
+{{- with .Values.global.storage.s3 }}
+s3:
+  {{- with .s3 }}
+  s3: {{ . }}
+  {{- end }}
+  {{- with .endpoint }}
+  endpoint: {{ . }}
+  {{- end }}
+  {{- with .region }}
+  region: {{ . }}
+  {{- end}}
+  bucketnames: {{ $.Values.global.storage.bucketNames.chunks }}
+  {{- with .secretAccessKey }}
+  secret_access_key: {{ . }}
+  {{- end }}
+  {{- with .accessKeyId }}
+  access_key_id: {{ . }}
+  {{- end }}
+  s3forcepathstyle: {{ .s3ForcePathStyle }}
+  insecure: {{ .insecure }}
+{{- end -}}
+{{- else if eq .Values.global.storage.type "gcs" -}}
+{{- with .Values.global.storage.gcs }}
+gcs:
+  bucket_name: {{ $.Values.global.storage.bucketNames.chunks }}
+  chunk_buffer_size: {{ .chunkBufferSize }}
+  request_timeout: {{ .requestTimeout }}
+  enable_http2: {{ .enableHttp2}}
+{{- end -}}
+{{- else -}}
+{{- with .Values.global.storage.local }}
+filesystem:
+  chunks_directory: {{ .chunks_directory }}
+  rules_directory: {{ .rules_directory }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Storage config for ruler
+*/}}
+{{- define "loki.rulerStorageConfig" -}}
+{{- if or .Values.minio.enabled (eq .Values.global.storage.type "s3") -}}
+s3:
+  s3: s3://minio:minio123@minio.{{ .Release.Namespace }}.svc/{{ $.Values.global.storage.bucketNames.ruler }}
+  s3forcepathstyle: true
+  insecure: true
+{{- else if eq .Values.loki.storage.type "gcs" -}}
+gcs:
+  bucket_name: {{ $.Values.global.storage.bucketNames.ruler }}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -130,9 +205,27 @@ Return if ingress supports pathType.
   {{- or (eq (include "loki.ingress.isStable" .) "true") (and (eq (include "loki.ingress.apiVersion" .) "networking.k8s.io/v1beta1") (semverCompare ">= 1.18-0" .Capabilities.KubeVersion.Version)) -}}
 {{- end -}}
 
+{{/*
+Create the service endpoint including port for MinIO.
+*/}}
+{{- define "loki.minio" -}}
+{{- if .Values.minio.enabled -}}
+{{- printf "%s-%s.%s.svc:%s" .Release.Name "minio" .Release.Namespace (.Values.minio.service.port | toString) -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Return the appropriate apiVersion for PodDisruptionBudget. */}}
+{{- define "loki.podDisruptionBudget.apiVersion" -}}
+  {{- if and (.Capabilities.APIVersions.Has "policy/v1") (semverCompare ">= 1.21-0" .Capabilities.KubeVersion.Version) -}}
+    {{- print "policy/v1" -}}
+  {{- else -}}
+    {{- print "policy/v1beta1" -}}
+  {{- end -}}
+{{- end -}}
+
 
 {{/*
-gateway admin-api
+gateway admin-api -- Big Bang Addition
 */}}
 {{- define "loki.memberlist" -}}
   {{- $memberlist := include "loki.fullname" .  -}}
@@ -145,12 +238,12 @@ gateway admin-api
 
 
 {{/*
-loki netpol matchLabels
+loki netpol matchLabels -- Big Bang Addition
 */}}
 {{- define "loki.matchLabels" -}}
   {{- if .Values.loki.enabled }}
   app: loki
   {{- else }}
-  app.kubernetes.io/instance: {{ .Release.Name }}
+  {{ include "loki.selectorLabels" . | nindent 2 }}
   {{- end }}
 {{- end }}

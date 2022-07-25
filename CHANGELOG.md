@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.0-bb.0]
+### Changed
+- Upgraded loki image from `2.5.0` to version `2.6.0`
+- Upgraded dependency chart loki from `2.11.1` to `2.13.1`
+- Upgraded dependency chart loki-simple-scalable from `0.4.0` to `1.7.5`
+
 ## [3.0.5-bb.3]
 ### Added
 - Adds configuration for tolerations on GEL tokengen job
