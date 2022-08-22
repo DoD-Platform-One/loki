@@ -1,35 +1,33 @@
 apiVersion: v2
-name: loki
-version: 4.0.0-bb.0
-appVersion: v2.6.0
-kubeVersion: "^1.10.0-0"
-description: "BigBang amalgamation of Grafana upstream charts to provide several ways of deploying Loki; like Prometheus, but for logs."
-home: https://grafana.com/loki
-icon: https://raw.githubusercontent.com/grafana/loki/master/docs/sources/logo.png
+name: loki-simple-scalable
+description: Helm chart for Grafana Loki in simple, scalable mode
+type: application
+appVersion: 2.6.1
+version: 1.7.6-bb.0
+home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
-maintainers:
-  - name: Loki Maintainers
-    email: lokiproject@googlegroups.com
-engine: gotpl
+  - https://grafana.com/oss/loki/
+  - https://grafana.com/docs/loki/latest/
+icon: https://grafana.com/docs/loki/latest/logo_and_name.png
 dependencies:
+  - name: minio-instance
+    alias: minio
+    version: 4.4.25-bb.0
+    repository: file://./deps/minio
+    condition: minio.enabled
+  - name: grafana-agent-operator
+    alias: grafana-agent-operator
+    version: 0.2.2
+    repository: https://grafana.github.io/helm-charts
+    condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
     version: 0.2.10
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
-  - name: loki-simple-scalable
-    repository: file://./deps/loki-simple-scalable
-    version: 1.7.5
-    condition: loki-simple-scalable.enabled
   - name: loki
+    alias: monolith
     repository: file://./deps/loki
     version: 2.13.1
-    condition: loki.enabled
-  - name: minio-instance
-    alias: minio
-    version: 4.4.12-bb.1
-    repository: file://./deps/minio
-    condition: minio.enabled
-
-annotations:
-  bigbang.dev/applicationVersions: |
-    - Loki: 2.6.0
+    condition: monolith.enabled
+maintainers:
+  - name: trevorwhitney

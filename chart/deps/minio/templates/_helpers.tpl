@@ -102,7 +102,7 @@ Create the port used to communicate with the Minio service.
 Note: the Minio operator has a fixed name of "minio" for the service it creates.
 */}}
 {{- define "minio-operator.servicePort" -}}
-{{- if or .Values.tenants.certificate.requestAutoCert .Values.tenants.certificate.externalCertSecret }}
+{{- if or .Values.tenant.certificate.requestAutoCert .Values.tenant.certificate.externalCertSecret }}
 443
 {{- else }}
 9090

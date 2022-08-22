@@ -86,7 +86,7 @@ spec:
       restartPolicy: OnFailure
       serviceAccount: {{ template "enterprise-logs.tokengenFullname" . }}
       serviceAccountName: {{ template "enterprise-logs.tokengenFullname" . }}
-      {{- with .Values.enterprise.tokengen.tolerations }}
+      {{- with .Values.gel.tokengen.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}

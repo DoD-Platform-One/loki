@@ -1,3 +1,4 @@
+{{- if not (index .Values "write" "disabled") }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,3 +21,4 @@ spec:
       protocol: TCP
   selector:
     {{- include "loki.writeSelectorLabels" . | nindent 4 }}
+{{- end }}

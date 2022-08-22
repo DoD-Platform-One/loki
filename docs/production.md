@@ -9,21 +9,16 @@ This example assumes external dependencies of:
 ```yaml
 loki:
   strategy: "scalable"
-  objectStorage: 
-    type: s3
-    endpoint: s3.amazonaws.com
-    region: us-east-1
-    accessKey: "XXXXXXXX"
-    accessSecret: "XXXXXXXXXXXXXX"
+  objectStorage:
+    endpoint: https://s3.us-gov-west-1.amazonaws.com
+    region: us-gov-west-1
     bucketnames:
       # Loki since their 1.0 Chart release allows you to specify separate buckets.
-      chunks: chunks
-      ruler: ruler
-      admin: admin
+      chunks: loki-logs
+      ruler: loki-logs
+      admin: loki-admin
   values:
-    global:
-      createGlobalConfig: true
-      existingSecretForConfig: "loki-config"
+    loki:
       memcached:
         # configure how Loki will cache requests, chunks, and the index to a backing cach store.
         chunk_cache:
@@ -32,34 +27,25 @@ loki:
           service: "memcached"
           batch_size: 256
           parallelism: 10
-    loki-simple-scalable:
-      write:
-        replicas: 3
-        persistence:
-          size: 50Gi
-      read:
-        replicas: 5
-        persistence:
-          size: 50Gi
+    write:
+      replicas: 3
+      persistence:
+        size: 50Gi
+    read:
+      replicas: 5
+      persistence:
+        size: 50Gi
 ```
 
 ### Cloud Credential Configuration
-While it is generally recommended in cloud environments to use instance roles/profiles where possible, currently the loki pods work best when access keys are fed in. If however you do want to use an instance profile, make sure it has appropriate access to the objectstorage and add the following values:
-```yaml
-loki-simple-scalable:
-  loki:
-    podAnnotations:
-      sidecar.istio.io/inject: "false"
-```
+Loki is able to use IAM Profiles attached to nodes on your instances, if you don't specify `loki.objectStorage.accessKey` or `loki.objectStorage.accessSecret` loki will use the Profile attached to the instance. If you specify `accessKey` & `accessSecret` they will be mounted within a non encrypted/obfuscated configMap via the loki-simple-scalable chart so it is encouraged to utilize instance profiles where possible.
 
 ## Override A Custom Configuration
 If the above recommended configuration is not enough, you would like to add in additional options or utilize something like AWS DynamoDB as a table-manager instead of boltdb-shipper, you can override in your own full configuration under the `global.config` value:
 ```yaml
 loki:
   values:
-    global:
-      createGlobalConfig: true
-      existingSecretForConfig: "loki-config"
+    loki:
       config: |
         auth_enabled: true
         server:
@@ -86,21 +72,19 @@ loki:
 See the [Examples for cloud configuration provided by Grafana.](https://grafana.com/docs/loki/latest/configuration/examples/)
 
 ## Monolith Recommended Configuration
-If you wish to use the monolith chart in production it is recommended that you instead utilize the simple-scalable-chart and external object storage, but you can deploy the monolith installation and point to object storage such as Minio: 
+If you wish to use the monolith chart in production it is recommended that you instead utilize the simple-scalable-chart and external object storage, but you can deploy the monolith installation which is a single loki pod which writes/stores to local PVC storage: 
 ```yaml
 loki:
   strategy: monolith
   values:
-    global:
-      createGlobalConfig: true
-      existingSecretForConfig: loki-config
-    
-    minio:
-      enabled: true
+    monlith:
+      persistence:
+        enabled: true
+	size: 40Gi
 ```
 
-## New Global Value Options
-Since Big Bang chart version 4.X, Loki-simple-scalable version 1.X there is the ability to configure some options via `global` value definitions, these options include:
+## New Config Value Options
+Since Big Bang chart version 4.X, Loki-simple-scalable version 1.X there is the ability to configure some options via `loki` value definitions, these options include:
 | Value | Documentation |
 | ------|---------------|
 | `storage_config: {}` | https://grafana.com/docs/loki/latest/configuration/#storage_config |
@@ -110,3 +94,5 @@ Since Big Bang chart version 4.X, Loki-simple-scalable version 1.X there is the 
 | `commonConfig: {}` | https://grafana.com/docs/loki/latest/configuration/#common |
 | `memcached.chunk_cache: {}` | https://grafana.com/docs/loki/latest/configuration/#cache_config |
 | `memcached.results_cache: {}` | https://grafana.com/docs/loki/latest/configuration/#query_range |
+
+An example of using these new values is the `memcached` example in the Simple Scalable Recommended Production Configuration section above.

@@ -1,15 +1,15 @@
 dependencies:
+- name: minio-instance
+  repository: file://./deps/minio
+  version: 4.4.25-bb.0
+- name: grafana-agent-operator
+  repository: https://grafana.github.io/helm-charts
+  version: 0.2.2
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.2.10
-- name: loki-simple-scalable
-  repository: file://./deps/loki-simple-scalable
-  version: 1.7.5
 - name: loki
   repository: file://./deps/loki
   version: 2.13.1
-- name: minio-instance
-  repository: file://./deps/minio
-  version: 4.4.12-bb.1
-digest: sha256:f4ec090227b27bfcdfa74378478c8b67b6a5344182a36f91bdd103f4140b834d
-generated: "2022-07-25T10:58:36.2252007-06:00"
+digest: sha256:0b57d0b2c0022f582ac0805f194c583d327f73e749745ddd2155c181370b0f88
+generated: "2022-08-15T11:56:57.6240094-06:00"
