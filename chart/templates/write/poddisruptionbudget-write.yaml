@@ -1,3 +1,4 @@
+{{- if not (index .Values "write" "disabled") }}
 {{- if gt (int .Values.write.replicas) 1 }}
 apiVersion: {{ include "loki.podDisruptionBudget.apiVersion" . }}
 kind: PodDisruptionBudget
@@ -10,4 +11,5 @@ spec:
     matchLabels:
       {{- include "loki.writeSelectorLabels" . | nindent 6 }}
   maxUnavailable: 1
+{{- end }}
 {{- end }}

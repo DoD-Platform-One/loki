@@ -1,13 +1,7 @@
-loki:
-  enabled: true
-  persistence:
-    enabled: true
-
-loki-simple-scalable:
-  enabled: false
-
-gel:
-  enabled: false
+read:
+  disabled: true
+write:
+  disabled: true
 
 bbtests:
   enabled: true

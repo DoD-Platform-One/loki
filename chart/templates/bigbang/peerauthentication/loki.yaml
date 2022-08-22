@@ -1,4 +1,4 @@
-{{- if and .Values.istio.enabled  .Values.loki.enabled }}
+{{- if and .Values.istio.enabled  .Values.monolith.enabled }}
 apiVersion: "security.istio.io/v1beta1"
 kind: PeerAuthentication
 metadata:
@@ -11,10 +11,10 @@ spec:
     matchLabels:
       app: {{ template "loki.name" . }}
       release: {{ .Release.Name }}
-  {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") .Values.loki.serviceMonitor.enabled }}
+  {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") .Values.monolith.serviceMonitor.enabled }}
   # Monitoring exception
   portLevelMtls:
-    "{{ .Values.loki.config.server.http_listen_port }}":
+    "3100":
       mode: PERMISSIVE
   {{- end }}
 {{- end }}

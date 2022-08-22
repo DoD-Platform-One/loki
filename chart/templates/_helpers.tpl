@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "loki.name" -}}
-{{- $default := ternary "enterprise-logs" "loki" .Values.global.enterprise.enabled }}
+{{- $default := "loki" }}
 {{- coalesce .Values.nameOverride $default | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -93,16 +93,35 @@ Docker image name for Loki
 {{- end -}}
 
 {{/*
+Docker image name for enterprise logs
+*/}}
+{{- define "loki.enterpriseImage" -}}
+{{- $dict := dict "service" .Values.enterprise.image "global" .Values.global.image "defaultVersion" .Values.enterprise.version -}}
+{{- include "loki.baseImage" $dict -}}
+{{/* {{- printf "foo" -}} */}}
+{{- end -}}
+
+{{/*
+Docker image name
+*/}}
+{{- define "loki.image" -}}
+{{- if .Values.enterprise.enabled -}}{{- include "loki.enterpriseImage" . -}}{{- else -}}{{- include "loki.lokiImage" . -}}{{- end -}}
+{{- end -}}
+
+{{/*
 Generated storage config for loki common config
 */}}
 {{- define "loki.commonStorageConfig" -}}
 {{- if .Values.minio.enabled -}}
 s3:
-  s3: s3://minio:minio123@minio.{{ .Release.Namespace }}.svc/{{ $.Values.global.storage.bucketNames.chunks }}
+  endpoint: minio.logging.svc
+  bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
+  secret_access_key: minio123
+  access_key_id: minio
   s3forcepathstyle: true
   insecure: true
-{{- else if eq .Values.global.storage.type "s3" -}}
-{{- with .Values.global.storage.s3 }}
+{{- else if eq .Values.loki.storage.type "s3" -}}
+{{- with .Values.loki.storage.s3 }}
 s3:
   {{- with .s3 }}
   s3: {{ . }}
@@ -113,7 +132,7 @@ s3:
   {{- with .region }}
   region: {{ . }}
   {{- end}}
-  bucketnames: {{ $.Values.global.storage.bucketNames.chunks }}
+  bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
   {{- with .secretAccessKey }}
   secret_access_key: {{ . }}
   {{- end }}
@@ -123,16 +142,16 @@ s3:
   s3forcepathstyle: {{ .s3ForcePathStyle }}
   insecure: {{ .insecure }}
 {{- end -}}
-{{- else if eq .Values.global.storage.type "gcs" -}}
-{{- with .Values.global.storage.gcs }}
+{{- else if eq .Values.loki.storage.type "gcs" -}}
+{{- with .Values.loki.storage.gcs }}
 gcs:
-  bucket_name: {{ $.Values.global.storage.bucketNames.chunks }}
+  bucket_name: {{ $.Values.loki.storage.bucketNames.chunks }}
   chunk_buffer_size: {{ .chunkBufferSize }}
   request_timeout: {{ .requestTimeout }}
   enable_http2: {{ .enableHttp2}}
 {{- end -}}
 {{- else -}}
-{{- with .Values.global.storage.local }}
+{{- with .Values.loki.storage.local }}
 filesystem:
   chunks_directory: {{ .chunks_directory }}
   rules_directory: {{ .rules_directory }}
@@ -144,14 +163,12 @@ filesystem:
 Storage config for ruler
 */}}
 {{- define "loki.rulerStorageConfig" -}}
-{{- if or .Values.minio.enabled (eq .Values.global.storage.type "s3") -}}
+{{- if or .Values.minio.enabled (eq .Values.loki.storage.type "s3") -}}
 s3:
-  s3: s3://minio:minio123@minio.{{ .Release.Namespace }}.svc/{{ $.Values.global.storage.bucketNames.ruler }}
-  s3forcepathstyle: true
-  insecure: true
+  bucketnames: {{ $.Values.loki.storage.bucketNames.ruler }}
 {{- else if eq .Values.loki.storage.type "gcs" -}}
 gcs:
-  bucket_name: {{ $.Values.global.storage.bucketNames.ruler }}
+  bucket_name: {{ $.Values.loki.storage.bucketNames.ruler }}
 {{- end -}}
 {{- end -}}
 
@@ -222,20 +239,6 @@ Create the service endpoint including port for MinIO.
     {{- print "policy/v1beta1" -}}
   {{- end -}}
 {{- end -}}
-
-
-{{/*
-gateway admin-api -- Big Bang Addition
-*/}}
-{{- define "loki.memberlist" -}}
-  {{- $memberlist := include "loki.fullname" .  -}}
-  {{- if (index .Values "loki-simple-scalable").enabled }}
-  {{- printf "%s-%s" $memberlist  "memberlist" -}}
-  {{- else }}
-  {{- printf "%s-%s" $memberlist  "memberlist" -}}
-  {{- end }}
-{{- end }}
-
 
 {{/*
 loki netpol matchLabels -- Big Bang Addition

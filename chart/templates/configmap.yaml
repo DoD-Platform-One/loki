@@ -1,3 +1,4 @@
+{{- if and (not (index .Values "read" "disabled")) (not (index .Values "write" "disabled")) }}
 {{- if not .Values.loki.existingSecretForConfig -}}
 apiVersion: v1
 kind: ConfigMap
@@ -8,4 +9,5 @@ metadata:
 data:
   config.yaml: |
     {{- tpl (mergeOverwrite (tpl .Values.loki.config . | fromYaml) .Values.loki.structuredConfig | toYaml) . | nindent 4 }}
+{{- end -}}
 {{- end -}}

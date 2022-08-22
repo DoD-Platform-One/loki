@@ -1,4 +1,4 @@
-{{- if and .Values.istio.enabled  (index .Values "loki-simple-scalable").enabled }}
+{{- if and .Values.istio.enabled  (not (index .Values "write" "disabled")) }}
 apiVersion: "security.istio.io/v1beta1"
 kind: PeerAuthentication
 metadata:
@@ -12,7 +12,7 @@ spec:
       {{- include "loki.matchLabels" . | nindent 6 }}
   portLevelMtls:
     # Monitoring exception
-    {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (index .Values "loki-simple-scalable").serviceMonitor.enabled }}
+    {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (.Values.monitoring.serviceMonitor.enabled) }}
     "3100":
       mode: PERMISSIVE
     {{- end }}
