@@ -3,7 +3,7 @@ name: loki-simple-scalable
 description: Helm chart for Grafana Loki in simple, scalable mode
 type: application
 appVersion: 2.6.1
-version: 1.7.6-bb.0
+version: 1.7.6-bb.1
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -29,5 +29,8 @@ dependencies:
     repository: file://./deps/loki
     version: 2.13.1
     condition: monolith.enabled
+annotations:
+  bigbang.dev/applicationVersions: |
+    - Loki: 2.6.0
 maintainers:
   - name: trevorwhitney
