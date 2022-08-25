@@ -1058,6 +1058,13 @@ monolith:
   nameOverride: loki
   fullnameOverride: loki
 
+  # set more restrictive container security context
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+
   #Required for monolith ServiceMonitor template 
   service:
     labels:

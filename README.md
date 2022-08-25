@@ -1,6 +1,6 @@
 # loki-simple-scalable
 
-![Version: 1.7.6-bb.1](https://img.shields.io/badge/Version-1.7.6--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
+![Version: 1.7.6-bb.2](https://img.shields.io/badge/Version-1.7.6--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -276,6 +276,8 @@ helm install loki-simple-scalable chart/
 | monolith.extraPorts[1] | object | `{"name":"tcp-memberlist","port":7946,"protocol":"TCP"}` | Extra ports for loki pods. Additional ports exposed to support memberlist |
 | monolith.nameOverride | string | `"loki"` |  |
 | monolith.fullnameOverride | string | `"loki"` |  |
+| monolith.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
+| monolith.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
 | monolith.service.labels.app | string | `"loki"` |  |
 | monolith.service.labels.release | string | `"logging-loki"` |  |
 | monolith.readinessProbe.initialDelaySeconds | int | `80` |  |
