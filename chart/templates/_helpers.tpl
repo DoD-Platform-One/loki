@@ -114,10 +114,10 @@ Generated storage config for loki common config
 {{- define "loki.commonStorageConfig" -}}
 {{- if .Values.minio.enabled -}}
 s3:
-  endpoint: minio.logging.svc
+  endpoint: {{ include "loki.minio" $ }}
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
-  secret_access_key: minio123
-  access_key_id: minio
+  secret_access_key: supersecret
+  access_key_id: enterprise-logs
   s3forcepathstyle: true
   insecure: true
 {{- else if eq .Values.loki.storage.type "s3" -}}

@@ -10,6 +10,6 @@ dependencies:
   version: 0.2.10
 - name: loki
   repository: file://./deps/loki
-  version: 2.13.1
-digest: sha256:0b57d0b2c0022f582ac0805f194c583d327f73e749745ddd2155c181370b0f88
-generated: "2022-08-15T11:56:57.6240094-06:00"
+  version: 2.14.1
+digest: sha256:2e7a69b5dd406f5ab128bd2b118ab3e4cdeb43bb30e8370dd40fcf973cbbec53
+generated: "2022-08-23T12:23:50.0982818-06:00"

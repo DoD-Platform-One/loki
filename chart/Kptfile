@@ -5,7 +5,7 @@ metadata:
 upstream:
     type: git
     git:
-        commit: f4e83aef9e3f88d66ed978225d1e3b3588c97a7c
+        commit: 9e53d2a371c86b607856041767dfadf3705fd7df
         repo: https://github.com/grafana/helm-charts
         directory: /charts/loki-simple-scalable
-        ref: loki-simple-scalable-1.7.6
+        ref: loki-simple-scalable-1.8.10
