@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.10-bb.0]
+### Changed
+- Updating chart to `loki-simple-scalable` `1.8.10` chart base
+- Updating loki images to `2.6.1` tag
+- Updating monolith `loki` chart to `2.14.1` chart base
+
 ## [1.7.6-bb.2]
 ### Changed
 - Updated default containerSecurityContext for `monolith`

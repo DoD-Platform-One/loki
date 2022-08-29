@@ -1,3 +1,4 @@
+---
 global:
   image:
     # -- Overrides the Docker registry globally for all images
@@ -35,7 +36,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.6.0
+    tag: 2.6.1
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
   # -- Common annotations for all pods
@@ -69,6 +70,9 @@ loki:
     server:
       http_listen_port: 3100
       grpc_listen_port: 9095
+      {{- with .Values.loki.extraServerConfig }}
+      {{- toYaml . | nindent 2 }}
+      {{- end }}
 
     memberlist:
       join_members:
@@ -171,9 +175,9 @@ loki:
   commonConfig:
     path_prefix: /var/loki
     replication_factor: 3
-    ring:
-      kvstore:
-        store: memberlist
+
+  # -- Extra server configurations. Check https://grafana.com/docs/loki/latest/configuration/#server for more info
+  extraServerConfig: {}
 
   storage:
     bucketNames:
@@ -239,7 +243,7 @@ enterprise:
   enabled: false
 
   # Default verion of GEL to deploy
-  version: v1.4.1
+  version: v1.5.0
 
   # -- Grafana Enterprise Logs license
   # In order to use Grafana Enterprise Logs features, you will need to provide
@@ -287,7 +291,7 @@ enterprise:
     # -- Docker image repository
     repository: ironbank/grafana/grafana-enterprise-logs
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 1.4.1
+    tag: v1.5.0
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
 
@@ -317,129 +321,6 @@ enterprise:
       runAsGroup: 10001
       runAsUser: 10001
       fsGroup: 10001
-
-  nginxConfig:
-    file: |
-      worker_processes  5;  ## Default: 1
-      error_log  /dev/stderr;
-      pid        /tmp/nginx.pid;
-      worker_rlimit_nofile 8192;
-
-      events {
-        worker_connections  4096;  ## Default: 1024
-      }
-
-      http {
-        client_body_temp_path /tmp/client_temp;
-        proxy_temp_path       /tmp/proxy_temp_path;
-        fastcgi_temp_path     /tmp/fastcgi_temp;
-        uwsgi_temp_path       /tmp/uwsgi_temp;
-        scgi_temp_path        /tmp/scgi_temp;
-
-        default_type application/octet-stream;
-        log_format   {{ .Values.gateway.nginxConfig.logFormat }}
-
-        {{- if .Values.gateway.verboseLogging }}
-        access_log   /dev/stderr  main;
-        {{- else }}
-
-        map $status $loggable {
-          ~^[23]  0;
-          default 1;
-        }
-        access_log   /dev/stderr  main  if=$loggable;
-        {{- end }}
-
-        sendfile     on;
-        tcp_nopush   on;
-        resolver {{ .Values.global.dnsService }}.{{ .Values.global.dnsNamespace }}.svc.{{ .Values.global.clusterDomain }};
-
-        {{- with .Values.gateway.nginxConfig.httpSnippet }}
-        {{ . | nindent 2 }}
-        {{- end }}
-
-        server {
-          listen             8080;
-
-          {{- if .Values.gateway.basicAuth.enabled }}
-          auth_basic           "Loki";
-          auth_basic_user_file /etc/nginx/secrets/.htpasswd;
-          {{- end }}
-
-          location = / {
-            return 200 'OK';
-            auth_basic off;
-          }
-
-          location = /api/prom/push {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location = /api/prom/tail {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-          }
-
-          location ~ /api/prom/.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /prometheus/api/v1/alerts.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /prometheus/api/v1/rules.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location = /loki/api/v1/push {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location = /loki/api/v1/tail {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection "upgrade";
-          }
-
-          location ~ /loki/api/.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /admin/api/.* {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /compactor/.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /distributor/.* {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /ring {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /ingester/.* {
-            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /ruler/.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          location ~ /scheduler/.* {
-            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
-          }
-
-          {{- with .Values.gateway.nginxConfig.serverSnippet }}
-          {{ . | nindent 4 }}
-          {{- end }}
-        }
-      }
 
 serviceAccount:
   # -- Specifies whether a ServiceAccount should be created
@@ -615,7 +496,6 @@ write:
     requests:
       cpu: 300m
       memory: 2Gi
-
   # -- Grace period to allow the write to shutdown before it is killed. Especially for the ingestor,
   # this must be increased. It must be long enough so writes can be gracefully shutdown flushing/transferring
   # all data and to successfully leave the member ring on shutdown.
@@ -691,7 +571,6 @@ read:
     requests:
       cpu: 300m
       memory: 2Gi
-
   # -- Grace period to allow the read to shutdown before it is killed
   terminationGracePeriodSeconds: 30
   # -- Affinity for read pods. Passed through `tpl` and, thus, to be configured as string
@@ -746,7 +625,7 @@ gateway:
     # -- The gateway image repository
     repository: ironbank/opensource/nginx/nginx
     # -- The gateway image tag
-    tag: 1.21.6
+    tag: 1.23.1
     # -- The gateway image pull policy
     pullPolicy: IfNotPresent
   # -- The name of the PriorityClass for gateway pods
@@ -881,6 +760,8 @@ gateway:
         uwsgi_temp_path       /tmp/uwsgi_temp;
         scgi_temp_path        /tmp/scgi_temp;
 
+        proxy_http_version    1.1;
+
         default_type application/octet-stream;
         log_format   {{ .Values.gateway.nginxConfig.logFormat }}
 
@@ -930,6 +811,14 @@ gateway:
             proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
           }
 
+          location ~ /prometheus/api/v1/alerts.* {
+            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /prometheus/api/v1/rules.* {
+            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
           location = /loki/api/v1/push {
             proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
           }
@@ -941,6 +830,36 @@ gateway:
           }
 
           location ~ /loki/api/.* {
+            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          {{- if .Values.enterprise.enabled }}
+          location ~ /admin/api/.* {
+            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+          {{- end }}
+
+          location ~ /compactor/.* {
+            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /distributor/.* {
+            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /ring {
+            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /ingester/.* {
+            proxy_pass       http://{{ include "loki.writeFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /ruler/.* {
+            proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
+          }
+
+          location ~ /scheduler/.* {
             proxy_pass       http://{{ include "loki.readFullname" . }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain }}:3100$request_uri;
           }
 
@@ -1032,13 +951,16 @@ minio:
       port: 9000
       memory: 128Mi
 
+# ------------------------------------------------
+# Configuration for `monolith` single binary chart
+# ------------------------------------------------
 monolith:
   # -- Enable Loki chart in single binary mode.
   # Recommended for smaller or non-production environments
   enabled: true
   image:
     repository: registry1.dso.mil/ironbank/opensource/grafana/loki
-    tag: 2.6.0
+    tag: 2.6.1
     pullPolicy: IfNotPresent
     pullSecrets:
       - private-registry
@@ -1054,7 +976,7 @@ monolith:
   - name: tcp-memberlist
     port: 7946
     protocol: TCP
-  
+
   nameOverride: loki
   fullnameOverride: loki
 
