@@ -241,6 +241,8 @@ updateStrategy:
 
 serviceMonitor:
   enabled: false
+  scheme: ""
+  tlsConfig: {}
   interval: ""
   additionalLabels: {}
   annotations: {}

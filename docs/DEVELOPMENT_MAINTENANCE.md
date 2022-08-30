@@ -119,16 +119,24 @@ helm upgrade \
 ```
 loki:
   git:
-    tag: ""
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/loki.git
+    path: ./chart
+    tag: null
     branch: "my-branch-name-goes-here"
   enabled: true
   strategy: scalable
-  values:
-    global:
-      createGlobalConfig: true
-      existingSecretForConfig: "loki-config"
+  # values:
+  #   global:
+  #     createGlobalConfig: true
+  #     existingSecretForConfig: "loki-config"
 ```
+- We should also test `monolith` in place of `scalable`
+
 - Visit `https://grafana.bigbang.dev` and login
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 - Navigate to `configuration -> Data Sources -> Loki` and then click `Save & Test` to ensure Data Source changes can be saved successfully.
+
+- Visit `https://prometheus.bigbang.dev`
+- Go to `Status` then `Targets` and check that all targets are up
+- Specifically check for `loki-read` and `loki-write`
 
