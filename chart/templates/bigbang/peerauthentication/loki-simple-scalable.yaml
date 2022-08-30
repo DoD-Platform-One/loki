@@ -11,11 +11,6 @@ spec:
     matchLabels:
       {{- include "loki.matchLabels" . | nindent 6 }}
   portLevelMtls:
-    # Monitoring exception
-    {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") (.Values.monitoring.serviceMonitor.enabled) }}
-    "3100":
-      mode: PERMISSIVE
-    {{- end }}
     # GRPC exception to support Loki internal communication
     "9095":
       mode: PERMISSIVE

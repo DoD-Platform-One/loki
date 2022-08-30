@@ -9,12 +9,6 @@ spec:
     mode: {{ .Values.istio.mtls.mode }}
   selector:
     matchLabels:
-      app: {{ template "loki.name" . }}
+      {{- include "loki.matchLabels" . | nindent 6 }}
       release: {{ .Release.Name }}
-  {{- if and (eq .Values.istio.mtls.mode "STRICT") (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1") .Values.monolith.serviceMonitor.enabled }}
-  # Monitoring exception
-  portLevelMtls:
-    "3100":
-      mode: PERMISSIVE
-  {{- end }}
 {{- end }}

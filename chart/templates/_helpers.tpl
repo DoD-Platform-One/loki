@@ -114,10 +114,10 @@ Generated storage config for loki common config
 {{- define "loki.commonStorageConfig" -}}
 {{- if .Values.minio.enabled -}}
 s3:
-  endpoint: {{ include "loki.minio" $ }}
+  endpoint: minio.logging.svc
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
-  secret_access_key: supersecret
-  access_key_id: enterprise-logs
+  secret_access_key: minio123
+  access_key_id: minio
   s3forcepathstyle: true
   insecure: true
 {{- else if eq .Values.loki.storage.type "s3" -}}
@@ -244,9 +244,9 @@ Create the service endpoint including port for MinIO.
 loki netpol matchLabels -- Big Bang Addition
 */}}
 {{- define "loki.matchLabels" -}}
-  {{- if .Values.loki.enabled }}
+  {{- if .Values.monolith.enabled -}}
   app: loki
-  {{- else }}
+  {{- else -}}
   {{ include "loki.selectorLabels" . | nindent 2 }}
   {{- end }}
 {{- end }}

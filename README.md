@@ -1,6 +1,6 @@
 # loki-simple-scalable
 
-![Version: 1.8.10-bb.0](https://img.shields.io/badge/Version-1.8.10--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
+![Version: 1.8.10-bb.1](https://img.shields.io/badge/Version-1.8.10--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -90,7 +90,7 @@ helm install loki-simple-scalable chart/
 | enterprise.externalLicenseName | string | `nil` | Name of external licesne secret to use |
 | enterprise.cluster_name | string | `""` | Name of cluster, must match cluster ID/Name on Grafana License |
 | enterprise.adminApi | object | `{"enabled":true}` | If enabled, the correct admin_client storage will be configured. If disabled while running enterprise, make sure auth is set to `type: trust`, or that `auth_enabled` is set to `false`. |
-| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled | ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ default .Release.Name .Values.enterprise.cluster_name | quote }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
+| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ default .Release.Name .Values.enterprise.cluster_name \| quote }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
 | enterprise.image.tag | string | `"v1.5.0"` | Overrides the image tag whose default is the chart's appVersion |
@@ -267,25 +267,10 @@ helm install loki-simple-scalable chart/
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"}]` | Buckets to be provisioned to for tenant |
 | minio.tenant.users | list | `[{"name":"minio-user"}]` | Users to to be provisioned to for tenant |
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
-| monolith | object | `{"enabled":true,"extraPorts":[{"name":"grpc","port":9095,"protocol":"TCP","targetPort":"grpc"},{"name":"tcp-memberlist","port":7946,"protocol":"TCP"}],"fullnameOverride":"loki","image":{"pullPolicy":"IfNotPresent","pullSecrets":["private-registry"],"repository":"registry1.dso.mil/ironbank/opensource/grafana/loki","tag":"2.6.1"},"livenessProbe":{"initialDelaySeconds":80},"nameOverride":"loki","persistence":{"accessModes":["ReadWriteOnce"],"enabled":true,"size":"12Gi"},"readinessProbe":{"initialDelaySeconds":80},"resources":{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"service":{"labels":{"app":"loki","release":"logging-loki"}}}` | ---------------------------------------------- |
+| monolith | object | `{"containerSecurityContext":{"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true},"enabled":true,"extraPorts":[{"name":"grpc","port":9095,"protocol":"TCP","targetPort":"grpc"},{"name":"tcp-memberlist","port":7946,"protocol":"TCP"}],"fullnameOverride":"loki","image":{"pullPolicy":"IfNotPresent","pullSecrets":["private-registry"],"repository":"registry1.dso.mil/ironbank/opensource/grafana/loki","tag":"2.6.1"},"livenessProbe":{"initialDelaySeconds":80},"nameOverride":"loki","persistence":{"accessModes":["ReadWriteOnce"],"enabled":true,"size":"12Gi"},"readinessProbe":{"initialDelaySeconds":80},"resources":{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"service":{"labels":{"app":"loki","release":"logging-loki"}}}` | ---------------------------------------------- |
 | monolith.enabled | bool | `true` | Enable Loki chart in single binary mode. Recommended for smaller or non-production environments |
 | monolith.extraPorts[0] | object | `{"name":"grpc","port":9095,"protocol":"TCP","targetPort":"grpc"}` | Extra ports for loki pods. Additional ports exposed to support HA communication |
 | monolith.extraPorts[1] | object | `{"name":"tcp-memberlist","port":7946,"protocol":"TCP"}` | Extra ports for loki pods. Additional ports exposed to support memberlist |
-| monolith.nameOverride | string | `"loki"` |  |
-| monolith.fullnameOverride | string | `"loki"` |  |
-| monolith.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
-| monolith.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| monolith.service.labels.app | string | `"loki"` |  |
-| monolith.service.labels.release | string | `"logging-loki"` |  |
-| monolith.readinessProbe.initialDelaySeconds | int | `80` |  |
-| monolith.livenessProbe.initialDelaySeconds | int | `80` |  |
-| monolith.resources.limits.cpu | string | `"100m"` |  |
-| monolith.resources.limits.memory | string | `"256Mi"` |  |
-| monolith.resources.requests.cpu | string | `"100m"` |  |
-| monolith.resources.requests.memory | string | `"256Mi"` |  |
-| monolith.persistence.enabled | bool | `true` |  |
-| monolith.persistence.accessModes[0] | string | `"ReadWriteOnce"` |  |
-| monolith.persistence.size | string | `"12Gi"` |  |
 | domain | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
