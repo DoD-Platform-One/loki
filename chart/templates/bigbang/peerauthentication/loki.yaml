@@ -9,6 +9,6 @@ spec:
     mode: {{ .Values.istio.mtls.mode }}
   selector:
     matchLabels:
-      {{- include "loki.matchLabels" . | nindent 6 }}
       release: {{ .Release.Name }}
+      {{- include "loki.matchLabels" . | nindent 4 }}
 {{- end }}

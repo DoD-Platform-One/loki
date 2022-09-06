@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.10-bb.2]
+### Changed
+- Re-adding changes that didn't seem to persist from previous update
+- Cleaning up NetworkPolicies, kube-api egress isn't required
+- gluon 0.3.0 update wooo
+
 ## [1.8.10-bb.1]
 ### Changed
 - Enabled servicemonitor/podmonitor for TLS scraping

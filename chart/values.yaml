@@ -308,7 +308,8 @@ enterprise:
     # -- Additional labels for the `tokengen` Job
     labels: {}
     # -- Additional annotations for the `tokengen` Job
-    annotations: {}
+    annotations:
+      sidecar.istio.io/inject: "false"
     # -- Additional volumes for Pods
     extraVolumes: []
     # -- Tolerations for tokengen Job
@@ -321,6 +322,8 @@ enterprise:
       runAsGroup: 10001
       runAsUser: 10001
       fsGroup: 10001
+    # -- Create Secret Job Image to utilize
+    image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
 
 serviceAccount:
   # -- Specifies whether a ServiceAccount should be created
@@ -1022,7 +1025,6 @@ istio:
 
 networkPolicies:
   enabled: false
-  controlPlaneCidr: 0.0.0.0/0
 
 bbtests:
   enabled: false

@@ -7,9 +7,9 @@ dependencies:
   version: 0.2.2
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
-  version: 0.2.10
+  version: 0.3.0
 - name: loki
   repository: file://./deps/loki
   version: 2.14.1
-digest: sha256:2e7a69b5dd406f5ab128bd2b118ab3e4cdeb43bb30e8370dd40fcf973cbbec53
-generated: "2022-08-23T12:23:50.0982818-06:00"
+digest: sha256:ec956df3386f91983ef8c3b1695c384c690061dd3875ad045a50068f50d79694
+generated: "2022-08-31T15:06:37.2577078-06:00"

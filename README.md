@@ -1,6 +1,6 @@
 # loki-simple-scalable
 
-![Version: 1.8.10-bb.1](https://img.shields.io/badge/Version-1.8.10--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
+![Version: 1.8.10-bb.2](https://img.shields.io/badge/Version-1.8.10--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -90,22 +90,23 @@ helm install loki-simple-scalable chart/
 | enterprise.externalLicenseName | string | `nil` | Name of external licesne secret to use |
 | enterprise.cluster_name | string | `""` | Name of cluster, must match cluster ID/Name on Grafana License |
 | enterprise.adminApi | object | `{"enabled":true}` | If enabled, the correct admin_client storage will be configured. If disabled while running enterprise, make sure auth is set to `type: trust`, or that `auth_enabled` is set to `false`. |
-| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ default .Release.Name .Values.enterprise.cluster_name \| quote }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
+| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled | ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ default .Release.Name .Values.enterprise.cluster_name | quote }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
 | enterprise.image.tag | string | `"v1.5.0"` | Overrides the image tag whose default is the chart's appVersion |
 | enterprise.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
-| enterprise.tokengen | object | `{"adminTokenSecret":"gel-admin-token","annotations":{},"enabled":true,"env":[],"extraArgs":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `tokengen` target |
+| enterprise.tokengen | object | `{"adminTokenSecret":"gel-admin-token","annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraVolumeMounts":[],"extraVolumes":[],"image":"registry1.dso.mil/ironbank/big-bang/base:2.0.0","labels":{},"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `tokengen` target |
 | enterprise.tokengen.enabled | bool | `true` | Whether the job should be part of the deployment |
 | enterprise.tokengen.adminTokenSecret | string | `"gel-admin-token"` | Name of the secret to store the admin token in |
 | enterprise.tokengen.extraArgs | list | `[]` | Additional CLI arguments for the `tokengen` target |
 | enterprise.tokengen.env | list | `[]` | Additional Kubernetes environment |
 | enterprise.tokengen.labels | object | `{}` | Additional labels for the `tokengen` Job |
-| enterprise.tokengen.annotations | object | `{}` | Additional annotations for the `tokengen` Job |
+| enterprise.tokengen.annotations | object | `{"sidecar.istio.io/inject":"false"}` | Additional annotations for the `tokengen` Job |
 | enterprise.tokengen.extraVolumes | list | `[]` | Additional volumes for Pods |
 | enterprise.tokengen.tolerations | list | `[]` | Tolerations for tokengen Job |
 | enterprise.tokengen.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | enterprise.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
+| enterprise.tokengen.image | string | `"registry1.dso.mil/ironbank/big-bang/base:2.0.0"` | Create Secret Job Image to utilize |
 | serviceAccount.create | bool | `true` | Specifies whether a ServiceAccount should be created |
 | serviceAccount.name | string | `nil` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template |
 | serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the service account |
@@ -275,7 +276,6 @@ helm install loki-simple-scalable chart/
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` |  |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
