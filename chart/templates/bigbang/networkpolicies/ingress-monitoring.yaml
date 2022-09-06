@@ -5,7 +5,9 @@ metadata:
   name: ingress-monitoring
   namespace: {{ .Release.Namespace }}
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      {{ include "loki.matchLabels" . | nindent 4 }}
   policyTypes:
   - Ingress
   ingress:

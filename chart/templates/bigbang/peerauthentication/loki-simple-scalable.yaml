@@ -9,7 +9,7 @@ spec:
     mode: {{ .Values.istio.mtls.mode }}
   selector:
     matchLabels:
-      {{- include "loki.matchLabels" . | nindent 6 }}
+      {{- include "loki.matchLabels" . | nindent 4 }}
   portLevelMtls:
     # GRPC exception to support Loki internal communication
     "9095":

@@ -67,7 +67,7 @@ spec:
             {{- end }}
       containers:
         - name: create-secret
-          image: bitnami/kubectl
+          image: {{ .Values.enterprise.tokengen.image }}
           imagePullPolicy: {{ .Values.loki.image.pullPolicy }}
           command:
             - /bin/bash
@@ -86,7 +86,7 @@ spec:
       restartPolicy: OnFailure
       serviceAccount: {{ template "enterprise-logs.tokengenFullname" . }}
       serviceAccountName: {{ template "enterprise-logs.tokengenFullname" . }}
-      {{- with .Values.gel.tokengen.tolerations }}
+      {{- with .Values.enterprise.tokengen.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
