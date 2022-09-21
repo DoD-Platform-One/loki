@@ -43,7 +43,7 @@ promtail:
 
 
 ## Create Grafana Datasource
-* Navigate to https://grafana.bigbang.dev/a/grafana-enterprise-logs-app?path=access-policies and create an access policy, ensuring to tick the box that you intend to create a data source with this polcy. It should auto populate the required scopes.
+* Navigate to https://grafana.bigbang.dev/a/grafana-enterprise-logs-app?path=access-policies and create an access policy, ensuring to tick the box that you intend to create a data source with this policy. It should auto populate the required scopes.
 * Click 'Add Token', and then click 'Create', and then click 'Create a datasource' which will create a new datasource pre-configured to use the token.
 
 

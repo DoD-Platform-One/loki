@@ -21,11 +21,11 @@ git checkout chart/dashboards
 git checkout chart/templates/tests
 ```
 
-## Update dependencies  
-  
-Typically, the `--strategy=force-delete-replace` is useful to "heavy handidly" bring in dep changes which may need to be reviewed. 
+## Update dependencies
+
+Typically, the `--strategy=force-delete-replace` is useful to "heavy handidly" bring in dep changes which may need to be reviewed.
 ```shell
-cd chart/deps 
+cd chart/deps
 kpt pkg update minio@$LATEST_BB_PACKAGE_TAG_VERSION$ --strategy=force-delete-replace
 kpt pkg update loki@loki-$LATEST_LOKI_CHART_VERSION$ --strategy=force-delete-replace
 ```
@@ -63,7 +63,7 @@ Pull assets and commit the binaries as well as the Chart.lock file that was gene
 ```
 export HELM_EXPERIMENTAL_OCI=1
 helm dependency update ./chart
-``` 
+```
 
 ## Update main chart
 
@@ -71,7 +71,7 @@ helm dependency update ./chart
 
 - update loki `version` and `appVersion`
 - Ensure Big Bang version suffix is appended to chart version
-- Ensure minio, gluon, and loki dependencies are present and up to date 
+- Ensure minio, gluon, and loki dependencies are present and up to date
 ```yaml
 dependencies:
   - name: minio-instance
@@ -99,7 +99,7 @@ dependencies:
 - add cypress testing configuration and/or tests _if necessary_.
 
 # Modifications made to upstream
-This is a high-level list of modifitations that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
+This is a high-level list of modifications that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
 
 ```chart/values.yaml```
 - line 16, Ensure nameOverride is set to `logging-loki`
@@ -114,7 +114,7 @@ imagePullSecrets:
   - name: private-registry
 ```
 
-line 32, Ensure `loki.image` section points to registry1 image and correct tag 
+line 32, Ensure `loki.image` section points to registry1 image and correct tag
 ```
   image:
     # -- The Docker registry
@@ -125,7 +125,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: X.X.X
 ```
 
-- line 107, Ensure `ingester` config is present 
+- line 107, Ensure `ingester` config is present
 ```
     ingester:
       chunk_target_size: 196608
@@ -152,7 +152,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 229, Ensure `storage_config.boltdb_shipper` configuration is present 
+- line 229, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -162,7 +162,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 262, Ensure line for `enterprise.cluster_name` is present, this is a BB added value 
+- line 262, Ensure line for `enterprise.cluster_name` is present, this is a BB added value
 ```
 ...
   # -- Name of cluster, must match cluster ID/Name on Grafana License
@@ -176,7 +176,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     ...
 ```
 
-- line 287 , Ensure `enterprise.image` is pointed to registry1 image 
+- line 287 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -187,7 +187,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 312, ensure `tolerations` value is present for the `tokengen` job 
+- line 312, ensure `tolerations` value is present for the `tokengen` job
 ```
   tokengen:
     ...
@@ -204,16 +204,16 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
 ```
 
 - line 343, Ensure all monitoring sub-components are set to `enabled: false`
-Including the added `monitoring.enabled` value 
+Including the added `monitoring.enabled` value
 ```
-monitoring: 
+monitoring:
   # -- Enable BigBang integration of Monitoring components
   enabled: false
 ```
 
 line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 489, write pod resources set 
+- line 489, write pod resources set
 ```
   resources:
     limits:
@@ -224,7 +224,7 @@ line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set 
       memory: 2Gi
 ```
 
-- line 564, read pod resources set 
+- line 564, read pod resources set
 ```
   resources:
     limits:
@@ -235,7 +235,7 @@ line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set 
       memory: 2Gi
 ```
 
-- line 599 `gateway.enabled` set to `false` by default 
+- line 599 `gateway.enabled` set to `false` by default
 
 - line 619, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
@@ -370,7 +370,7 @@ paired with `{{- end }}` at the bottom
 {{- $default := "loki" }
 ```
 
-- line 115 ensure the following block for minio looks like: 
+- line 115 ensure the following block for minio looks like:
 ```
 {{- if .Values.minio.enabled -}}
 s3:
@@ -382,7 +382,7 @@ s3:
   insecure: true
 ```
 
-- At the very bottom ensure this function is present 
+- At the very bottom ensure this function is present
 ```
 {{/*
 loki netpol matchLabels -- Big Bang Addition
@@ -409,7 +409,7 @@ paired with `{{- end }}` at the bottom
         {{- toYaml . | nindent 8 }}
       {{- end }}
 ```
-- Replace enterprise tokengen image for the `create-secret` container with our new `enterpirse.tokengen.image` value from above
+- Replace enterprise tokengen image for the `create-secret` container with our new `enterprise.tokengen.image` value from above
 ```
       containers:
         - name: create-secret
@@ -418,7 +418,7 @@ paired with `{{- end }}` at the bottom
 
 # Testing new Loki Version
 
-### Deploy Loki Scalable as a part of BigBang  
+### Deploy Loki Scalable as a part of BigBang
 ```
 helm upgrade \
   --install bigbang ./bigbang/chart \
@@ -452,7 +452,7 @@ loki:
 - Navigate to `configuration -> Data Sources -> Loki` and then click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 
-### Deploy Loki Monolith as a part of BigBang  
+### Deploy Loki Monolith as a part of BigBang
 ```
 helm upgrade \
   --install bigbang ./bigbang/chart \
