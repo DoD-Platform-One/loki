@@ -10,13 +10,14 @@ This example assumes external dependencies of:
 loki:
   strategy: "scalable"
   objectStorage:
+    #If using Grafana enterprise, dropping the `https://` is required
     endpoint: https://s3.us-gov-west-1.amazonaws.com
     region: us-gov-west-1
     bucketnames:
       # Loki since their 1.0 Chart release allows you to specify separate buckets.
-      chunks: loki-logs
-      ruler: loki-logs
-      admin: loki-admin
+      chunks: loki-logs  #For storage of log data in 'chunks'
+      ruler: loki-logs   #For Loki configured rules https://grafana.com/docs/loki/latest/rules/
+      admin: loki-admin  #For Grafana Enterprise configuration/persistence only
   values:
     loki:
       memcached:
@@ -77,10 +78,9 @@ If you wish to use the monolith chart in production it is recommended that you i
 loki:
   strategy: monolith
   values:
-    monlith:
+    singleBinary:
       persistence:
-        enabled: true
-	size: 40Gi
+	      size: 40Gi
 ```
 
 ## New Config Value Options

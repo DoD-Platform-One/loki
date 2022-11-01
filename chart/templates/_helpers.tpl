@@ -7,6 +7,36 @@ Expand the name of the chart.
 {{- end }}
 
 {{/*
+singleBinary fullname
+*/}}
+{{- define "loki.singleBinaryFullname" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return if deployment mode is simple scalable
+*/}}
+{{- define "loki.deployment.isScalable" -}}
+  {{- eq (include "loki.isUsingObjectStorage" . ) "true" }}
+{{- end -}}
+
+{{/*
+Return if deployment mode is single binary
+*/}}
+{{- define "loki.deployment.isSingleBinary" -}}
+  {{- eq (include "loki.isUsingObjectStorage" . ) "false" }}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
@@ -98,7 +128,6 @@ Docker image name for enterprise logs
 {{- define "loki.enterpriseImage" -}}
 {{- $dict := dict "service" .Values.enterprise.image "global" .Values.global.image "defaultVersion" .Values.enterprise.version -}}
 {{- include "loki.baseImage" $dict -}}
-{{/* {{- printf "foo" -}} */}}
 {{- end -}}
 
 {{/*
@@ -106,6 +135,14 @@ Docker image name
 */}}
 {{- define "loki.image" -}}
 {{- if .Values.enterprise.enabled -}}{{- include "loki.enterpriseImage" . -}}{{- else -}}{{- include "loki.lokiImage" . -}}{{- end -}}
+{{- end -}}
+
+{{/*
+Docker image name for kubectl container
+*/}}
+{{- define "loki.kubectlImage" -}}
+{{- $dict := dict "service" .Values.kubectlImage "global" .Values.global.image "defaultVersion" "latest" -}}
+{{- include "loki.baseImage" $dict -}}
 {{- end -}}
 
 {{/*
@@ -141,6 +178,21 @@ s3:
   {{- end }}
   s3forcepathstyle: {{ .s3ForcePathStyle }}
   insecure: {{ .insecure }}
+  {{- with .http_config}}
+  http_config:
+    {{- with .idle_conn_timeout }}
+    idle_conn_timeout: {{ . }}
+    {{- end}}
+    {{- with .response_header_timeout }}
+    response_header_timeout: {{ . }}
+    {{- end}}
+    {{- with .insecure_skip_verify }}
+    insecure_skip_verify: {{ . }}
+    {{- end}}
+    {{- with .ca_file}}
+    ca_file: {{ . }}
+    {{- end}}
+  {{- end }}
 {{- end -}}
 {{- else if eq .Values.loki.storage.type "gcs" -}}
 {{- with .Values.loki.storage.gcs }}
@@ -151,7 +203,7 @@ gcs:
   enable_http2: {{ .enableHttp2}}
 {{- end -}}
 {{- else -}}
-{{- with .Values.loki.storage.local }}
+{{- with .Values.loki.storage.filesystem }}
 filesystem:
   chunks_directory: {{ .chunks_directory }}
   rules_directory: {{ .rules_directory }}
@@ -163,12 +215,39 @@ filesystem:
 Storage config for ruler
 */}}
 {{- define "loki.rulerStorageConfig" -}}
-{{- if or .Values.minio.enabled (eq .Values.loki.storage.type "s3") -}}
+{{- if .Values.minio.enabled -}}
 s3:
   bucketnames: {{ $.Values.loki.storage.bucketNames.ruler }}
+{{- else if eq .Values.loki.storage.type "s3" -}}
+{{- with .Values.loki.storage.s3 }}
+s3:
+  {{- with .s3 }}
+  s3: {{ . }}
+  {{- end }}
+  {{- with .endpoint }}
+  endpoint: {{ . }}
+  {{- end }}
+  {{- with .region }}
+  region: {{ . }}
+  {{- end}}
+  bucketnames: {{ $.Values.loki.storage.bucketNames.ruler }}
+  {{- with .secretAccessKey }}
+  secret_access_key: {{ . }}
+  {{- end }}
+  {{- with .accessKeyId }}
+  access_key_id: {{ . }}
+  {{- end }}
+  s3forcepathstyle: {{ .s3ForcePathStyle }}
+  insecure: {{ .insecure }}
+{{- end -}}
 {{- else if eq .Values.loki.storage.type "gcs" -}}
+{{- with .Values.loki.storage.gcs }}
 gcs:
   bucket_name: {{ $.Values.loki.storage.bucketNames.ruler }}
+  chunk_buffer_size: {{ .chunkBufferSize }}
+  request_timeout: {{ .requestTimeout }}
+  enable_http2: {{ .enableHttp2}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -240,13 +319,43 @@ Create the service endpoint including port for MinIO.
   {{- end -}}
 {{- end -}}
 
-{{/*
-loki netpol matchLabels -- Big Bang Addition
-*/}}
-{{- define "loki.matchLabels" -}}
-  {{- if .Values.monolith.enabled -}}
-  {{ "app: loki" | indent 2 }}
-  {{- else -}}
-  {{ include "loki.selectorLabels" . | nindent 2 }}
-  {{- end }}
+{{/* Determine if deployment is using object storage */}}
+{{- define "loki.isUsingObjectStorage" -}}
+{{- or (eq .Values.loki.storage.type "gcs") (eq .Values.loki.storage.type "s3") (eq .Values.loki.storage.type "azure") -}}
+{{- end -}}
+
+{{/* Configure the correct name for the memberlist service */}}
+{{- define "loki.memberlist" -}}
+{{ include "loki.name" . }}-memberlist
+{{- end -}}
+
+{{/* Determine the public host for the Loki cluster */}}
+{{- define "loki.host" -}}
+{{- $isSingleBinary := eq (include "loki.deployment.isSingleBinary" .) "true" -}}
+{{- $url := printf "%s.%s.svc.%s" (include "loki.gatewayFullname" .) .Release.Namespace .Values.global.clusterDomain }}
+{{- if and $isSingleBinary (not .Values.gateway.enabled)  }}
+  {{- $url = printf "%s.%s.svc.%s:3100" (include "loki.singleBinaryFullname" .) .Release.Namespace .Values.global.clusterDomain }}
 {{- end }}
+{{- printf "%s" $url -}}
+{{- end -}}
+
+{{/* Determine the public endpoint for the Loki cluster */}}
+{{- define "loki.address" -}}
+{{- printf "http://%s" (include "loki.host" . ) -}}
+{{- end -}}
+
+{{/* Name of the cluster */}}
+{{- define "loki.clusterName" -}}
+{{- $name := .Values.enterprise.cluster_name | default .Release.Name }}
+{{- printf "%s" $name -}}
+{{- end -}}
+
+{{/* Name of kubernetes secret to persist GEL admin token to */}}
+{{- define "enterprise-logs.adminTokenSecret" }}
+{{- .Values.enterprise.adminTokenSecret | default (printf "%s-admin-token" (include "loki.name" . )) -}}
+{{- end -}}
+
+{{/* Name of kubernetes secret to persist canary credentials in */}}
+{{- define "enterprise-logs.canarySecret" }}
+{{- .Values.enterprise.canarySecret | default (printf "%s-canary-secret" (include "loki.name" . )) -}}
+{{- end -}}

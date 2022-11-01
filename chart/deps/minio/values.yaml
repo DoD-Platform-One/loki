@@ -84,7 +84,7 @@ tenant:
   ## Registry location and Tag to download MinIO Server image
   image:
     repository: registry1.dso.mil/ironbank/opensource/minio/minio
-    tag: RELEASE.2022-07-08T00-05-23Z
+    tag: RELEASE.2022-09-25T15-44-53Z
     pullPolicy: IfNotPresent
   ## Customize namespace for tenant deployment
   #namespace: default
@@ -95,6 +95,10 @@ tenant:
   ## If a scheduler is specified here, Tenant pods will be dispatched by specified scheduler.
   ## If not specified, the Tenant pods will be dispatched by default scheduler.
   scheduler: { }
+  ## Secret name that contains additional environment variable configurations.
+  ## The secret is expected to have a key named config.env containing environment variables exports.
+  configuration:
+    name: minio1-env-configuration
   ## Specification for MinIO Pool(s) in this Tenant.
   pools:
     ## Servers specifies the number of MinIO Tenant Pods / Servers in this pool.
@@ -140,6 +144,8 @@ tenant:
         fsGroup: 1001
         runAsNonRoot: true
       topologySpreadConstraints: [ ]
+      ## Configure Runtime Class
+      # runtimeClassName: ""
   ## Mount path where PV will be mounted inside container(s).
   mountPath: /export
   ## Sub path inside Mount path where MinIO stores data.
@@ -170,6 +176,7 @@ tenant:
   s3:
     ## This feature is turned off by default
     bucketDNS: false
+    domains: { }
   ## List of bucket names to create during tenant provisioning
   buckets: [ ]
   ## List of secret names to use for generating MinIO users during tenant provisioning
@@ -308,6 +315,7 @@ tenant:
     annotations: { }
     labels: { }
     nodeSelector: { }
+    tolerations: [ ]
     affinity:
       nodeAffinity: { }
       podAffinity: { }

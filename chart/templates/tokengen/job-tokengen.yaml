@@ -1,4 +1,88 @@
-{{ if and .Values.enterprise.tokengen.enabled .Values.enterprise.enabled }}
+{{- $isSimpleScalable := eq (include "loki.deployment.isScalable" .) "true" -}}
+{{ if and $isSimpleScalable .Values.enterprise.tokengen.enabled .Values.enterprise.enabled }}
+---
+{{- if .Values.networkPolicies.enabled }}
+{{- if .Values.minio.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tokengen-ingress-minio
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            {{- include "enterprise-logs.tokengenLabels" . | nindent 14 }}
+            {{- with .Values.enterprise.tokengen.labels }}
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+      ports:
+        - port: 9000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tokengen-egress-minio
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            {{- include "enterprise-logs.tokengenLabels" . | nindent 14 }}
+            {{- with .Values.enterprise.tokengen.labels }}
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+      ports:
+        - port: 9000
+---
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-egress-tokengen-job
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  egress:
+  - to:
+    - ipBlock:
+        cidr: {{ .Values.networkPolicies.controlPlaneCidr }}
+        {{- if eq .Values.networkPolicies.controlPlaneCidr "0.0.0.0/0" }}
+        # ONLY Block requests to AWS metadata IP
+        except:
+        - 169.254.169.254/32
+        {{- end }}
+  podSelector:
+    matchLabels:
+      {{- include "enterprise-logs.tokengenLabels" . | nindent 6 }}
+      {{- with .Values.enterprise.tokengen.labels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  policyTypes:
+  - Egress
+---
+{{- end }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -36,9 +120,7 @@ spec:
         {{- toYaml .Values.enterprise.tokengen.securityContext | nindent 8 }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-      {{- range .Values.imagePullSecrets }}
-        - name: {{ . }}
-      {{- end }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
       initContainers:
         - name: loki
@@ -67,12 +149,13 @@ spec:
             {{- end }}
       containers:
         - name: create-secret
-          image: {{ .Values.enterprise.tokengen.image }}
-          imagePullPolicy: {{ .Values.loki.image.pullPolicy }}
+          image: {{ include "loki.kubectlImage" . }}
+          imagePullPolicy: {{ .Values.kubectlImage.pullPolicy }}
           command:
             - /bin/bash
             - -euc
-            - kubectl create secret generic {{ .Values.enterprise.tokengen.adminTokenSecret }} --from-file=token=/shared/admin-token --from-literal=grafana-token="$(base64 <(echo :$(cat /shared/admin-token)))"
+            - |
+              kubectl create secret generic "{{ include "enterprise-logs.adminTokenSecret" . }}" --from-file=token=/shared/admin-token
           volumeMounts:
             {{- if .Values.enterprise.tokengen.extraVolumeMounts }}
               {{ toYaml .Values.enterprise.tokengen.extraVolumeMounts | nindent 12 }}

@@ -1,4 +1,6 @@
-{{- if not (index .Values "read" "disabled") }}
+{{- $isSimpleScalable := eq (include "loki.deployment.isScalable" .) "true" -}}
+{{ if $isSimpleScalable }}
+---
 apiVersion: v1
 kind: Service
 metadata:

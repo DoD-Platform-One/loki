@@ -1,18 +1,20 @@
-{{- if not (index .Values "read" "disabled") }}
+{{- $isSimpleScalable := eq (include "loki.deployment.isScalable" .) "true" -}}
+{{- if $isSimpleScalable }}
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "loki.readFullname" . }}
   labels:
-    {{- include "loki.readLabels" . | nindent 4 }}
     app.kubernetes.io/part-of: memberlist
+    {{- include "loki.readLabels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.read.replicas }}
   podManagementPolicy: Parallel
   updateStrategy:
     rollingUpdate:
       partition: 0
-  serviceName: {{ include "loki.readFullname" . }}-headless
+  serviceName: {{ printf "%s-headless" (include "loki.readFullname" .) }}
   revisionHistoryLimit: {{ .Values.loki.revisionHistoryLimit }}
   {{- if (semverCompare ">= 1.23-0" .Capabilities.KubeVersion.Version) }}
   {{/*
@@ -37,13 +39,14 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
+        app.kubernetes.io/part-of: memberlist
         {{- include "loki.readSelectorLabels" . | nindent 8 }}
         {{- with .Values.read.selectorLabels }}
         {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
-        app.kubernetes.io/part-of: memberlist
     spec:
       serviceAccountName: {{ include "loki.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -126,8 +129,8 @@ spec:
         {{- if .Values.enterprise.enabled }}
         - name: license
           secret:
-          {{- if .Values.useExternalLicense }}
-            secretName: {{ .Values.externalLicenseName }}
+          {{- if .Values.enterprise.useExternalLicense }}
+            secretName: {{ .Values.enterprise.externalLicenseName }}
           {{- else }}
             secretName: enterprise-logs-license
           {{- end }}

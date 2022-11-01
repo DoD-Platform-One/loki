@@ -1,4 +1,4 @@
-{{- if and .Values.istio.enabled  (not (index .Values "write" "disabled")) }}
+{{- if and .Values.istio.enabled  (eq (include "loki.deployment.isSingleBinary" .) "false") }}
 apiVersion: "security.istio.io/v1beta1"
 kind: PeerAuthentication
 metadata:
@@ -9,7 +9,7 @@ spec:
     mode: {{ .Values.istio.mtls.mode }}
   selector:
     matchLabels:
-      {{- include "loki.matchLabels" . | nindent 4 }}
+      {{- include "loki.selectorLabels" . | nindent 6 }}
   portLevelMtls:
     # GRPC exception to support Loki internal communication
     "9095":

@@ -1,4 +1,4 @@
-{{- if and .Values.istio.enabled  .Values.monolith.enabled }}
+{{- if and .Values.istio.enabled  (eq (include "loki.deployment.isSingleBinary" .) "true") }}
 apiVersion: "security.istio.io/v1beta1"
 kind: PeerAuthentication
 metadata:
@@ -10,5 +10,5 @@ spec:
   selector:
     matchLabels:
       release: {{ .Release.Name }}
-      {{- include "loki.matchLabels" . | nindent 4 }}
+      {{- include "loki.selectorLabels" . | nindent 6 }}
 {{- end }}
