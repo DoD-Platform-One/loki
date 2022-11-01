@@ -5,9 +5,7 @@ metadata:
   name: allow-istiod-egress-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  podSelector:
-    matchLabels:
-        {{- include "loki.selectorLabels" . | nindent 6 }}
+  podSelector: {}
   policyTypes:
   - Egress
   egress:
