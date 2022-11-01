@@ -48,7 +48,7 @@ promtail:
 
 
 # Future Considerations
-* Grafana Enterprise plugin should be configured automatically, [which is possible](https://grafana.com/docs/grafana/latest/administration/provisioning/#plugins), but enterprise plugin properites are undocumented and the admin token is not known until a `post-install` job is run.
+* Grafana Enterprise plugin should be configured automatically, [which is possible](https://grafana.com/docs/grafana/latest/administration/provisioning/#plugins), but enterprise plugin properites are undocumented and the admin token is not known until a `post-install` job is run. This job is called `tokengen` in the `logging` namespace, once complete this token is stored in secret `logging-loki-admin-token`.
 * Promtail configuration to set auth and tenant info should be automatic, but this depends on the addition of a job to bootstrap a tenant and create a policy plus token.
 * [Loki VirtualService for external cluster access.](https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/loki/-/merge_requests/22)
 * Memberlist seems to be finicky in AWS with atypical internal subnets. [See Here](https://github.com/grafana/helm-charts/issues/157)
@@ -94,12 +94,13 @@ loki:
     loki:
       storage:
         endpoint: minio.logging.svc.cluster.local
-        bucketnames:
+        bucketNames:
           chunks: loki-logs
-          admin: loki-amin
+          admin: loki-admin
         access_key_id: minio
         secret_access_key: minio123
 
+# Get value of `logging-loki-admin-token` secret once loki with `enterprise.enabled=true` rolls out and `tokengen` job completes.
 # promtail:
 #   enabled: true
 #   values:

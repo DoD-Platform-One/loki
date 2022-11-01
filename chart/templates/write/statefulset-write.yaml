@@ -1,4 +1,6 @@
-{{- if not (index .Values "write" "disabled") }}
+{{- $isSimpleScalable := eq (include "loki.deployment.isScalable" .) "true" -}}
+{{- if $isSimpleScalable }}
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -36,6 +38,7 @@ spec:
         app.kubernetes.io/part-of: memberlist
     spec:
       serviceAccountName: {{ include "loki.serviceAccountName" . }}
+      automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -114,8 +117,8 @@ spec:
         {{- if .Values.enterprise.enabled }}
         - name: license
           secret:
-          {{- if .Values.useExternalLicense }}
-            secretName: {{ .Values.externalLicenseName }}
+          {{- if .Values.enterprise.useExternalLicense }}
+            secretName: {{ .Values.enterprise.externalLicenseName }}
           {{- else }}
             secretName: enterprise-logs-license
           {{- end }}

@@ -1,9 +1,9 @@
-enterprise: 
+enterprise:
   enabled: false
   adminApi:
     enabled: false
   useExternalLicense: false
- 
+
   config: |
     admin_client:
       storage:
@@ -15,7 +15,7 @@ enterprise:
     cluster_name: loki-logs
 
 loki:
-  auth_enabled: false
+  authEnabled: false
 
   commonConfig:
     path_prefix: /var/loki

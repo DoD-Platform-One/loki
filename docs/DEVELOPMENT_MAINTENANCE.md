@@ -1,14 +1,14 @@
 # To upgrade the Loki Package
 
-Check the [upstream changelog](https://grafana.com/docs/loki/latest/upgrading/) and the [helm chart upgrade notes](https://github.com/grafana/helm-charts/tree/main/charts/loki#upgrading).
+Check the [upstream changelog](https://grafana.com/docs/loki/latest/upgrading/) and the [helm chart upgrade notes](https://github.com/grafana/loki/tree/helm-loki-3.2.0/production/helm/loki#upgrading-from-v2x).
 
 # Upgrading
 
-Find the latest version of `loki-simple-scalable` that matches the latest version in IronBank that Renovate has identified from here: https://github.com/grafana/helm-charts/tree/main/charts/loki-simple-scalable
+Find the latest version of the `loki` image that matches the latest version in IronBank that Renovate has identified from here: https://github.com/grafana/loki/tree/helm-loki-3.2.0/production/helm/loki
 
 Run a KPT update against the main chart folder:
 ```shell
-kpt pkg update chart@loki-simple-scalable-1.8.10 --strategy force-delete-replace
+kpt pkg update chart@helm-loki-3.2.1 --strategy force-delete-replace
 ```
 
 Restore all BigBang added templates and tests:
@@ -32,30 +32,8 @@ kpt pkg update loki@loki-$LATEST_LOKI_CHART_VERSION$ --strategy=force-delete-rep
 
 ## Update loki dependency chart templates
 
-```chart/deps/loki/templates/servicemonitor.yaml```
-
-- Ensure that values and logic statements for `scheme` & `tlsConfig` are present towards the end of the file, under `scrapeTimeout` & `path` so we can passthrough values from BigBang when monolith is enabled:
-```
-    {{- if .Values.serviceMonitor.scheme }}
-    scheme: {{ .Values.serviceMonitor.scheme }}
-    {{- end }}
-    {{- if .Values.serviceMonitor.tlsConfig }}
-    tlsConfig:
-      {{- toYaml .Values.serviceMonitor.tlsConfig | nindent 6 }}
-    {{- end }}
-```
-
-```chart/deps/loki/values.yaml```
-
-- Ensure that `serviceMonitor` has `scheme` & `tlsConfig` value keys:
-```
-serviceMonitor:
-  ...
-  scheme: ""
-  tlsConfig: {}
-
-```
-See MR !47 for info on above changes.
+```chart/.gitignore```
+- line 1, remove `charts/` from the file
 
 ## Update binaries
 
@@ -73,21 +51,24 @@ helm dependency update ./chart
 - Ensure Big Bang version suffix is appended to chart version
 - Ensure minio, gluon, and loki dependencies are present and up to date
 ```yaml
+version: 3.2.1-bb.0
 dependencies:
   - name: minio-instance
     alias: minio
     version: 4.4.25-bb.0
     repository: file://./deps/minio
     condition: minio.enabled
-...
+  - name: grafana-agent-operator
+    alias: grafana-agent-operator
+    version: 0.2.3
+    repository: https://grafana.github.io/helm-charts
+    condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.2.10
+    version: 0.3.0
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
-  - name: loki
-    alias: monolith
-    repository: file://./deps/loki
-    version: 2.14.1
-    condition: monolith.enabled
+annotations:
+  bigbang.dev/applicationVersions: |
+    - Loki: 2.6.1
 ```
 
 ```chart/values.yaml```
@@ -114,6 +95,17 @@ imagePullSecrets:
   - name: private-registry
 ```
 
+- line 25, update the kubectl image to pull from registry1
+```
+  kubectlImage:
+    # -- The Docker registry
+    registry: registry1.dso.mil/ironbank
+    # -- Docker image repository
+    repository: opensource/kubernetes/kubectl
+    # -- Overrides the image tag whose default is the chart's appVersion
+    tag: v1.25.2
+```
+
 line 32, Ensure `loki.image` section points to registry1 image and correct tag
 ```
   image:
@@ -125,7 +117,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: X.X.X
 ```
 
-- line 107, Ensure `ingester` config is present
+- line 114, Ensure `ingester` config is present
 ```
     ingester:
       chunk_target_size: 196608
@@ -138,12 +130,12 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
           replication_factor: 1
 ```
 
-- line 171, Ensure by default auth is disabled
+- line 185, Ensure by default auth is disabled
 ```
   auth_enabled: false
 ```
 
-- line 181, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- line 206, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -152,7 +144,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 229, Ensure `storage_config.boltdb_shipper` configuration is present
+- line 258, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -162,21 +154,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 262, Ensure line for `enterprise.cluster_name` is present, this is a BB added value
-```
-...
-  # -- Name of cluster, must match cluster ID/Name on Grafana License
-  cluster_name: ""
-```
-
-- line 283, in `enterprise.config` chomp value ensure that `cluster_name` function has the second value present:
-```
-    ...
-    cluster_name: {{ default .Release.Name .Values.enterprise.cluster_name | quote }}
-    ...
-```
-
-- line 287 , Ensure `enterprise.image` is pointed to registry1 image
+- line 320 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -187,23 +165,14 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 312, ensure `tolerations` value is present for the `tokengen` job
+- line 363, Ensure `provisioner.enabled` is  set to `false`
 ```
-  tokengen:
-    ...
-    # -- Tolerations for tokengen Job
-    tolerations: []
-```
-
-- line 325, ensure `image` value is present for the `tokengen` job
-```
-  tokengen:
-  ...
-  # -- Create Secret Job Image to utilize
-  image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+  provisioner:
+    # -- Whether the job should be part of the deployment
+    enabled: false
 ```
 
-- line 343, Ensure all monitoring sub-components are set to `enabled: false`
+- line 542, Ensure all monitoring sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
@@ -211,9 +180,15 @@ monitoring:
   enabled: false
 ```
 
-line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- line 630 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 489, write pod resources set
+- line 663, Ensure `lokiCanary.enabled` is set to `false`
+```
+    lokiCanary:
+      enabled: false
+```
+
+- line 720, write pod resources set
 ```
   resources:
     limits:
@@ -224,7 +199,7 @@ line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set 
       memory: 2Gi
 ```
 
-- line 564, read pod resources set
+- line 795, read pod resources set
 ```
   resources:
     limits:
@@ -235,9 +210,9 @@ line 428 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set 
       memory: 2Gi
 ```
 
-- line 599 `gateway.enabled` set to `false` by default
+- line 932 `gateway.enabled` set to `false` by default
 
-- line 619, Ensure `gateway.image` is pointed to registry1 equivalent
+- line 952, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -289,45 +264,8 @@ minio:
       memory: 128M
 ```
 
-- End of file add the following blocks:
+- line 866, set resource requests and limits for `singleBinary`
 ```
-monolith:
-  # -- Enable Loki chart in single binary mode.
-  # Recommended for smaller or non-production environments
-  enabled: true
-  image:
-    repository: registry1.dso.mil/ironbank/opensource/grafana/loki
-    tag: X.X.X
-    pullPolicy: IfNotPresent
-    pullSecrets:
-      - private-registry
-  extraPorts:
-  # -- Extra ports for loki pods.
-  # Additional ports exposed to support HA communication
-  - name: grpc
-    port: 9095
-    targetPort: grpc
-    protocol: TCP
-  # -- Extra ports for loki pods.
-  # Additional ports exposed to support memberlist
-  - name: tcp-memberlist
-    port: 7946
-    protocol: TCP
-
-  nameOverride: loki
-  fullnameOverride: loki
-
-  #Required for monolith ServiceMonitor template
-  service:
-    labels:
-      app: loki
-      release: logging-loki
-
-  readinessProbe:
-    initialDelaySeconds: 80
-  livenessProbe:
-    initialDelaySeconds: 80
-
   resources:
     limits:
       cpu: 100m
@@ -335,13 +273,10 @@ monolith:
     requests:
       cpu: 100m
       memory: 256Mi
-  persistence:
-    enabled: true
-    accessModes:
-    - ReadWriteOnce
-    size: 12Gi
+```
 
-
+- End of file add the following blocks:
+```
 domain: bigbang.dev
 
 istio:
@@ -350,19 +285,110 @@ istio:
     # STRICT = Allow only mutual TLS traffic
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
     mode: STRICT
+
+networkPolicies:
+  enabled: false
+
+bbtests:
+  enabled: false
+  cypress:
+    artifacts: true
+    envs:
+      cypress_check_datasource: 'false'
+      cypress_grafana_url: 'http://monitoring-grafana.monitoring.svc.cluster.local'
+  scripts:
+    image: registry1.dso.mil/ironbank/big-bang/base:2.0.0
+    envs:
+      LOKI_URL: 'http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100'
+      LOKI_VERSION: '{{ .Values.loki.image.tag }}'
 ```
 
-```chart/deps/loki-simple-scalable/templates/read/*```
-- Ensure every template has at the top of each template
-`{{- if not (index .Values "read" "disabled") }}`
-paired with `{{- end }}` at the bottom
-(Check `git diff FILE_NAME` to see example)
-
-```chart/deps/loki-simple-scalable/templates/write/*```
-- Ensure every template has at the top of each template
-`{{- if not (index .Values "write" "disabled") }}`
-paired with `{{- end }}` at the bottom
-(Check `git diff FILE_NAME` to see example)
+```chart/templates/tokengen/job-tokengen.yaml```
+- At the top of the file, at the start of the templates under the conditionals at the very top, add the following NetworkPolicy resources:
+```
+{{- if .Values.networkPolicies.enabled }}
+{{- if .Values.minio.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tokengen-ingress-minio
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            {{- include "enterprise-logs.tokengenLabels" . | nindent 14 }}
+            {{- with .Values.enterprise.tokengen.labels }}
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+      ports:
+        - port: 9000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: tokengen-egress-minio
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  podSelector:
+    matchLabels:
+      app: minio
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  egress:
+    - to:
+      - podSelector:
+          matchLabels:
+            {{- include "enterprise-logs.tokengenLabels" . | nindent 14 }}
+            {{- with .Values.enterprise.tokengen.labels }}
+            {{- toYaml . | nindent 14 }}
+            {{- end }}
+      ports:
+        - port: 9000
+{{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-egress-tokengen-job
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+spec:
+  egress:
+  - to:
+    - ipBlock:
+        cidr: {{ .Values.networkPolicies.controlPlaneCidr }}
+        {{- if eq .Values.networkPolicies.controlPlaneCidr "0.0.0.0/0" }}
+        # ONLY Block requests to AWS metadata IP
+        except:
+        - 169.254.169.254/32
+        {{- end }}
+  podSelector:
+    matchLabels:
+      {{- include "enterprise-logs.tokengenLabels" . | nindent 6 }}
+      {{- with .Values.enterprise.tokengen.labels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  policyTypes:
+  - Egress
+{{- end }}
+---
+```
 
 ```chart/templates/_helpers.tpl```
 - On line 5 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
@@ -374,46 +400,18 @@ paired with `{{- end }}` at the bottom
 ```
 {{- if .Values.minio.enabled -}}
 s3:
-  endpoint: minio.logging.svc
+  endpoint: {{ $.Values.minio.service.nameOverride }}
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
-  secret_access_key: minio123
-  access_key_id: minio
+  secret_access_key: {{ $.Values.minio.secrets.secretKey }}
+  access_key_id: {{ $.Values.minio.secrets.accessKey }}
   s3forcepathstyle: true
   insecure: true
 ```
 
-- At the very bottom ensure this function is present
+```chart/src/dashboards/```
+- cd into this directory and run the following command to update the logic so the Release name is captured:
 ```
-{{/*
-loki netpol matchLabels -- Big Bang Addition
-*/}}
-{{- define "loki.matchLabels" -}}
-  {{- if .Values.monolith.enabled }}
-  app: loki
-  {{- else }}
-  {{ include "loki.selectorLabels" . | nindent 2 }}
-  {{- end }}
-{{- end }}
-```
-
-```chart/templates/configmap.yaml```
-- Ensure the template has the following at the top
-`{{- if and (not (index .Values "read" "disabled")) (not (index .Values "write" "disabled")) }}`
-paired with `{{- end }}` at the bottom
-
-```chart/templates/tokengen/job-tokengen.yaml```
-- Add enterprise tokengen tolerations value to job template on line 86
-```
-      {{- with .Values.enterprise.tokengen.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-```
-- Replace enterprise tokengen image for the `create-secret` container with our new `enterprise.tokengen.image` value from above
-```
-      containers:
-        - name: create-secret
-          image: {{ .Values.enterprise.tokengen.image }}
+sed -i 's/(loki|enterprise-logs)/logging-loki/g' \*.json
 ```
 
 # Testing new Loki Version

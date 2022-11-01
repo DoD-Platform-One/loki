@@ -1,11 +1,11 @@
 apiVersion: kpt.dev/v1alpha1
 kind: Kptfile
 metadata:
-    name: chart
+  name: chart
 upstream:
-    type: git
-    git:
-        commit: 9e53d2a371c86b607856041767dfadf3705fd7df
-        repo: https://github.com/grafana/helm-charts
-        directory: /charts/loki-simple-scalable
-        ref: loki-simple-scalable-1.8.10
+  type: git
+  git:
+    commit: c9165fb768125f511412d4204eb4ccb7ca539b64
+    repo: https://github.com/grafana/loki
+    directory: /production/helm/loki
+    ref: helm-loki-3.2.1

@@ -2,10 +2,15 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ dig "secrets" "name" "" (.Values | merge (dict)) }}-env
+  name: {{ dig "secrets" "name" "" (.Values | merge (dict)) }}
 type: Opaque
 stringData:
   config.env: |-
     export MINIO_ROOT_USER={{ .Values.secrets.accessKey | quote }}
     export MINIO_ROOT_PASSWORD={{ .Values.secrets.secretKey | quote }}
+data:
+  ## Access Key for MinIO Tenant
+  accesskey: {{ dig "secrets" "accessKey" "" (.Values | merge (dict)) | b64enc }}
+  ## Secret Key for MinIO Tenant
+  secretkey: {{ dig "secrets" "secretKey" "" (.Values | merge (dict)) | b64enc }}
   {{- end }}

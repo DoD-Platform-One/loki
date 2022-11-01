@@ -61,7 +61,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time({namespace=\"$namespace\", instance=~\"$pod\"} |~ \"$search\"[$__interval]))",
+          "expr": "sum(count_over_time({namespace=\"$namespace\", pod=~\"$pod\"} |~ \"$search\"[$__interval]))",
           "refId": "A"
         }
       ],
@@ -126,7 +126,7 @@
       },
       "targets": [
         {
-          "expr": "{namespace=\"$namespace\", instance=~\"$pod\"} |~ \"$search\"",
+          "expr": "{namespace=\"$namespace\", pod=~\"$pod\"} |~ \"$search\"",
           "refId": "A"
         }
       ],
