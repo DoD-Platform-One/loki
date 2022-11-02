@@ -24,13 +24,12 @@ beforeEach(function () {
             cy.visit(`${Cypress.env('grafana_url')}/datasources`)
   
             // // // Enter 'loki' in the search field and 
-            cy.get('.css-yn255a-input-input')
+            cy.get('input[type="text"]')
             .type('loki')
             // Click on the loki datasource
-            cy.get('.css-1cqw476').contains('Loki')
-            cy.get('.css-1cqw476').click()
+            cy.get('a').contains("Loki").click()
             // Click on the 'Save & test` button
-            cy.get('.css-1sara2j-button > .css-1mhnkuh').click()
+            cy.get('button[type="submit"]').click()
             // Check to ensure the data source is working
             cy.get('.p-t-2').contains('Data source connected and labels found', {timeout: 10000})
           })
