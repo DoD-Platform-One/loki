@@ -1266,7 +1266,8 @@ istio:
 
 networkPolicies:
   enabled: false
-  # -- Control Plane CIDR to allow init job communication to the Kubernetes API.  Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster
+  # -- Control Plane CIDR to allow init job communication to the Kubernetes API.  
+  # Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster
   controlPlaneCidr: 0.0.0.0/0
 
 bbtests:

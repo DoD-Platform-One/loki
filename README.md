@@ -341,8 +341,7 @@ helm install loki chart/
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API.
-  Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
+| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API. Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
