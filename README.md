@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.2.1-bb.2](https://img.shields.io/badge/Version-3.2.2--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
+![Version: 3.2.1-bb.3](https://img.shields.io/badge/Version-3.2.1--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.6.1](https://img.shields.io/badge/AppVersion-2.6.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -90,7 +90,7 @@ helm install loki chart/
 | enterprise.adminTokenSecret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
 | enterprise.canarySecret | string | `nil` | Alternative name of the secret to store token for the canary |
 | enterprise.tokengen | object | `{"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `tokengen` target |
-| enterprise.tokengen.enabled | bool | `false` | Whether the job should be part of the deployment |
+| enterprise.tokengen.enabled | bool | `true` | Whether the job should be part of the deployment |
 | enterprise.tokengen.extraArgs | list | `[]` | Additional CLI arguments for the `tokengen` target |
 | enterprise.tokengen.env | list | `[]` | Additional Kubernetes environment |
 | enterprise.tokengen.labels | object | `{}` | Additional labels for the `tokengen` Job |
@@ -320,28 +320,17 @@ helm install loki chart/
 | networkPolicy.discovery.podSelector | object | `{}` | Specifies the Pods labels used for discovery. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.discovery.namespaceSelector | object | `{}` | Specifies the namespace the discovery Pods are running in |
 | tracing.jaegerAgentHost | string | `""` |  |
-| minio | object | `{"buckets":[{"name":"chunks","policy":"none","purge":false},{"name":"ruler","policy":"none","purge":false},{"name":"admin","policy":"none","purge":false}],"drivesPerNode":2,"enabled":false,"persistence":{"size":"5Gi"},"replicas":1,"resources":{"requests":{"cpu":"100m","memory":"128Mi"}},"rootPassword":"supersecret","rootUser":"enterprise-logs"}` | ----------------------------------- |
+| minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
-| minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
-| minio.service.nameOverride | string | `"minio.logging.svc.cluster.local"` |  |
 | minio.secrets | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"}]` | Buckets to be provisioned to for tenant |
 | minio.tenant.users | list | `[{"name":"minio-user"}]` | Users to to be provisioned to for tenant |
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
-| minio.tenant.pools[0].servers | int | `1` |  |
-| minio.tenant.pools[0].volumesPerServer | int | `4` |  |
-| minio.tenant.pools[0].size | string | `"750Mi"` |  |
-| minio.tenant.pools[0].securityContext.runAsUser | int | `1001` |  |
-| minio.tenant.pools[0].securityContext.runAsGroup | int | `1001` |  |
-| minio.tenant.pools[0].securityContext.fsGroup | int | `1001` |  |
-| minio.tenant.metrics.enabled | bool | `false` |  |
-| minio.tenant.metrics.port | int | `9000` |  |
-| minio.tenant.metrics.memory | string | `"128M"` |  |
 | domain | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API. Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
+| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API.   Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
