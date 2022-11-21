@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.4-bb.0]
+### Changed
+- Updated chart to `helm-loki-3.3.4`
+- Updated kubectl image to `v1.25.4`
+- Updated nginx image to `1.23.2`
+
 ## [3.2.1-bb.3]
 ### Fixed
 - Fixed loki monolith peerauthentication labels
