@@ -8,7 +8,7 @@ Find the latest version of the `loki` image that matches the latest version in I
 
 Run a KPT update against the main chart folder:
 ```shell
-kpt pkg update chart@helm-loki-3.2.1 --strategy force-delete-replace
+kpt pkg update chart@helm-loki-${chart.version} --strategy alpha-git-patch
 ```
 
 Restore all BigBang added templates and tests:
@@ -24,19 +24,16 @@ git checkout chart/templates/tests
 ## Update dependencies
 
 Typically, the `--strategy=force-delete-replace` is useful to "heavy handidly" bring in dep changes which may need to be reviewed.
+[LATEST_BB_PACKAGE_TAG_VERSION](https://repo1.dso.mil/platform-one/big-bang/apps/application-utilities/minio/-/blob/main/chart/Chart.yaml)
 ```shell
 cd chart/deps
-kpt pkg update minio@$LATEST_BB_PACKAGE_TAG_VERSION$ --strategy=force-delete-replace
-kpt pkg update loki@loki-$LATEST_LOKI_CHART_VERSION$ --strategy=force-delete-replace
+kpt pkg update minio@${LATEST_BB_PACKAGE_TAG_VERSION} --strategy=force-delete-replace
+cd ../../
 ```
-
-## Update loki dependency chart templates
-
-```chart/.gitignore```
-- line 1, remove `charts/` from the file
+### Update dependencies in chart.yml
+Ensure minio version in chart.yml matches the latest tag version.
 
 ## Update binaries
-
 Pull assets and commit the binaries as well as the Chart.lock file that was generated.
 ```
 export HELM_EXPERIMENTAL_OCI=1
@@ -51,24 +48,24 @@ helm dependency update ./chart
 - Ensure Big Bang version suffix is appended to chart version
 - Ensure minio, gluon, and loki dependencies are present and up to date
 ```yaml
-version: 3.2.1-bb.0
+version: $VERSION-bb.0
 dependencies:
   - name: minio-instance
     alias: minio
-    version: 4.4.25-bb.0
+    version: $MINIO_VERSION
     repository: file://./deps/minio
     condition: minio.enabled
   - name: grafana-agent-operator
     alias: grafana-agent-operator
-    version: 0.2.3
+    version: $GRAFANA_VERSION
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.3.0
+    version: $GLUON_VERSION
     repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 2.6.1
+    - Loki: $LOKI_APP_VERSION
 ```
 
 ```chart/values.yaml```
@@ -117,7 +114,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: X.X.X
 ```
 
-- line 114, Ensure `ingester` config is present
+- line 119, Ensure `ingester` config is present
 ```
     ingester:
       chunk_target_size: 196608
@@ -130,12 +127,12 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
           replication_factor: 1
 ```
 
-- line 185, Ensure by default auth is disabled
+- line 187, Ensure by default auth is disabled
 ```
   auth_enabled: false
 ```
 
-- line 206, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- line 208, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -144,7 +141,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 258, Ensure `storage_config.boltdb_shipper` configuration is present
+- line 266, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -154,7 +151,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 320 , Ensure `enterprise.image` is pointed to registry1 image
+- line 337 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -165,14 +162,14 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 363, Ensure `provisioner.enabled` is  set to `false`
+- line 386, Ensure `provisioner.enabled` is  set to `false`
 ```
   provisioner:
     # -- Whether the job should be part of the deployment
     enabled: false
 ```
 
-- line 542, Ensure all monitoring sub-components are set to `enabled: false`
+- line 601, Ensure all monitoring sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
@@ -180,15 +177,15 @@ monitoring:
   enabled: false
 ```
 
-- line 630 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- line 699 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 663, Ensure `lokiCanary.enabled` is set to `false`
+- line 734, Ensure `lokiCanary.enabled` is set to `false`
 ```
     lokiCanary:
       enabled: false
 ```
 
-- line 720, write pod resources set
+- line 793, write pod resources set
 ```
   resources:
     limits:
@@ -199,7 +196,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 795, read pod resources set
+- line 872, read pod resources set
 ```
   resources:
     limits:
@@ -210,9 +207,20 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 932 `gateway.enabled` set to `false` by default
+- line 947, set resource requests and limits for `singleBinary`
+```
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+```
 
-- line 952, Ensure `gateway.image` is pointed to registry1 equivalent
+- line 1026 `gateway.enabled` set to `false` by default
+
+- line 1046, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -223,7 +231,7 @@ monitoring:
     tag: X.X.X
 ```
 
-- line 914, ensure the following BB values are all set under minio key:
+- line 1314, ensure the following BB values are all set under minio key:
 ```
 minio:
   # -- Enable minio instance support, must have minio-operator installed
@@ -264,18 +272,7 @@ minio:
       memory: 128M
 ```
 
-- line 866, set resource requests and limits for `singleBinary`
-```
-  resources:
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
-```
-
-- End of file add the following blocks:
+- End of file add/verify the following blocks:
 ```
 domain: bigbang.dev
 
@@ -396,7 +393,7 @@ spec:
 {{- $default := "loki" }
 ```
 
-- line 115 ensure the following block for minio looks like:
+- line 156 ensure the following block for minio looks like:
 ```
 {{- if .Values.minio.enabled -}}
 s3:
