@@ -38,6 +38,9 @@ spec:
     - servers: {{ dig "servers" 4 . }}
       name: {{ dig "name" "" . }}
       volumesPerServer: {{ dig "volumesPerServer" 4 . }}
+      {{- if dig "runtimeClassName" "" . }}
+      runtimeClassName: {{ dig "runtimeClassName" "" . }}
+      {{- end }}
       volumeClaimTemplate:
         metadata:
           name: data
@@ -92,8 +95,15 @@ spec:
     {{- toYaml . | nindent 6 }}
   {{- end }}
   requestAutoCert: {{ dig "certificate" "requestAutoCert" false . }}
-  s3:
-    bucketDNS: {{ dig "s3" "bucketDNS" false . }}
+  {{- if dig "s3" "bucketDNS" false . }}
+  {{- fail "Value 'tenant.s3.bucketDNS' is deprecated since Operator v4.3.2, use 'tenant.features.bucketDNS' instead" }}
+  {{- end }}
+  features:
+    bucketDNS: {{ dig "features" "bucketDNS" false . }}
+    {{- with (dig "features" "domains" (dict) .) }}
+    domains:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
   {{- with (dig "buckets" (list) .) }}
   buckets:
     {{- toYaml . | nindent 4 }}
@@ -149,8 +159,14 @@ spec:
     kesSecret:
       name: "kes-configuration"
     imagePullPolicy: {{ .kes.imagePullPolicy | quote }}
-    externalCertSecret: {{ .kes.externalCertSecret | quote }}
-    clientCertSecret: {{ .kes.clientCertSecret | quote }}
+    {{- with (dig "kes" "externalCertSecret" (dict) .) }}
+    externalCertSecret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with (dig "kes" "clientCertSecret" (dict) .) }}
+    clientCertSecret:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     ## Key name to be created on the KMS, default is "my-minio-key"
     keyName: {{ .kes.keyName | quote }}
     {{- with (dig "resources" (dict) .) }}
@@ -206,10 +222,14 @@ spec:
     nodeSelector:
       {{- toYaml . | nindent 4 }}
     {{- end }}
+    {{- with (dig "prometheus" "affinity" (dict) .) }}
     affinity:
-      nodeAffinity: { }
-      podAffinity: { }
-      podAntiAffinity: { }
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with (dig "prometheus" "tolerations" (list) .) }}
+    tolerations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- with (dig "resources" (dict) .) }}
     resources:
       {{- toYaml . | nindent 4 }}
@@ -238,11 +258,14 @@ spec:
     nodeSelector:
       {{ toYaml . | nindent 4 }}
     {{- end }}
+    {{- with (dig "log" "affinity" (dict) .) }}
     affinity:
-      nodeAffinity: { }
-      podAffinity: { }
-      podAntiAffinity: { }
-    tolerations: [ ]
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with (dig "log" "tolerations" (list) .) }}
+    tolerations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
     {{- with (dig "annotations" (dict) .) }}
     annotations:
       {{ toYaml . | nindent 4 }}
@@ -283,12 +306,14 @@ spec:
       nodeSelector:
         {{ toYaml . | nindent 4 }}
       {{- end }}
+      {{- with (dig "log" "db" "affinity" (dict) .) }}
       affinity:
-        nodeAffinity: { }
-        podAffinity: { }
-        podAntiAffinity: { }
-      tolerations: [ ]
-
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with (dig "log" "db" "tolerations" (list) .) }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with (dig "annotations" (dict) .) }}
       annotations:
         {{ toYaml . | nindent 4 }}

@@ -1,12 +1,12 @@
 dependencies:
 - name: minio-instance
   repository: file://./deps/minio
-  version: 4.5.1-bb.0
+  version: 4.5.4-bb.2
 - name: grafana-agent-operator
   repository: https://grafana.github.io/helm-charts
   version: 0.2.3
 - name: gluon
   repository: oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon
   version: 0.3.0
-digest: sha256:0e26a2b5de75a5a868e601786c20939a079d60aad2b5b8745efbc0b6112c034a
-generated: "2022-11-19T10:49:54.051308-08:00"
+digest: sha256:1db84fb61cf75d3a7a5cf402230b6ec351d3bd799b1d2ca671e3362ac14f91e6
+generated: "2022-12-07T09:45:50.372717-06:00"

@@ -84,7 +84,7 @@ tenant:
   ## Registry location and Tag to download MinIO Server image
   image:
     repository: registry1.dso.mil/ironbank/opensource/minio/minio
-    tag: RELEASE.2022-09-25T15-44-53Z
+    tag: RELEASE.2022-11-26T22-43-32Z
     pullPolicy: IfNotPresent
   ## Customize namespace for tenant deployment
   #namespace: default
@@ -130,11 +130,11 @@ tenant:
       ## Configure resource requests and limits for MinIO containers
       resources:
         requests:
-          cpu: 250m
           memory: 2Gi
+          cpu: 1000m
         limits:
-          cpu: 250m
           memory: 2Gi
+          cpu: 1000m
 
       ## Configure security context
       ## BB Note: Defaults for Ironbank image are 1001 for user, group, and fsGroup
@@ -171,10 +171,9 @@ tenant:
     ## for the auto-generated certificate. Internal DNS name for the pod will be used if CommonName is
     ## not provided. DNS name format is *.minio.default.svc.cluster.local
     certConfig: { }
-  ## Enable S3 specific features such as Bucket DNS which would allow `buckets` to be
-  ## accessible as DNS entries of form `<bucketname>.minio.default.svc.cluster.local`
-  s3:
-    ## This feature is turned off by default
+  ## MinIO features to enable or disable in the MinIO Tenant
+  ## https://github.com/minio/operator/blob/master/docs/crd.adoc#features
+  features:
     bucketDNS: false
     domains: { }
   ## List of bucket names to create during tenant provisioning

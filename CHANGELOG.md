@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.0-bb.0]
+### Changed
+- Updated chart to `helm-loki-3.6.0`
+- Updated minio image to `4.5.4-bb.2`
+
+
 ## [3.3.4-bb.0]
 ### Changed
 - Updated chart to `helm-loki-3.3.4`
