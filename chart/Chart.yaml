@@ -31,5 +31,22 @@ annotations:
   helm.sh/images: |
     - name: loki
       image: registry1.dso.mil/ironbank/opensource/grafana/loki:2.7.0
+    - name: kubectl
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.25.5
+    - name: grafana-enterprise-logs
+      image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.6.0
+      condition: enterprise.enabled
+    - name: enterprise-logs-provisioner
+      image: docker.io/grafana/enterprise-logs-provisioner:2.7.0
+      condition: enterprise.provisioner.enabled
+    - name: loki-helm-test
+      image: docker.io/grafana/loki-helm-test:2.7.0
+      condition: test.enabled
+    - name: loki-canary
+      image: docker.io/grafana/loki-canary:2.7.0
+      condition: monitoring.lokiCanary.enabled
+    - name: nginx-gateway
+      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.23.2
+      condition: gateway.enabled
 maintainers:
   - name: trevorwhitney
