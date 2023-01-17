@@ -1,6 +1,6 @@
 # loki
 
-![Version: 3.7.0-bb.0](https://img.shields.io/badge/Version-3.7.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.0](https://img.shields.io/badge/AppVersion-2.7.0-informational?style=flat-square)
+![Version: 3.7.0-bb.1](https://img.shields.io/badge/Version-3.7.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.0](https://img.shields.io/badge/AppVersion-2.7.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -188,19 +188,19 @@ helm install loki chart/
 | monitoring.selfMonitoring.logsInstance.annotations | object | `{}` | LogsInstance annotations |
 | monitoring.selfMonitoring.logsInstance.labels | object | `{}` | Additional LogsInstance labels |
 | monitoring.selfMonitoring.logsInstance.clients | string | `nil` | Additional clients for remote write |
-| monitoring.selfMonitoring.lokiCanary.enabled | bool | `false` |  |
-| monitoring.selfMonitoring.lokiCanary.annotations | object | `{}` | Additional annotations for the `loki-canary` Daemonset |
-| monitoring.selfMonitoring.lokiCanary.extraArgs | list | `[]` | Additional CLI arguments for the `loki-canary' command |
-| monitoring.selfMonitoring.lokiCanary.extraEnv | list | `[]` | Environment variables to add to the canary pods |
-| monitoring.selfMonitoring.lokiCanary.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the canary pods |
-| monitoring.selfMonitoring.lokiCanary.resources | object | `{}` | Resource requests and limits for the canary |
-| monitoring.selfMonitoring.lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
-| monitoring.selfMonitoring.lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
-| monitoring.selfMonitoring.lokiCanary.image | object | `{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-canary","tag":null}` | Image to use for loki canary |
-| monitoring.selfMonitoring.lokiCanary.image.registry | string | `"docker.io"` | The Docker registry |
-| monitoring.selfMonitoring.lokiCanary.image.repository | string | `"grafana/loki-canary"` | Docker image repository |
-| monitoring.selfMonitoring.lokiCanary.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
-| monitoring.selfMonitoring.lokiCanary.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
+| monitoring.lokiCanary.enabled | bool | `false` |  |
+| monitoring.lokiCanary.annotations | object | `{}` | Additional annotations for the `loki-canary` Daemonset |
+| monitoring.lokiCanary.extraArgs | list | `[]` | Additional CLI arguments for the `loki-canary' command |
+| monitoring.lokiCanary.extraEnv | list | `[]` | Environment variables to add to the canary pods |
+| monitoring.lokiCanary.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the canary pods |
+| monitoring.lokiCanary.resources | object | `{}` | Resource requests and limits for the canary |
+| monitoring.lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
+| monitoring.lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
+| monitoring.lokiCanary.image | object | `{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-canary","tag":null}` | Image to use for loki canary |
+| monitoring.lokiCanary.image.registry | string | `"docker.io"` | The Docker registry |
+| monitoring.lokiCanary.image.repository | string | `"grafana/loki-canary"` | Docker image repository |
+| monitoring.lokiCanary.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
+| monitoring.lokiCanary.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | write.replicas | int | `2` | Number of replicas for the write |
 | write.image.registry | string | `nil` | The Docker registry for the write image. Overrides `loki.image.registry` |
 | write.image.repository | string | `nil` | Docker image repository for the write image. Overrides `loki.image.repository` |
