@@ -4,7 +4,7 @@ name: loki
 description: Helm chart for Grafana Loki in simple, scalable mode
 type: application
 appVersion: 2.7.0
-version: 3.7.0-bb.1
+version: 3.7.0-bb.2
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -37,10 +37,10 @@ annotations:
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.6.0
       condition: enterprise.enabled
     - name: enterprise-logs-provisioner
-      image: docker.io/grafana/enterprise-logs-provisioner:2.7.0
+      image: docker.io/grafana/enterprise-logs-provisioner:latest
       condition: enterprise.provisioner.enabled
     - name: loki-helm-test
-      image: docker.io/grafana/loki-helm-test:2.7.0
+      image: docker.io/grafana/loki-helm-test:latest
       condition: test.enabled
     - name: loki-canary
       image: docker.io/grafana/loki-canary:2.7.0
