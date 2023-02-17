@@ -103,7 +103,7 @@ imagePullSecrets:
     tag: v1.25.2
 ```
 
-line 32, Ensure `loki.image` section points to registry1 image and correct tag
+line 43, Ensure `loki.image` section points to registry1 image and correct tag
 ```
   image:
     # -- The Docker registry
@@ -114,7 +114,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: X.X.X
 ```
 
-- line 119, Ensure `ingester` config is present
+- line 119, Ensure `136` config is present
 ```
     ingester:
       chunk_target_size: 196608
@@ -127,12 +127,12 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
           replication_factor: 1
 ```
 
-- line 187, Ensure by default auth is disabled
+- line 213, Ensure by default auth is disabled
 ```
   auth_enabled: false
 ```
 
-- line 208, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- line 238, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -141,7 +141,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 266, Ensure `storage_config.boltdb_shipper` configuration is present
+- line 295, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -151,7 +151,7 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 337 , Ensure `enterprise.image` is pointed to registry1 image
+- line 370 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -162,14 +162,14 @@ line 32, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 386, Ensure `provisioner.enabled` is  set to `false`
+- line 425, Ensure `provisioner.enabled` is  set to `false`
 ```
   provisioner:
     # -- Whether the job should be part of the deployment
     enabled: false
 ```
 
-- line 601, Ensure all monitoring sub-components are set to `enabled: false`
+- line 517, Ensure all monitoring sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
@@ -177,15 +177,15 @@ monitoring:
   enabled: false
 ```
 
-- line 699 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- line 621 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 734, Ensure `lokiCanary.enabled` is set to `false`
+- line 652, Ensure `lokiCanary.enabled` is set to `false`
 ```
     lokiCanary:
       enabled: false
 ```
 
-- line 793, write pod resources set
+- line 717, write pod resources set
 ```
   resources:
     limits:
@@ -196,7 +196,12 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 872, read pod resources set
+- line 850, legacyReadTarget set to true to give users time to migrate 2/7/23
+```
+  legacyReadTarget: true
+```
+
+- line 864, read pod resources set
 ```
   resources:
     limits:
@@ -207,7 +212,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 947, set resource requests and limits for `singleBinary`
+- line 1011, set resource requests and limits for `singleBinary`
 ```
   resources:
     limits:
@@ -218,9 +223,9 @@ monitoring:
       memory: 256Mi
 ```
 
-- line 1026 `gateway.enabled` set to `false` by default
+- line 1094 `gateway.enabled` set to `false` by default
 
-- line 1046, Ensure `gateway.image` is pointed to registry1 equivalent
+- line 1114, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -231,7 +236,40 @@ monitoring:
     tag: X.X.X
 ```
 
-- line 1314, ensure the following BB values are all set under minio key:
+- line 1356 remove minio block added by upstream
+```
+  replicas: 1
+  # Minio requires 2 to 16 drives for erasure code (drivesPerNode * replicas)
+  # https://docs.min.io/docs/minio-erasure-code-quickstart-guide
+  # Since we only have 1 replica, that means 2 drives must be used.
+  drivesPerNode: 2
+  rootUser: enterprise-logs
+  rootPassword: supersecret
+  buckets:
+    - name: chunks
+      policy: none
+      purge: false
+    - name: ruler
+      policy: none
+      purge: false
+    - name: admin
+      policy: none
+      purge: false
+  persistence:
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+```
+
+- line 1380 or EOF. Move extraObjects configmap block up under loki. Above Minio.
+```
+# Create extra manifests via values. Would be passed through `tpl` for templating
+extraObjects: []
+```
+
+- line 1312, ensure the following BB values are all set under minio key:
 ```
 minio:
   # -- Enable minio instance support, must have minio-operator installed
@@ -285,6 +323,9 @@ istio:
 
 networkPolicies:
   enabled: false
+  # -- Control Plane CIDR to allow init job communication to the Kubernetes API.  
+  # Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster
+  controlPlaneCidr: 0.0.0.0/0
 
 bbtests:
   enabled: false

@@ -1,12 +1,12 @@
 {{- $isSimpleScalable := eq (include "loki.deployment.isScalable" .) "true" -}}
-{{- if $isSimpleScalable }}
+{{- if and $isSimpleScalable (not .Values.read.legacyReadTarget ) }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "loki.writeFullname" . }}-headless
+  name: {{ include "loki.backendFullname" . }}-headless
   labels:
-    {{- include "loki.writeSelectorLabels" . | nindent 4 }}
+    {{- include "loki.backendSelectorLabels" . | nindent 4 }}
     prometheus.io/service-monitor: "false"
 spec:
   type: ClusterIP
@@ -20,7 +20,6 @@ spec:
       port: 9095
       targetPort: grpc
       protocol: TCP
-      appProtocol: tcp
   selector:
-    {{- include "loki.writeSelectorLabels" . | nindent 4 }}
+    {{- include "loki.backendSelectorLabels" . | nindent 4 }}
 {{- end }}

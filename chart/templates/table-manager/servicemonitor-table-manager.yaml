@@ -1,16 +1,19 @@
-{{- with .Values.monitoring.serviceMonitor }}
-{{- if and ($.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor") .enabled }}
----
+{{- if .Values.tableManager.enabled }}
+{{- with .Values.serviceMonitor }}
+{{- if .enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "loki.fullname" $ }}
+  name: {{ include "loki.tableManagerFullname" $ }}
+  {{- with .namespace }}
+  namespace: {{ . }}
+  {{- end }}
   {{- with .annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
-    {{- include "loki.labels" $ | nindent 4 }}
+    {{- include "loki.tableManagerLabels" $ | nindent 4 }}
     {{- with .labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
@@ -21,30 +24,23 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "loki.selectorLabels" $ | nindent 6 }}
-    matchExpressions:
-      - key: prometheus.io/service-monitor
-        operator: NotIn
-        values:
-          - "false"
+      {{- include "loki.tableManagerSelectorLabels" $ | nindent 6 }}
   endpoints:
     - port: http-metrics
-      path: /metrics
       {{- with .interval }}
       interval: {{ . }}
       {{- end }}
       {{- with .scrapeTimeout }}
       scrapeTimeout: {{ . }}
       {{- end }}
+      {{- with .relabelings }}
       relabelings:
-        - sourceLabels: [job]
-          replacement: "{{ $.Release.Namespace }}/$1"
-          targetLabel: job
-        - replacement: "{{ include "loki.fullname" $ }}"
-          targetLabel: cluster
-        {{- with .relabelings }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
+      {{- with .metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .scheme }}
       scheme: {{ . }}
       {{- end }}
@@ -52,5 +48,10 @@ spec:
       tlsConfig:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+  {{- with .targetLabels }}
+  targetLabels:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
