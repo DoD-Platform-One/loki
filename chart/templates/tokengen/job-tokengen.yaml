@@ -97,6 +97,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
     "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "10"
 spec:
   backoffLimit: 6
   completions: 1
@@ -141,6 +142,8 @@ spec:
               mountPath: /shared
             - name: config
               mountPath: /etc/loki/config
+            - name: runtime-config
+              mountPath: /etc/loki/runtime-config
             - name: license
               mountPath: /etc/loki/license
           env:
@@ -160,6 +163,11 @@ spec:
             - -euc
             - |
               kubectl create secret generic "{{ include "enterprise-logs.adminTokenSecret" . }}" --from-file=token=/shared/admin-token
+              {{- with .Values.enterprise.adminToken.additionalNamespaces }}
+              {{- range . }}
+              kubectl --namespace "{{ . }}" create secret generic "{{ include "enterprise-logs.adminTokenSecret" $ }}" --from-file=token=/shared/admin-token
+              {{- end }}
+              {{- end }}
           volumeMounts:
             {{- if .Values.enterprise.tokengen.extraVolumeMounts }}
               {{ toYaml .Values.enterprise.tokengen.extraVolumeMounts | nindent 12 }}
@@ -186,6 +194,9 @@ spec:
           configMap:
             name: {{ include "loki.name" . }}
           {{- end }}
+        - name: runtime-config
+          configMap:
+            name: {{ template "loki.name" . }}-runtime
         - name: license
           secret:
           {{- if .Values.enterprise.useExternalLicense }}
