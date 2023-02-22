@@ -1,6 +1,6 @@
 # loki
 
-![Version: 4.4.2-bb.0](https://img.shields.io/badge/Version-4.4.2--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.3](https://img.shields.io/badge/AppVersion-2.7.3-informational?style=flat-square)
+![Version: 4.4.2-bb.1](https://img.shields.io/badge/Version-4.4.2--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.3](https://img.shields.io/badge/AppVersion-2.7.3-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -47,7 +47,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.25.6"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.26.1"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
 | loki.readinessProbe.httpGet.port | string | `"http-metrics"` |  |
@@ -227,7 +227,7 @@ helm install loki chart/
 | write.affinity | string | Hard node and soft zone anti-affinity | Affinity for write pods. Passed through `tpl` and, thus, to be configured as string |
 | write.nodeSelector | object | `{}` | Node selector for write pods |
 | write.tolerations | list | `[]` | Tolerations for write pods |
-| write.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
+| write.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | write.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | write.persistence.selector | string | `nil` | Selector for persistent disk |
@@ -331,7 +331,7 @@ helm install loki chart/
 | singleBinary.affinity | string | Hard node and soft zone anti-affinity | Affinity for single binary pods. Passed through `tpl` and, thus, to be configured as string |
 | singleBinary.nodeSelector | object | `{}` | Node selector for single binary pods |
 | singleBinary.tolerations | list | `[]` | Tolerations for single binary pods |
-| singleBinary.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
+| singleBinary.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | singleBinary.persistence.enabled | bool | `true` | Enable persistent disk |
 | singleBinary.persistence.size | string | `"12Gi"` | Size of persistent disk |
 | singleBinary.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
