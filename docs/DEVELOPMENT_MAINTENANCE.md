@@ -196,6 +196,19 @@ monitoring:
       memory: 2Gi
 ```
 
+- line 754, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
+```
+  ## -- Application controller Pod Disruption Budget Configuration
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
+    # @default -- `""` (defaults to 0 if not specified)
+    minAvailable: ""
+    # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
+    ## Has higher precedence over `controller.pdb.minAvailable`
+    maxUnavailable: "1"
+```
+
 - line 850, legacyReadTarget set to true to give users time to migrate 2/7/23
 ```
   legacyReadTarget: true
@@ -210,6 +223,32 @@ monitoring:
     requests:
       cpu: 300m
       memory: 2Gi
+```
+
+- line 908, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
+```
+  ## -- Application controller Pod Disruption Budget Configuration
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
+    # @default -- `""` (defaults to 0 if not specified)
+    minAvailable: ""
+    # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
+    ## Has higher precedence over `controller.pdb.minAvailable`
+    maxUnavailable: "1"
+```
+
+- line 983, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
+```
+  ## -- Application controller Pod Disruption Budget Configuration
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
+    # @default -- `""` (defaults to 0 if not specified)
+    minAvailable: ""
+    # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
+    ## Has higher precedence over `controller.pdb.minAvailable`
+    maxUnavailable: "1"
 ```
 
 - line 1011, set resource requests and limits for `singleBinary`
@@ -234,6 +273,19 @@ monitoring:
     repository: ironbank/opensource/nginx/nginx
     # -- The gateway image tag
     tag: X.X.X
+```
+
+- line 1271, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
+```
+  ## -- Application controller Pod Disruption Budget Configuration
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+  podDisruptionBudget:
+    # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
+    # @default -- `""` (defaults to 0 if not specified)
+    minAvailable: ""
+    # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
+    ## Has higher precedence over `controller.pdb.minAvailable`
+    maxUnavailable: "1"
 ```
 
 - line 1356 remove minio block added by upstream
@@ -444,6 +496,46 @@ s3:
   access_key_id: {{ $.Values.minio.secrets.accessKey }}
   s3forcepathstyle: true
   insecure: true
+```
+
+```chart/templates/backend/poddisruptionbudget-backend.yaml```
+- Ensure that there is not hard-coded spec for the PDB template
+```
+  {{- with .Values.backend.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- else }}
+  minAvailable: {{ .Values.backend.podDisruptionBudget.minAvailable | default 0 }}
+  {{- end }}
+```
+
+```chart/templates/gateway/poddisruptionbudget-gateway.yaml```
+- Ensure that there is not hard-coded spec for the PDB template
+```
+  {{- with .Values.gateway.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- else }}
+  minAvailable: {{ .Values.gateway.podDisruptionBudget.minAvailable | default 0 }}
+  {{- end }}
+```
+
+```chart/templates/read/poddisruptionbudget-read.yaml```
+- Ensure that there is not hard-coded spec for the PDB template
+```
+  {{- with .Values.read.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- else }}
+  minAvailable: {{ .Values.read.podDisruptionBudget.minAvailable | default 0 }}
+  {{- end }}
+```
+
+```chart/templates/write/poddisruptionbudget-write.yaml```
+- Ensure that there is no hard-coded spec for the PDB template
+```
+  {{- with .Values.write.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ . }}
+  {{- else }}
+  minAvailable: {{ .Values.write.podDisruptionBudget.minAvailable | default 0 }}
+  {{- end }}
 ```
 
 ```chart/src/dashboards/```
