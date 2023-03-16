@@ -1,6 +1,6 @@
 # loki
 
-![Version: 4.4.2-bb.2](https://img.shields.io/badge/Version-4.4.2--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.3](https://img.shields.io/badge/AppVersion-2.7.3-informational?style=flat-square)
+![Version: 4.8.0-bb.0](https://img.shields.io/badge/Version-4.8.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.4](https://img.shields.io/badge/AppVersion-2.7.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -47,7 +47,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.26.1"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.26.2"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
 | loki.readinessProbe.httpGet.port | string | `"http-metrics"` |  |
@@ -55,7 +55,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.7.3"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.7.4"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.podAnnotations | object | `{}` | Common annotations for all pods |
 | loki.podLabels | object | `{}` | Common labels for all pods |
@@ -66,11 +66,12 @@ helm install loki chart/
 | loki.existingSecretForConfig | string | `""` | Specify an existing secret containing loki configuration. If non-empty, overrides `loki.config` |
 | loki.config | string | See values.yaml | Config file contents for Loki |
 | loki.auth_enabled | bool | `false` |  |
+| loki.tenants | list | `[]` | Tenants list to be created on nginx htpasswd file, with name and password keys |
 | loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100}` | Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration. |
 | loki.limits_config | object | `{"enforce_metric_name":false,"max_cache_freshness_per_query":"10m","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m"}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
-| loki.commonConfig | object | `{"path_prefix":"/var/loki","replication_factor":3}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":3}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"requestTimeout":null,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
@@ -82,7 +83,7 @@ helm install loki chart/
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{}` | Optional ingester configuration |
 | enterprise.enabled | bool | `false` |  |
-| enterprise.version | string | `"v1.6.1"` |  |
+| enterprise.version | string | `"v1.6.2"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
@@ -158,16 +159,12 @@ helm install loki chart/
 | monitoring.rules.annotations | object | `{}` | Additional annotations for the rules PrometheusRule resource |
 | monitoring.rules.labels | object | `{}` | Additional labels for the rules PrometheusRule resource |
 | monitoring.rules.additionalGroups | list | `[]` | Additional groups to add to the rules file |
-| monitoring.alerts.enabled | bool | `false` | If enabled, create PrometheusRule resource with Loki alerting rules |
-| monitoring.alerts.namespace | string | `nil` | Alternative namespace to create alerting rules PrometheusRule resource in |
-| monitoring.alerts.annotations | object | `{}` | Additional annotations for the alerts PrometheusRule resource |
-| monitoring.alerts.labels | object | `{}` | Additional labels for the alerts PrometheusRule resource |
 | monitoring.serviceMonitor.enabled | bool | `false` | If enabled, ServiceMonitor resources for Prometheus Operator are created |
 | monitoring.serviceMonitor.namespace | string | `nil` | Alternative namespace for ServiceMonitor resources |
 | monitoring.serviceMonitor.namespaceSelector | object | `{}` | Namespace selector for ServiceMonitor resources |
 | monitoring.serviceMonitor.annotations | object | `{}` | ServiceMonitor annotations |
 | monitoring.serviceMonitor.labels | object | `{}` | Additional ServiceMonitor labels |
-| monitoring.serviceMonitor.interval | string | `nil` | ServiceMonitor scrape interval |
+| monitoring.serviceMonitor.interval | string | `"15s"` | ServiceMonitor scrape interval Default is 15s because included recording rules use a 1m rate, and scrape interval needs to be at least 1/4 rate interval. |
 | monitoring.serviceMonitor.scrapeTimeout | string | `nil` | ServiceMonitor scrape timeout in Go duration format (e.g. 15s) |
 | monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
 | monitoring.serviceMonitor.scheme | string | `"http"` | ServiceMonitor will use http by default, but you can pick https as well |
@@ -292,6 +289,7 @@ helm install loki chart/
 | backend.image.tag | string | `nil` | Docker image tag for the backend image. Overrides `loki.image.tag` |
 | backend.priorityClassName | string | `nil` | The name of the PriorityClass for backend pods |
 | backend.podAnnotations | object | `{}` | Annotations for backend pods |
+| backend.podLabels | object | `{}` | Additional labels for each `backend` pod |
 | backend.selectorLabels | object | `{}` | Additional selector labels for each `backend` pod |
 | backend.serviceLabels | object | `{}` | Labels for ingester service |
 | backend.targetModule | string | `"backend"` | Comma-separated list of Loki modules to load for the read |
@@ -312,7 +310,7 @@ helm install loki chart/
 | backend.persistence.selector | string | `nil` | Selector for persistent disk |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| singleBinary.replicas | int | `1` | Number of replicas for the single binary |
+| singleBinary.replicas | int | `0` | Number of replicas for the single binary |
 | singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling, this is only used if `queryIndex.enabled: true` |
 | singleBinary.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the single binary |
 | singleBinary.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the single binary |
@@ -365,6 +363,7 @@ helm install loki chart/
 | ingress.paths.singleBinary[8] | string | `"/prometheus/api/v1/alerts"` |  |
 | ingress.hosts[0] | string | `"loki.example.com"` |  |
 | ingress.tls | list | `[]` |  |
+| memberlist.service.publishNotReadyAddresses | bool | `false` |  |
 | gateway.enabled | bool | `false` | Specifies whether the gateway should be enabled |
 | gateway.replicas | int | `1` | Number of replicas for the gateway |
 | gateway.verboseLogging | bool | `true` | Enable logging of 2xx and 3xx HTTP requests |
@@ -376,7 +375,7 @@ helm install loki chart/
 | gateway.deploymentStrategy | object | `{"type":"RollingUpdate"}` | ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.23.2"` | The gateway image tag |
+| gateway.image.tag | string | `"1.23.3"` | The gateway image tag |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
 | gateway.podAnnotations | object | `{}` | Annotations for gateway pods |
@@ -409,7 +408,7 @@ helm install loki chart/
 | gateway.basicAuth.enabled | bool | `false` | Enables basic authentication for the gateway |
 | gateway.basicAuth.username | string | `nil` | The basic auth username for the gateway |
 | gateway.basicAuth.password | string | `nil` | The basic auth password for the gateway |
-| gateway.basicAuth.htpasswd | string | `"{{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }}"` | Uses the specified username and password to compute a htpasswd using Sprig's `htpasswd` function. The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
+| gateway.basicAuth.htpasswd | string | `"{{ if .Values.loki.tenants }}\n\n  {{- range $t := .Values.loki.tenants }}\n{{ htpasswd (required \"All tenants must have a 'name' set\" $t.name) (required \"All tenants must have a 'password' set\" $t.password) }}\n\n  {{- end }}\n{{ else }} {{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }} {{ end }}"` | Uses the specified users from the `loki.tenants` list to create the htpasswd file if `loki.tenants` is not set, the `gateway.basicAuth.username` and `gateway.basicAuth.password` are used The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
 | gateway.basicAuth.existingSecret | string | `nil` | Existing basic auth secret to use. Must contain '.htpasswd' |
 | gateway.readinessProbe.httpGet.path | string | `"/"` |  |
 | gateway.readinessProbe.httpGet.port | string | `"http"` |  |
@@ -417,7 +416,10 @@ helm install loki chart/
 | gateway.readinessProbe.timeoutSeconds | int | `1` |  |
 | gateway.nginxConfig.logFormat | string | `"main '$remote_addr - $remote_user [$time_local]  $status '\n        '\"$request\" $body_bytes_sent \"$http_referer\" '\n        '\"$http_user_agent\" \"$http_x_forwarded_for\"';"` | NGINX log format |
 | gateway.nginxConfig.serverSnippet | string | `""` | Allows appending custom configuration to the server block |
-| gateway.nginxConfig.httpSnippet | string | `""` | Allows appending custom configuration to the http block |
+| gateway.nginxConfig.httpSnippet | string | `"{{ if .Values.loki.tenants }}proxy_set_header X-Scope-OrgID $remote_user;{{ end }}"` | Allows appending custom configuration to the http block, passed through the `tpl` function to allow templating |
+| gateway.nginxConfig.customReadUrl | string | `nil` | Override Read URL |
+| gateway.nginxConfig.customWriteUrl | string | `nil` | Override Write URL |
+| gateway.nginxConfig.customBackendUrl | string | `nil` | Override Backend URL |
 | gateway.nginxConfig.file | string | See values.yaml | Config file contents for Nginx. Passed through the `tpl` function to allow templating |
 | gateway.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |

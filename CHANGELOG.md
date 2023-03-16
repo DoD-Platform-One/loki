@@ -2,6 +2,13 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.8.0-bb.0] - 2022-03-14
+### Changed
+- Update loki from 2.7.3 -> 2.7.4
+- Update kubectl from 1.26.1 -> 1.26.2
+- Update nginx from 1.23.2 -> 1.23.3
+- Update minio from 4.5.4-bb.2 -> 4.5.4-bb.3
+
 ## [4.4.2-bb.2] - 2023-02-23
 ### Changed
 - Backend, Read, Write PodDisruptionBudget template is now configurable
