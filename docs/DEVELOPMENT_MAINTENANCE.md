@@ -34,6 +34,12 @@ cd ../../
 Ensure minio version in chart.yml matches the latest tag version.
 
 ## Update binaries
+If needed, log into registry1
+```
+helm registry login https://registry1.dso.mil -u ${registry1.username}
+helm registry logout https://registry1.dso.mil
+```
+
 Pull assets and commit the binaries as well as the Chart.lock file that was generated.
 ```
 export HELM_EXPERIMENTAL_OCI=1
@@ -80,19 +86,19 @@ annotations:
 This is a high-level list of modifications that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
 
 ```chart/values.yaml```
-- line 16, Ensure nameOverride is set to `logging-loki`
+- line 14, Ensure nameOverride is set to `logging-loki`
 `nameOverride: logging-loki`
 
-- line 19, Ensure fullnameOverride is set to `logging-loki`
+- line 17, Ensure fullnameOverride is set to `logging-loki`
 `fullnameOverride: logging-loki`
 
-- line 22, Ensure `private-registry` IPS is present:
+- line 21, Ensure `private-registry` IPS is present:
 ```
 imagePullSecrets:
   - name: private-registry
 ```
 
-- line 25, update the kubectl image to pull from registry1
+- line 23, update the kubectl image to pull from registry1
 ```
   kubectlImage:
     # -- The Docker registry
@@ -103,7 +109,7 @@ imagePullSecrets:
     tag: v1.25.2
 ```
 
-line 43, Ensure `loki.image` section points to registry1 image and correct tag
+line 40, Ensure `loki.image` section points to registry1 image and correct tag
 ```
   image:
     # -- The Docker registry
@@ -114,7 +120,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag
     tag: X.X.X
 ```
 
-- line 119, Ensure `136` config is present
+- line 136, Ensure `136` config is present
 ```
     ingester:
       chunk_target_size: 196608
@@ -127,12 +133,12 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag
           replication_factor: 1
 ```
 
-- line 213, Ensure by default auth is disabled
+- line 209, Ensure by default auth is disabled
 ```
   auth_enabled: false
 ```
 
-- line 238, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- line 231, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -141,7 +147,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 295, Ensure `storage_config.boltdb_shipper` configuration is present
+- line 283, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -151,7 +157,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 370 , Ensure `enterprise.image` is pointed to registry1 image
+- line 343 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -162,14 +168,14 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 425, Ensure `provisioner.enabled` is  set to `false`
+- line 394, Ensure `provisioner.enabled` is  set to `false`
 ```
   provisioner:
     # -- Whether the job should be part of the deployment
     enabled: false
 ```
 
-- line 517, Ensure all monitoring sub-components are set to `enabled: false`
+- line 481, Ensure all monitoring sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
@@ -177,15 +183,15 @@ monitoring:
   enabled: false
 ```
 
-- line 621 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- line 572 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 652, Ensure `lokiCanary.enabled` is set to `false`
+- line 601, Ensure `lokiCanary.enabled` is set to `false`
 ```
     lokiCanary:
       enabled: false
 ```
 
-- line 717, write pod resources set
+- line 664, write pod resources set
 ```
   resources:
     limits:
@@ -196,7 +202,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 754, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
+- line 701, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -209,12 +215,12 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 850, legacyReadTarget set to true to give users time to migrate 2/7/23
+- line 805, legacyReadTarget set to true to give users time to migrate 2/7/23
 ```
   legacyReadTarget: true
 ```
 
-- line 864, read pod resources set
+- line 819, read pod resources set
 ```
   resources:
     limits:
@@ -225,7 +231,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 908, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
+- line 854, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -238,7 +244,7 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 983, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
+- line 931, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -251,7 +257,14 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 1011, set resource requests and limits for `singleBinary`
+- line 944, Ensure `singleBinary.replicas` is set to `1`
+```
+singleBinary:
+  # -- Number of replicas for the single binary
+  replicas: 1
+```
+
+- line 986, set resource requests and limits for `singleBinary`
 ```
   resources:
     limits:
@@ -262,9 +275,9 @@ monitoring:
       memory: 256Mi
 ```
 
-- line 1094 `gateway.enabled` set to `false` by default
+- line 1071 `gateway.enabled` set to `false` by default
 
-- line 1114, Ensure `gateway.image` is pointed to registry1 equivalent
+- line 1091, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -275,7 +288,7 @@ monitoring:
     tag: X.X.X
 ```
 
-- line 1271, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
+- line 1236, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -288,7 +301,7 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 1356 remove minio block added by upstream
+- line 1286 remove minio block added by upstream
 ```
   replicas: 1
   # Minio requires 2 to 16 drives for erasure code (drivesPerNode * replicas)
@@ -315,13 +328,13 @@ monitoring:
       memory: 128Mi
 ```
 
-- line 1380 or EOF. Move extraObjects configmap block up under loki. Above Minio.
+- line 1287 or EOF. Move extraObjects configmap block up under loki. Above Minio.
 ```
 # Create extra manifests via values. Would be passed through `tpl` for templating
 extraObjects: []
 ```
 
-- line 1312, ensure the following BB values are all set under minio key:
+- line 1311, ensure the following BB values are all set under minio key:
 ```
 minio:
   # -- Enable minio instance support, must have minio-operator installed
@@ -481,12 +494,12 @@ spec:
 ```
 
 ```chart/templates/_helpers.tpl```
-- On line 5 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
+- On line 13 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
 ```
 {{- $default := "loki" }
 ```
 
-- line 156 ensure the following block for minio looks like:
+- line 181 ensure the following block for minio looks like:
 ```
 {{- if .Values.minio.enabled -}}
 s3:
