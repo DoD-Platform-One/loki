@@ -1,6 +1,6 @@
 # loki
 
-![Version: 4.8.0-bb.0](https://img.shields.io/badge/Version-4.8.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.4](https://img.shields.io/badge/AppVersion-2.7.4-informational?style=flat-square)
+![Version: 4.8.0-bb.1](https://img.shields.io/badge/Version-4.8.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.7.4](https://img.shields.io/badge/AppVersion-2.7.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -310,7 +310,7 @@ helm install loki chart/
 | backend.persistence.selector | string | `nil` | Selector for persistent disk |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| singleBinary.replicas | int | `0` | Number of replicas for the single binary |
+| singleBinary.replicas | int | `1` | Number of replicas for the single binary |
 | singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling, this is only used if `queryIndex.enabled: true` |
 | singleBinary.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the single binary |
 | singleBinary.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the single binary |

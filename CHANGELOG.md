@@ -2,6 +2,12 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
+
+## [4.8.0-bb.1] - 2022-03-30
+### Added
+- Add helm test egress policy
+
 ## [4.8.0-bb.0] - 2022-03-14
 ### Changed
 - Update loki from 2.7.3 -> 2.7.4
