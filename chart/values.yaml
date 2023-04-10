@@ -26,7 +26,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.26.2
+  tag: v1.26.3
   # -- Docker image pull policy
   pullPolicy: IfNotPresent
 loki:
@@ -43,7 +43,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.7.4
+    tag: 2.7.5
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
   # -- Common annotations for all pods
@@ -302,7 +302,7 @@ enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
   # Default verion of GEL to deploy
-  version: v1.6.2
+  version: v1.6.3
   # -- Optional name of the GEL cluster, otherwise will use .Release.Name
   # The cluster name must match what is in your GEL license
   cluster_name: null
@@ -1196,8 +1196,10 @@ gateway:
     htpasswd: >-
       {{ if .Values.loki.tenants }}
 
+
         {{- range $t := .Values.loki.tenants }}
       {{ htpasswd (required "All tenants must have a 'name' set" $t.name) (required "All tenants must have a 'password' set" $t.password) }}
+
 
         {{- end }}
       {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required" .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password' is required" .Values.gateway.basicAuth.password) }} {{ end }}
