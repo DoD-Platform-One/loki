@@ -2,8 +2,8 @@ apiVersion: v2
 name: loki
 description: Helm chart for Grafana Loki in simple, scalable mode
 type: application
-appVersion: 2.7.4
-version: 4.8.0-bb.2
+appVersion: 2.7.5
+version: 4.10.0-bb.0
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -26,12 +26,12 @@ dependencies:
     repository: "oci://registry1.dso.mil/bigbang"
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 2.7.4
+    - Loki: 2.7.5
   helm.sh/images: |
     - name: loki
-      image: registry1.dso.mil/ironbank/opensource/grafana/loki:2.7.4
+      image: registry1.dso.mil/ironbank/opensource/grafana/loki:2.7.5
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.26.2
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.26.3
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.6.0
       condition: enterprise.enabled
@@ -42,7 +42,7 @@ annotations:
       image: docker.io/grafana/loki-helm-test:latest
       condition: test.enabled
     - name: loki-canary
-      image: docker.io/grafana/loki-canary:2.7.4
+      image: docker.io/grafana/loki-canary:2.7.5
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
       image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.23.3
