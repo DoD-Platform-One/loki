@@ -43,7 +43,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.7.5
+    tag: 2.8.0
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
   # -- Common annotations for all pods
@@ -434,7 +434,7 @@ migrate:
     # -- Set to true if migrating from a distributed helm chart
     enabled: false
     # -- If migrating from a distributed service, provide the distributed deployment's
-    # memberlist service DNS so the new deployment can join it's ring.
+    # memberlist service DNS so the new deployment can join its ring.
     memberlistService: ""
 serviceAccount:
   # -- Specifies whether a ServiceAccount should be created
@@ -549,11 +549,11 @@ monitoring:
       labels: {}
       # -- If defined a MetricsInstance will be created to remote write metrics.
       remoteWrite: null
-  # Self monitoring determines whether Loki should scrape it's own logs.
+  # Self monitoring determines whether Loki should scrape its own logs.
   # This feature currently relies on the Grafana Agent Operator being installed,
   # which is installed by default using the grafana-agent-operator sub-chart.
   # It will create custom resources for GrafanaAgent, LogsInstance, and PodLogs to configure
-  # scrape configs to scrape it's own logs with the labels expected by the included dashboards.
+  # scrape configs to scrape its own logs with the labels expected by the included dashboards.
   selfMonitoring:
     enabled: false
 
@@ -802,7 +802,7 @@ read:
   # -- Whether or not to use the 2 target type simple scalable mode (read, write) or the
   # 3 target type (read, write, backend). Legacy refers to the 2 target type, so true will
   # run two targets, false will run 3 targets.
-  legacyReadTarget: true
+  legacyReadTarget: false
   # -- Additional CLI args for the read
   extraArgs: []
   # -- Environment variables to add to the read pods
@@ -864,7 +864,7 @@ read:
 # Configuration for the backend pod(s)
 backend:
   # -- Number of replicas for the backend
-  replicas: 3
+  replicas: 2
   image:
     # -- The Docker registry for the backend image. Overrides `loki.image.registry`
     registry: null
