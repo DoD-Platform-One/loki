@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.0.0-bb.1] - 2022-04-19
+### Added
+- Updated kubectl versson from 1.26.3 to 1.26.4
+
 ## [5.0.0-bb.0] - 2022-04-11
 ### Added
 - Updated chart to `helm-loki-5.0.0`
