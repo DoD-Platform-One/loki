@@ -1,8 +1,8 @@
-{{- if and .Values.networkPolicies.enabled .Values.promtail.enabled }}
+{{- if and .Values.networkPolicies.enabled .Values.fluentbit.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-promtail-ingress-{{ .Release.Name }}
+  name: allow-fluentbit-ingress-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   podSelector:
@@ -14,10 +14,10 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          app.kubernetes.io/name: promtail
+          app.kubernetes.io/name: fluentbit
       podSelector:
         matchLabels:
-          app.kubernetes.io/name: promtail
+          app.kubernetes.io/name: fluent-bit
     ports:
     - port: 3100
       protocol: TCP

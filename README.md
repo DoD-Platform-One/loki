@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.0.0-bb.1](https://img.shields.io/badge/Version-5.0.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.0](https://img.shields.io/badge/AppVersion-2.8.0-informational?style=flat-square)
+![Version: 5.0.0-bb.2](https://img.shields.io/badge/Version-5.0.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.0](https://img.shields.io/badge/AppVersion-2.8.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -148,6 +148,8 @@ helm install loki chart/
 | test.image.repository | string | `"grafana/loki-helm-test"` | Docker image repository |
 | test.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
 | test.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
+| fluentbit.enabled | bool | `false` |  |
+| promtail.enabled | bool | `false` |  |
 | monitoring.enabled | bool | `false` | Enable BigBang integration of Monitoring components |
 | monitoring.dashboards.enabled | bool | `false` | If enabled, create configmap with dashboards for monitoring Loki |
 | monitoring.dashboards.namespace | string | `nil` | Alternative namespace to create dashboards ConfigMap in |
@@ -265,7 +267,7 @@ helm install loki chart/
 | read.selectorLabels | object | `{}` | Additional selector labels for each `read` pod |
 | read.serviceLabels | object | `{}` | Labels for read service |
 | read.targetModule | string | `"read"` | Comma-separated list of Loki modules to load for the read |
-| read.legacyReadTarget | bool | `true` | Whether or not to use the 2 target type simple scalable mode (read, write) or the 3 target type (read, write, backend). Legacy refers to the 2 target type, so true will run two targets, false will run 3 targets. |
+| read.legacyReadTarget | bool | `false` | Whether or not to use the 2 target type simple scalable mode (read, write) or the 3 target type (read, write, backend). Legacy refers to the 2 target type, so true will run two targets, false will run 3 targets. |
 | read.extraArgs | list | `[]` | Additional CLI args for the read |
 | read.extraEnv | list | `[]` | Environment variables to add to the read pods |
 | read.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the read pods |
@@ -283,7 +285,7 @@ helm install loki chart/
 | read.persistence.selector | string | `nil` | Selector for persistent disk |
 | read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| backend.replicas | int | `3` | Number of replicas for the backend |
+| backend.replicas | int | `2` | Number of replicas for the backend |
 | backend.image.registry | string | `nil` | The Docker registry for the backend image. Overrides `loki.image.registry` |
 | backend.image.repository | string | `nil` | Docker image repository for the backend image. Overrides `loki.image.repository` |
 | backend.image.tag | string | `nil` | Docker image tag for the backend image. Overrides `loki.image.tag` |
