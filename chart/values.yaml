@@ -477,6 +477,10 @@ test:
     tag: null
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
+fluentbit:
+  enabled: false
+promtail:
+  enabled: false
 # Monitoring section determines which monitoring features to enable
 monitoring:
   # -- Enable BigBang integration of Monitoring components
