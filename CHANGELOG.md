@@ -3,37 +3,41 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
-## [5.0.0-bb.2] - 2022-04-19
+## [5.0.0-bb.3] - 2023-05-10
+### Added
+- Added a networkpolicy for egress from minio to the controlplane
+
+## [5.0.0-bb.2] - 2023-04-19
 ### Added
 - Added `fluentbit` network policy
 - Added conditional for `fluentbit` and `promtail` network policies
 
-## [5.0.0-bb.1] - 2022-04-19
+## [5.0.0-bb.1] - 2023-04-19
 ### Added
 - Updated kubectl versson from 1.26.3 to 1.26.4
 
-## [5.0.0-bb.0] - 2022-04-11
+## [5.0.0-bb.0] - 2023-04-11
 ### Added
 - Updated chart to `helm-loki-5.0.0`
 - Update loki from 2.7.5 -> 2.8.0
 - Update lokiCanary from 2.7.5 -> 2.8.0
 
-## [4.10.0-bb.0] - 2022-04-06
+## [4.10.0-bb.0] - 2023-04-06
 ### Added
 - Updated chart to `helm-loki-4.10.0`
 - Update loki from 2.7.4 -> 2.7.5
 - Update lokiCanary from 2.7.4 -> 2.7.5
 - Update kubectl from 1.26.2 -> 1.26.3
 
-## [4.8.0-bb.2] - 2022-04-03
+## [4.8.0-bb.2] - 2023-04-03
 ### Added
 - Added ingress policy for promtail -> loki
 
-## [4.8.0-bb.1] - 2022-03-30
+## [4.8.0-bb.1] - 2023-03-30
 ### Added
 - Add helm test egress policy
 
-## [4.8.0-bb.0] - 2022-03-14
+## [4.8.0-bb.0] - 2023-03-14
 ### Changed
 - Update loki from 2.7.3 -> 2.7.4
 - Update kubectl from 1.26.1 -> 1.26.2
@@ -46,11 +50,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 - `write|read|backend.podDisruptionBudget` values added to chart
 
-## [4.4.2-bb.1] - 2022-02-22
+## [4.4.2-bb.1] - 2023-02-22
 ### Changed
 - Update kubectl from 1.25.6 -> 1.26.1
 
-## [4.4.2-bb.0] - 2022-02-07
+## [4.4.2-bb.0] - 2023-02-07
 ### Changed
 - loki chart major version upgrade from 3.7.0 -> 4.4.2
 - Update loki from 2.7.0 -> 2.7.3
@@ -60,7 +64,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Fixed
 - Fixed image tags in Chart.yaml image annotations
 
-## [3.7.0-bb.1] - 2022-01-17
+## [3.7.0-bb.1] - 2023-01-17
 ### Changed
 - Update gluon to new registry1 location + latest version (0.3.2)
 
