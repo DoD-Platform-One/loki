@@ -19,12 +19,12 @@ beforeEach(function () {
             cy.get('input[name="password"]')
               .type('prom-operator')
             cy.contains("Log in").click()
-            cy.get('.page-toolbar').contains('General', {timeout: 30000})
+            cy.get('.page-dashboard').contains('General', {timeout: 30000})
             // Visit the datasources page
-            cy.visit(`${Cypress.env('grafana_url')}/datasources`)
+            cy.visit(`${Cypress.env('grafana_url')}/connections/your-connections/datasources`)
   
             // // // Enter 'loki' in the search field and 
-            cy.get('input[type="text"]')
+            cy.get('input[type="text"]').first()
             .type('loki')
             // Click on the loki datasource
             cy.get('a').contains("Loki").click()
