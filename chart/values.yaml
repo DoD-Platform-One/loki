@@ -43,7 +43,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.8.0
+    tag: 2.8.2
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
   # -- Common annotations for all pods
@@ -205,6 +205,11 @@ loki:
     querier:
       {{- tpl (. | toYaml) $ | nindent 4 }}
     {{- end }}
+
+    {{- with .Values.loki.index_gateway }}
+    index_gateway:
+      {{- tpl (. | toYaml) $ | nindent 4 }}
+    {{- end }}
   # Should authentication be enabled
   auth_enabled: false
   # -- Tenants list to be created on nginx htpasswd file, with name and password keys
@@ -240,6 +245,7 @@ loki:
       region: null
       secretAccessKey: null
       accessKeyId: null
+      signatureVersion: null
       s3ForcePathStyle: false
       insecure: false
       http_config: {}
@@ -251,6 +257,7 @@ loki:
       accountName: null
       accountKey: null
       useManagedIdentity: false
+      useFederatedToken: false
       userAssignedId: null
       requestTimeout: null
     filesystem:
@@ -298,11 +305,14 @@ loki:
   querier: {}
   # --  Optional ingester configuration
   ingester: {}
+  # --  Optional index gateway configuration
+  index_gateway:
+    mode: ring
 enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
   # Default verion of GEL to deploy
-  version: v1.6.3
+  version: v1.7.1
   # -- Optional name of the GEL cluster, otherwise will use .Release.Name
   # The cluster name must match what is in your GEL license
   cluster_name: null
@@ -311,7 +321,7 @@ enterprise:
   # the contents of your Grafana Enterprise Logs license, either by providing the
   # contents of the license.jwt, or the name Kubernetes Secret that contains your
   # license.jwt.
-  # To set the license contents, use the flag `--set-file 'license.contents=./license.jwt'`
+  # To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'`
   license:
     contents: "NOTAVALIDLICENSE"
   # -- Set to true when providing an external license
@@ -980,6 +990,8 @@ singleBinary:
   extraEnv: []
   # -- Environment variables from secrets or configmaps to add to the single binary pods
   extraEnvFrom: []
+  # -- Extra containers to add to the single binary loki pod
+  extraContainers: []
   # -- Init containers to add to the single binary pods
   initContainers: []
   # -- Volume mounts to add to the single binary pods
