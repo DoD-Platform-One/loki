@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.0.0-bb.4](https://img.shields.io/badge/Version-5.0.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.0](https://img.shields.io/badge/AppVersion-2.8.0-informational?style=flat-square)
+![Version: 5.5.0-bb.4](https://img.shields.io/badge/Version-5.5.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -55,7 +55,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.8.0"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.8.2"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.podAnnotations | object | `{}` | Common annotations for all pods |
 | loki.podLabels | object | `{}` | Common labels for all pods |
@@ -71,7 +71,7 @@ helm install loki chart/
 | loki.limits_config | object | `{"enforce_metric_name":false,"max_cache_freshness_per_query":"10m","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m"}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":3}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"requestTimeout":null,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
@@ -82,10 +82,11 @@ helm install loki chart/
 | loki.analytics | object | `{}` | Optional analytics configuration |
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{}` | Optional ingester configuration |
+| loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
 | enterprise.enabled | bool | `false` |  |
-| enterprise.version | string | `"v1.6.3"` |  |
+| enterprise.version | string | `"v1.7.2"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
-| enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'license.contents=./license.jwt'` |
+| enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
 | enterprise.externalLicenseName | string | `nil` | Name of external license secret to use |
 | enterprise.externalConfigName | string | `""` | Name of the external config secret to use |
@@ -329,6 +330,7 @@ helm install loki chart/
 | singleBinary.extraArgs | list | `[]` | Labels for single binary service |
 | singleBinary.extraEnv | list | `[]` | Environment variables to add to the single binary pods |
 | singleBinary.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the single binary pods |
+| singleBinary.extraContainers | list | `[]` | Extra containers to add to the single binary loki pod |
 | singleBinary.initContainers | list | `[]` | Init containers to add to the single binary pods |
 | singleBinary.extraVolumeMounts | list | `[]` | Volume mounts to add to the single binary pods |
 | singleBinary.extraVolumes | list | `[]` | Volumes to add to the single binary pods |

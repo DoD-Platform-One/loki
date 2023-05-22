@@ -84,7 +84,7 @@ tenant:
   ## Registry location and Tag to download MinIO Server image
   image:
     repository: registry1.dso.mil/ironbank/opensource/minio/minio
-    tag: RELEASE.2022-11-26T22-43-32Z
+    tag: RELEASE.2023-04-28T18-11-17Z
     pullPolicy: IfNotPresent
   ## Customize namespace for tenant deployment
   #namespace: default
@@ -143,6 +143,12 @@ tenant:
         runAsGroup: 1001
         fsGroup: 1001
         runAsNonRoot: true
+      ## Configure container security context
+      containerSecurityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        runAsNonRoot: true
+      ## Configure topology constraints
       topologySpreadConstraints: [ ]
       ## Configure Runtime Class
       # runtimeClassName: ""
@@ -172,7 +178,7 @@ tenant:
     ## not provided. DNS name format is *.minio.default.svc.cluster.local
     certConfig: { }
   ## MinIO features to enable or disable in the MinIO Tenant
-  ## https://github.com/minio/operator/blob/master/docs/crd.adoc#features
+  ## https://github.com/minio/operator/blob/master/docs/tenant_crd.adoc#features
   features:
     bucketDNS: false
     domains: { }
@@ -190,6 +196,9 @@ tenant:
   # Readiness Probe for container readiness. Container will be removed from service endpoints if the probe fails.
   # Refer https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
   readiness: { }
+  # Startup Probe for container startup. Container will be restarted if the probe fails.
+  # Refer https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+  startup: { }
   ## exposeServices defines the exposure of the MinIO object storage and Console services.
   ## service is exposed as a loadbalancer in k8s service.
   exposeServices: { }
@@ -201,7 +210,7 @@ tenant:
   # Enable JSON, Anonymous logging for MinIO tenants.
   # Refer https://github.com/minio/operator/blob/master/pkg/apis/minio.min.io/v2/types.go#L303
   # How logs will look:
-  # $ k logs minio1-pool-0-0 -n default
+  # $ k logs myminio-pool-0-0 -n default
   # {"level":"INFO","errKind":"","time":"2022-04-07T21:49:33.740058549Z","message":"All MinIO sub-systems initialized successfully"}
   # Notice they are in JSON format to be consumed
   logging:
@@ -220,7 +229,7 @@ tenant:
   ## Define configuration for KES (stateless and distributed key-management system)
   ## Refer https://github.com/minio/kes
   #kes:
-  #  image: "" # minio/kes:v0.18.0
+  #  image: "" # minio/kes:2023-04-03T16-41-28Z
   #  env: [ ]
   #  replicas: 2
   #  configuration: |-
@@ -299,8 +308,11 @@ tenant:
   #    runAsGroup: 1000
   #    runAsNonRoot: true
   #    fsGroup: 1000
+
   ## Prometheus setup for MinIO Tenant.
   prometheus:
+    # When set to true disables the creation of prometheus deployment
+    disabled: true
     image: "" # defaults to quay.io/prometheus/prometheus:latest
     env: [ ]
     sidecarimage: "" # defaults to alpine
@@ -322,12 +334,14 @@ tenant:
     resources: { }
     serviceAccountName: ""
     securityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
+      runAsUser: 1001
+      runAsGroup: 1001
       runAsNonRoot: true
-      fsGroup: 1000
+      fsGroup: 1001
   ## LogSearch API setup for MinIO Tenant.
   log:
+    # When set to true disables the creation of logsearch api deployment
+    disabled: true
     image: "" # defaults to minio/operator:v4.4.17
     env: [ ]
     resources: { }
@@ -376,10 +390,10 @@ tenant:
         fsGroup: 999
     serviceAccountName: ""
     securityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
+      runAsUser: 1001
+      runAsGroup: 1001
       runAsNonRoot: true
-      fsGroup: 1000
+      fsGroup: 1001
 
 ingress:
   api:
@@ -419,7 +433,7 @@ bbtests:
             name: "{{ .Values.secrets.name }}"
             key: accesskey
   scripts:
-    image: registry1.dso.mil/ironbank/opensource/minio/mc:RELEASE.2022-02-26T03-58-31Z
+    image: registry1.dso.mil/ironbank/opensource/minio/mc:RELEASE.2023-04-12T02-21-51Z
     envs:
       MINIO_PORT: '80'
       MINIO_HOST: 'http://minio'
