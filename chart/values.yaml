@@ -153,6 +153,13 @@ loki:
           index:
             prefix: loki_index_
             period: 24h
+        - from: 2022-05-31
+          store: tsdb
+          object_store: {{ .Values.loki.storage.type }}
+          schema: v12
+          index:
+            prefix: loki_tsdb_
+            period: 24h
     {{- end }}
 
     {{ include "loki.rulerConfig" . }}
@@ -292,7 +299,10 @@ loki:
       active_index_directory: /var/loki/boltdb-shipper-active
       cache_location: /var/loki/boltdb-shipper-cache
       cache_ttl: 24h
-      shared_store: s3
+    tsdb_shipper:
+      active_index_directory: /var/loki/tsdb-index
+      cache_location: /var/loki/tsdb-cache
+      cache_ttl: 24h
     hedging:
       at: "250ms"
       max_per_second: 20
