@@ -19,7 +19,7 @@ beforeEach(function () {
             cy.get('input[name="password"]')
               .type('prom-operator')
             cy.contains("Log in").click()
-            cy.get('.page-dashboard').contains('General', {timeout: 30000})
+            cy.get('.page-dashboard').contains('Welcome', {timeout: 30000})
             // Visit the datasources page
             cy.visit(`${Cypress.env('grafana_url')}/connections/your-connections/datasources`)
   
