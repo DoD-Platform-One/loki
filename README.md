@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.5.0-bb.2](https://img.shields.io/badge/Version-5.5.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
+![Version: 5.5.0-bb.3](https://img.shields.io/badge/Version-5.5.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -77,7 +77,7 @@ helm install loki chart/
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
 | loki.structuredConfig | object | `{}` | Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig` |
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
-| loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","shared_store":{"":null}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","shared_store":{"":null}}}` | Additional storage config |
+| loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h"},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h"}}` | Additional storage config |
 | loki.compactor | object | `{}` | Optional compactor configuration |
 | loki.analytics | object | `{}` | Optional analytics configuration |
 | loki.querier | object | `{}` | Optional querier configuration |
