@@ -26,7 +26,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.26.4
+  tag: 1.27.3
   # -- Docker image pull policy
   pullPolicy: IfNotPresent
 loki:
@@ -366,7 +366,7 @@ enterprise:
     # -- Docker image repository
     repository: ironbank/grafana/grafana-enterprise-logs
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: v1.6.0
+    tag: v1.7.1
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
   adminToken:
@@ -1120,7 +1120,7 @@ gateway:
     # -- The gateway image repository
     repository: ironbank/opensource/nginx/nginx
     # -- The gateway image tag
-    tag: 1.23.3
+    tag: 1.25.1
     # -- The gateway image pull policy
     pullPolicy: IfNotPresent
   # -- The name of the PriorityClass for gateway pods

@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.5.0-bb.3](https://img.shields.io/badge/Version-5.5.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
+![Version: 5.5.0-bb.4](https://img.shields.io/badge/Version-5.5.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -47,7 +47,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.26.4"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"1.27.3"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
 | loki.readinessProbe.httpGet.port | string | `"http-metrics"` |  |
@@ -94,7 +94,7 @@ helm install loki chart/
 | enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") (eq .Values.loki.storage.type \"azure\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
-| enterprise.image.tag | string | `"v1.6.0"` | Overrides the image tag whose default is the chart's appVersion |
+| enterprise.image.tag | string | `"v1.7.1"` | Overrides the image tag whose default is the chart's appVersion |
 | enterprise.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.adminToken.secret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
 | enterprise.adminToken.additionalNamespaces | list | `[]` | Additional namespace to also create the token in. Useful if your Grafana instance is in a different namespace |
@@ -379,7 +379,7 @@ helm install loki chart/
 | gateway.deploymentStrategy | object | `{"type":"RollingUpdate"}` | ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.23.3"` | The gateway image tag |
+| gateway.image.tag | string | `"1.25.1"` | The gateway image tag |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
 | gateway.podAnnotations | object | `{}` | Annotations for gateway pods |
