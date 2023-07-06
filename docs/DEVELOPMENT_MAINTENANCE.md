@@ -556,6 +556,9 @@ s3:
 ```
 sed -i 's/(loki|enterprise-logs)/logging-loki/g' \*.json
 ```
+- modify the `loki-logs.json` dashboard to maintain the `expr` for log querying (lines 775 and 840):
+  - 775: `"expr": "sum(rate({namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\" } |logfmt|= \"$filter\" [5m])) by (level)",`
+  - 840: `"expr": "{namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\"} | logfmt | level=\"$level\" |= \"$filter\"",`
 
 # Testing new Loki Version
 

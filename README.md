@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.5.0-bb.4](https://img.shields.io/badge/Version-5.5.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
+![Version: 5.8.9-bb.0](https://img.shields.io/badge/Version-5.8.9--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -44,10 +44,12 @@ helm install loki chart/
 | global.dnsNamespace | string | `"kube-system"` | configures DNS service namespace |
 | nameOverride | string | `"logging-loki"` | Overrides the chart's name |
 | fullnameOverride | string | `"logging-loki"` | Overrides the chart's computed fullname |
+| clusterLabelOverride | string | `nil` | Overrides the chart's cluster label |
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
 | kubectlImage.tag | string | `"1.27.3"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
 | loki.readinessProbe.httpGet.port | string | `"http-metrics"` |  |
@@ -56,7 +58,9 @@ helm install loki chart/
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
 | loki.image.tag | string | `"2.8.2"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
+| loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
 | loki.podAnnotations | object | `{}` | Common annotations for all pods |
 | loki.podLabels | object | `{}` | Common labels for all pods |
 | loki.revisionHistoryLimit | int | `10` | The number of old ReplicaSets to retain to allow rollback |
@@ -64,14 +68,18 @@ helm install loki chart/
 | loki.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | The SecurityContext for Loki containers |
 | loki.enableServiceLinks | bool | `true` | Should enableServiceLinks be enabled. Default to enable |
 | loki.existingSecretForConfig | string | `""` | Specify an existing secret containing loki configuration. If non-empty, overrides `loki.config` |
+| loki.configStorageType | string | `"ConfigMap"` | Defines what kind of object stores the configuration, a ConfigMap or a Secret. In order to move sensitive information (such as credentials) from the ConfigMap/Secret to a more secure location (e.g. vault), it is possible to use [environment variables in the configuration](https://grafana.com/docs/loki/latest/configuration/#use-environment-variables-in-the-configuration). Such environment variables can be then stored in a separate Secret and injected via the global.extraEnvFrom value. For details about environment injection from a Secret please see [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/#use-case-as-container-environment-variables). |
+| loki.externalConfigSecretName | string | `"{{ include \"loki.name\" . }}"` | Name of the Secret or ConfigMap that contains the configuration (used for naming even if config is internal). |
 | loki.config | string | See values.yaml | Config file contents for Loki |
 | loki.auth_enabled | bool | `false` |  |
+| loki.memberlistConfig | object | `{}` | memberlist configuration (overrides embedded default) |
+| loki.extraMemberlistConfig | object | `{}` | Extra memberlist configuration |
 | loki.tenants | list | `[]` | Tenants list to be created on nginx htpasswd file, with name and password keys |
 | loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100}` | Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration. |
 | loki.limits_config | object | `{"enforce_metric_name":false,"max_cache_freshness_per_query":"10m","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m"}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":3}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
@@ -83,6 +91,8 @@ helm install loki chart/
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{}` | Optional ingester configuration |
 | loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
+| loki.frontend.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
+| loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | enterprise.enabled | bool | `false` |  |
 | enterprise.version | string | `"v1.7.1"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
@@ -95,6 +105,7 @@ helm install loki chart/
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
 | enterprise.image.tag | string | `"v1.7.1"` | Overrides the image tag whose default is the chart's appVersion |
+| enterprise.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.adminToken.secret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
 | enterprise.adminToken.additionalNamespaces | list | `[]` | Additional namespace to also create the token in. Useful if your Grafana instance is in a different namespace |
@@ -112,7 +123,7 @@ helm install loki chart/
 | enterprise.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
 | enterprise.tokengen.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the tokengen pods |
 | enterprise.tokengen.priorityClassName | string | `""` | The name of the PriorityClass for tokengen Pods |
-| enterprise.provisioner | object | `{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `provisioner` target |
+| enterprise.provisioner | object | `{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `provisioner` target |
 | enterprise.provisioner.enabled | bool | `false` | Whether the job should be part of the deployment |
 | enterprise.provisioner.provisionedSecretPrefix | string | `nil` | Name of the secret to store provisioned tokens in |
 | enterprise.provisioner.additionalTenants | list | `[]` | Additional tenants to be created. Each tenant will get a read and write policy and associated token. Tenant must have a name and a namespace for the secret containting the token to be created in. For example additionalTenants:   - name: loki     secretNamespace: grafana |
@@ -121,10 +132,11 @@ helm install loki chart/
 | enterprise.provisioner.annotations | object | `{}` | Additional annotations for the `provisioner` Job |
 | enterprise.provisioner.priorityClassName | string | `nil` | The name of the PriorityClass for provisioner Job |
 | enterprise.provisioner.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
-| enterprise.provisioner.image | object | `{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null}` | Provisioner image to Utilize |
+| enterprise.provisioner.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null}` | Provisioner image to Utilize |
 | enterprise.provisioner.image.registry | string | `"docker.io"` | The Docker registry |
 | enterprise.provisioner.image.repository | string | `"grafana/enterprise-logs-provisioner"` | Docker image repository |
 | enterprise.provisioner.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
+| enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
 | migrate | object | `{"fromDistributed":{"enabled":false,"memberlistService":""}}` | Options that may be necessary when performing a migration from another helm chart |
@@ -139,15 +151,16 @@ helm install loki chart/
 | serviceAccount.automountServiceAccountToken | bool | `true` | Set this toggle to false to opt out of automounting API credentials for the service account |
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
-| test | object | `{"annotations":{},"enabled":false,"image":{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
+| test | object | `{"annotations":{},"enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
 | test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test |
 | test.timeout | string | `"1m"` | Number of times to retry the test before failing |
 | test.labels | object | `{}` | Additional labels for the test pods |
 | test.annotations | object | `{}` | Additional annotations for test pods |
-| test.image | object | `{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null}` | Image to use for loki canary |
+| test.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null}` | Image to use for loki canary |
 | test.image.registry | string | `"docker.io"` | The Docker registry |
 | test.image.repository | string | `"grafana/loki-helm-test"` | Docker image repository |
 | test.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
+| test.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | test.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | fluentbit.enabled | bool | `false` |  |
 | promtail.enabled | bool | `false` |  |
@@ -161,6 +174,7 @@ helm install loki chart/
 | monitoring.rules.namespace | string | `nil` | Alternative namespace to create PrometheusRule resources in |
 | monitoring.rules.annotations | object | `{}` | Additional annotations for the rules PrometheusRule resource |
 | monitoring.rules.labels | object | `{}` | Additional labels for the rules PrometheusRule resource |
+| monitoring.rules.additionalRuleLabels | object | `{}` | Additional labels for PrometheusRule alerts |
 | monitoring.rules.additionalGroups | list | `[]` | Additional groups to add to the rules file |
 | monitoring.serviceMonitor.enabled | bool | `false` | If enabled, ServiceMonitor resources for Prometheus Operator are created |
 | monitoring.serviceMonitor.namespace | string | `nil` | Alternative namespace for ServiceMonitor resources |
@@ -170,6 +184,7 @@ helm install loki chart/
 | monitoring.serviceMonitor.interval | string | `"15s"` | ServiceMonitor scrape interval Default is 15s because included recording rules use a 1m rate, and scrape interval needs to be at least 1/4 rate interval. |
 | monitoring.serviceMonitor.scrapeTimeout | string | `nil` | ServiceMonitor scrape timeout in Go duration format (e.g. 15s) |
 | monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.serviceMonitor.metricRelabelings | list | `[]` | ServiceMonitor metric relabel configs to apply to samples before ingestion https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint |
 | monitoring.serviceMonitor.scheme | string | `"http"` | ServiceMonitor will use http by default, but you can pick https as well |
 | monitoring.serviceMonitor.tlsConfig | string | `nil` | ServiceMonitor will use these tlsConfig settings to make the health check requests |
 | monitoring.serviceMonitor.metricsInstance | object | `{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null}` | If defined, will create a MetricsInstance for the Grafana Agent Operator. |
@@ -186,6 +201,7 @@ helm install loki chart/
 | monitoring.selfMonitoring.grafanaAgent.annotations | object | `{}` | Grafana Agent annotations |
 | monitoring.selfMonitoring.grafanaAgent.labels | object | `{}` | Additional Grafana Agent labels |
 | monitoring.selfMonitoring.grafanaAgent.enableConfigReadAPI | bool | `false` | Enable the config read api on port 8080 of the agent |
+| monitoring.selfMonitoring.grafanaAgent.priorityClassName | string | `nil` | The name of the PriorityClass for GrafanaAgent pods |
 | monitoring.selfMonitoring.podLogs.annotations | object | `{}` | PodLogs annotations |
 | monitoring.selfMonitoring.podLogs.labels | object | `{}` | Additional PodLogs labels |
 | monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
@@ -194,22 +210,34 @@ helm install loki chart/
 | monitoring.selfMonitoring.logsInstance.clients | string | `nil` | Additional clients for remote write |
 | monitoring.lokiCanary.enabled | bool | `false` |  |
 | monitoring.lokiCanary.annotations | object | `{}` | Additional annotations for the `loki-canary` Daemonset |
+| monitoring.lokiCanary.podLabels | object | `{}` | Additional labels for each `loki-canary` pod |
 | monitoring.lokiCanary.extraArgs | list | `[]` | Additional CLI arguments for the `loki-canary' command |
 | monitoring.lokiCanary.extraEnv | list | `[]` | Environment variables to add to the canary pods |
 | monitoring.lokiCanary.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the canary pods |
 | monitoring.lokiCanary.resources | object | `{}` | Resource requests and limits for the canary |
 | monitoring.lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
 | monitoring.lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
-| monitoring.lokiCanary.image | object | `{"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-canary","tag":null}` | Image to use for loki canary |
+| monitoring.lokiCanary.priorityClassName | string | `nil` | The name of the PriorityClass for loki-canary pods |
+| monitoring.lokiCanary.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-canary","tag":null}` | Image to use for loki canary |
 | monitoring.lokiCanary.image.registry | string | `"docker.io"` | The Docker registry |
 | monitoring.lokiCanary.image.repository | string | `"grafana/loki-canary"` | Docker image repository |
 | monitoring.lokiCanary.image.tag | string | `nil` | Overrides the image tag whose default is the chart's appVersion |
+| monitoring.lokiCanary.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | monitoring.lokiCanary.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
+| monitoring.lokiCanary.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | Update strategy for the `loki-canary` Daemonset pods |
 | write.replicas | int | `2` | Number of replicas for the write |
+| write.autoscaling.enabled | bool | `false` | Enable autoscaling for the write. |
+| write.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the write. |
+| write.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the write. |
+| write.autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilisation percentage for the write. |
+| write.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the write. |
+| write.autoscaling.behavior | object | `{"scaleDown":{"policies":[{"periodSeconds":1800,"type":"Pods","value":1}],"stabilizationWindowSeconds":3600},"scaleUp":{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}}` | Behavior policies while scaling. |
+| write.autoscaling.behavior.scaleUp | object | `{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}` | see https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown for scaledown details |
 | write.image.registry | string | `nil` | The Docker registry for the write image. Overrides `loki.image.registry` |
 | write.image.repository | string | `nil` | Docker image repository for the write image. Overrides `loki.image.repository` |
 | write.image.tag | string | `nil` | Docker image tag for the write image. Overrides `loki.image.tag` |
 | write.priorityClassName | string | `nil` | The name of the PriorityClass for write pods |
+| write.annotations | object | `{}` | Annotations for write StatefulSet |
 | write.podAnnotations | object | `{}` | Annotations for write pods |
 | write.podLabels | object | `{}` | Additional labels for each `write` pod |
 | write.selectorLabels | object | `{}` | Additional selector labels for each `write` pod |
@@ -222,11 +250,13 @@ helm install loki chart/
 | write.initContainers | list | `[]` | Init containers to add to the write pods |
 | write.extraVolumeMounts | list | `[]` | Volume mounts to add to the write pods |
 | write.extraVolumes | list | `[]` | Volumes to add to the write pods |
+| write.extraVolumeClaimTemplates | list | `[]` | volumeClaimTemplates to add to StatefulSet |
 | write.resources | object | `{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Resource requests and limits for the write |
 | write.terminationGracePeriodSeconds | int | `300` | Grace period to allow the write to shutdown before it is killed. Especially for the ingestor, this must be increased. It must be long enough so writes can be gracefully shutdown flushing/transferring all data and to successfully leave the member ring on shutdown. |
 | write.affinity | string | Hard node and soft zone anti-affinity | Affinity for write pods. Passed through `tpl` and, thus, to be configured as string |
 | write.nodeSelector | object | `{}` | Node selector for write pods |
 | write.tolerations | list | `[]` | Tolerations for write pods |
+| write.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | write.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | write.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
@@ -240,6 +270,7 @@ helm install loki chart/
 | tableManager.command | string | `nil` | Command to execute instead of defined in Docker image |
 | tableManager.priorityClassName | string | `nil` | The name of the PriorityClass for table-manager pods |
 | tableManager.podLabels | object | `{}` | Labels for table-manager pods |
+| tableManager.annotations | object | `{}` | Annotations for table-manager deployment |
 | tableManager.podAnnotations | object | `{}` | Annotations for table-manager pods |
 | tableManager.serviceLabels | object | `{}` | Labels for table-manager service |
 | tableManager.extraArgs | list | `[]` | Additional CLI args for the table-manager |
@@ -253,16 +284,20 @@ helm install loki chart/
 | tableManager.affinity | string | Hard node and soft zone anti-affinity | Affinity for table-manager pods. Passed through `tpl` and, thus, to be configured as string |
 | tableManager.nodeSelector | object | `{}` | Node selector for table-manager pods |
 | tableManager.tolerations | list | `[]` | Tolerations for table-manager pods |
+| tableManager.retention_deletes_enabled | bool | `false` | Enable deletes by retention |
+| tableManager.retention_period | int | `0` | Set retention period |
 | read.replicas | int | `2` | Number of replicas for the read |
 | read.autoscaling.enabled | bool | `false` | Enable autoscaling for the read, this is only used if `queryIndex.enabled: true` |
 | read.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the read |
 | read.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the read |
 | read.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the read |
 | read.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilisation percentage for the read |
+| read.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
 | read.image.registry | string | `nil` | The Docker registry for the read image. Overrides `loki.image.registry` |
 | read.image.repository | string | `nil` | Docker image repository for the read image. Overrides `loki.image.repository` |
 | read.image.tag | string | `nil` | Docker image tag for the read image. Overrides `loki.image.tag` |
 | read.priorityClassName | string | `nil` | The name of the PriorityClass for read pods |
+| read.annotations | object | `{}` | Annotations for read deployment |
 | read.podAnnotations | object | `{}` | Annotations for read pods |
 | read.podLabels | object | `{}` | Additional labels for each `read` pod |
 | read.selectorLabels | object | `{}` | Additional selector labels for each `read` pod |
@@ -280,6 +315,7 @@ helm install loki chart/
 | read.affinity | string | Hard node and soft zone anti-affinity | Affinity for read pods. Passed through `tpl` and, thus, to be configured as string |
 | read.nodeSelector | object | `{}` | Node selector for read pods |
 | read.tolerations | list | `[]` | Tolerations for read pods |
+| read.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | read.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | read.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
@@ -287,10 +323,17 @@ helm install loki chart/
 | read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | backend.replicas | int | `2` | Number of replicas for the backend |
+| backend.autoscaling.enabled | bool | `false` | Enable autoscaling for the backend. |
+| backend.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the backend. |
+| backend.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the backend. |
+| backend.autoscaling.targetCPUUtilizationPercentage | int | `80` | Target CPU utilization percentage for the backend. |
+| backend.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the backend. |
+| backend.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
 | backend.image.registry | string | `nil` | The Docker registry for the backend image. Overrides `loki.image.registry` |
 | backend.image.repository | string | `nil` | Docker image repository for the backend image. Overrides `loki.image.repository` |
 | backend.image.tag | string | `nil` | Docker image tag for the backend image. Overrides `loki.image.tag` |
 | backend.priorityClassName | string | `nil` | The name of the PriorityClass for backend pods |
+| backend.annotations | object | `{}` | Annotations for backend StatefulSet |
 | backend.podAnnotations | object | `{}` | Annotations for backend pods |
 | backend.podLabels | object | `{}` | Additional labels for each `backend` pod |
 | backend.selectorLabels | object | `{}` | Additional selector labels for each `backend` pod |
@@ -307,6 +350,7 @@ helm install loki chart/
 | backend.affinity | string | Hard node and soft zone anti-affinity | Affinity for backend pods. Passed through `tpl` and, thus, to be configured as string |
 | backend.nodeSelector | object | `{}` | Node selector for backend pods |
 | backend.tolerations | list | `[]` | Tolerations for backend pods |
+| backend.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | backend.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | backend.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | backend.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
@@ -314,7 +358,7 @@ helm install loki chart/
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | singleBinary.replicas | int | `1` | Number of replicas for the single binary |
-| singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling, this is only used if `queryIndex.enabled: true` |
+| singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling |
 | singleBinary.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the single binary |
 | singleBinary.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the single binary |
 | singleBinary.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the single binary |
@@ -323,6 +367,7 @@ helm install loki chart/
 | singleBinary.image.repository | string | `nil` | Docker image repository for the single binary image. Overrides `loki.image.repository` |
 | singleBinary.image.tag | string | `nil` | Docker image tag for the single binary image. Overrides `loki.image.tag` |
 | singleBinary.priorityClassName | string | `nil` | The name of the PriorityClass for single binary pods |
+| singleBinary.annotations | object | `{}` | Annotations for single binary StatefulSet |
 | singleBinary.podAnnotations | object | `{}` | Annotations for single binary pods |
 | singleBinary.podLabels | object | `{}` | Additional labels for each `single binary` pod |
 | singleBinary.selectorLabels | object | `{}` | Additional selector labels for each `single binary` pod |
@@ -376,12 +421,15 @@ helm install loki chart/
 | gateway.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the gateway |
 | gateway.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the gateway |
 | gateway.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilisation percentage for the gateway |
-| gateway.deploymentStrategy | object | `{"type":"RollingUpdate"}` | ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy |
+| gateway.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
+| gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
 | gateway.image.tag | string | `"1.25.1"` | The gateway image tag |
+| gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
+| gateway.annotations | object | `{}` | Annotations for gateway deployment |
 | gateway.podAnnotations | object | `{}` | Annotations for gateway pods |
 | gateway.podLabels | object | `{}` | Additional labels for gateway pods |
 | gateway.extraArgs | list | `[]` | Additional CLI args for the gateway |
@@ -407,6 +455,7 @@ helm install loki chart/
 | gateway.ingress.enabled | bool | `false` | Specifies whether an ingress for the gateway should be created |
 | gateway.ingress.ingressClassName | string | `""` | Ingress Class Name. MAY be required for Kubernetes versions >= 1.18 |
 | gateway.ingress.annotations | object | `{}` | Annotations for the gateway ingress |
+| gateway.ingress.labels | object | `{}` | Labels for the gateway ingress |
 | gateway.ingress.hosts | list | `[{"host":"gateway.loki.example.com","paths":[{"path":"/"}]}]` | Hosts configuration for the gateway ingress |
 | gateway.ingress.tls | list | `[{"hosts":["gateway.loki.example.com"],"secretName":"loki-gateway-tls"}]` | TLS configuration for the gateway ingress |
 | gateway.basicAuth.enabled | bool | `false` | Enables basic authentication for the gateway |
