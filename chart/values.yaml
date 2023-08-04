@@ -1,4 +1,25 @@
 global:
+# Create extra manifests via values. Would be passed through `tpl` for templating
+# extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: loki-alerting-rules
+#   data:
+#     loki-alerting-rules.yaml: |-
+#       groups:
+#         - name: example
+#           rules:
+#           - alert: example
+#             expr: |
+#               sum(count_over_time({app="loki"} |~ "error")) > 0
+#             for: 3m
+#             labels:
+#               severity: warning
+#               category: logs
+#             annotations:
+#               message: "loki has encountered errors"
+
   image:
     # -- Overrides the Docker registry globally for all images
     registry: null
@@ -27,7 +48,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: 1.27.3
+  tag: 1.27.4
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -46,7 +67,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.8.2
+    tag: 2.8.3
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -357,6 +378,28 @@ loki:
     scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
   frontend_worker:
     scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
+
+# Create extra manifests via values. Would be passed through `tpl` for templating
+extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: loki-alerting-rules
+#   data:
+#     loki-alerting-rules.yaml: |-
+#       groups:
+#         - name: example
+#           rules:
+#           - alert: example
+#             expr: |
+#               sum(count_over_time({app="loki"} |~ "error")) > 0
+#             for: 3m
+#             labels:
+#               severity: warning
+#               category: logs
+#             annotations:
+#               message: "loki has encountered errors"
+
 enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
@@ -1214,6 +1257,8 @@ ingress:
   #    nginx.ingress.kubernetes.io/auth-secret-type: auth-map
   #    nginx.ingress.kubernetes.io/configuration-snippet: |
   #      proxy_set_header X-Scope-OrgID $remote_user;
+  labels: {}
+  #    blackbox.monitoring.exclude: "true"
   paths:
     write:
       - /api/prom/push
@@ -1487,27 +1532,6 @@ networkPolicy:
     namespaceSelector: {}
 tracing:
   jaegerAgentHost: ""
-
-# Create extra manifests via values. Would be passed through `tpl` for templating
-extraObjects: []
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: loki-alerting-rules
-#   data:
-#     loki-alerting-rules.yaml: |-
-#       groups:
-#         - name: example
-#           rules:
-#           - alert: example
-#             expr: |
-#               sum(count_over_time({app="loki"} |~ "error")) > 0
-#             for: 3m
-#             labels:
-#               severity: warning
-#               category: logs
-#             annotations:
-#               message: "loki has encountered errors"
 
 # -------------------------------------
 # Configuration for `minio` child chart
