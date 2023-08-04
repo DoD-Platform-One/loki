@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.8.9-bb.0](https://img.shields.io/badge/Version-5.8.9--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.2](https://img.shields.io/badge/AppVersion-2.8.2-informational?style=flat-square)
+![Version: 5.9.2-bb.0](https://img.shields.io/badge/Version-5.9.2--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.8.3](https://img.shields.io/badge/AppVersion-2.8.3-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -48,7 +48,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"1.27.3"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"1.27.4"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
@@ -57,7 +57,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.8.2"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.8.3"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -93,6 +93,7 @@ helm install loki chart/
 | loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
 | loki.frontend.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
+| extraObjects | list | `[]` |  |
 | enterprise.enabled | bool | `false` |  |
 | enterprise.version | string | `"v1.7.1"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
@@ -392,6 +393,7 @@ helm install loki chart/
 | ingress.enabled | bool | `false` |  |
 | ingress.ingressClassName | string | `""` |  |
 | ingress.annotations | object | `{}` |  |
+| ingress.labels | object | `{}` |  |
 | ingress.paths.write[0] | string | `"/api/prom/push"` |  |
 | ingress.paths.write[1] | string | `"/loki/api/v1/push"` |  |
 | ingress.paths.read[0] | string | `"/api/prom/tail"` |  |
@@ -491,7 +493,6 @@ helm install loki chart/
 | networkPolicy.discovery.podSelector | object | `{}` | Specifies the Pods labels used for discovery. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.discovery.namespaceSelector | object | `{}` | Specifies the namespace the discovery Pods are running in |
 | tracing.jaegerAgentHost | string | `""` |  |
-| extraObjects | list | `[]` |  |
 | minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
 | minio.secrets | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |

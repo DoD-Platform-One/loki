@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.9.2-bb.0] - 2023-08-03
+### Changed
+- Updated to latest upstream chart 5.9.2
+
 ## [5.8.9-bb.0] - 2023-07-05
 ### Changed
 - Updated to latest upstream chart 5.8.9
