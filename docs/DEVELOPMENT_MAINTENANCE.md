@@ -8,42 +8,48 @@ Find the latest version of the `loki` image that matches the latest version in I
 
 Run a KPT update against the main chart folder:
 ```shell
+# To find the chart version for the commmand below:
+# - Browse to the [upstream](https://github.com/grafana/loki/tree/main/production/helm/loki).
+# - Click on the drop-down menu on the upper left, then on Tags.
+# - Scroll through the tags until you get to the Helm chart version tags (e.g. helm-loki-5.9.2, helm-loki-5.9.1, etc.).
+# - Starting with the most recent Helm chart version tag, open the Chart.yaml for the tag. If the appVersion value corresponds to the 
+# version of Loki that Renovate detected for an upgrade, this is the correct version. So, for example, if you will be updating to chart 
+# version helm-loki-5.9.2, your kpt command would be:
+#
+# kpt pkg update chart@helm-loki-5.9.2 --strategy alpha-git-patch
+
 kpt pkg update chart@helm-loki-${chart.version} --strategy alpha-git-patch
 ```
-
 Restore all BigBang added templates and tests:
 ```shell
+# Note to reviewer: I removed the 'git checkout' commands here that referenced the nonexistent folder chart/deps. Not sure if the rest of these are needed. 
 git checkout chart/templates/bigbang/
-git checkout chart/deps/loki
-git checkout chart/deps/minio
 git checkout chart/tests/
 git checkout chart/dashboards
 git checkout chart/templates/tests
 ```
-
-## Update dependencies
-
-Typically, the `--strategy=force-delete-replace` is useful to "heavy handidly" bring in dep changes which may need to be reviewed.
-[LATEST_BB_PACKAGE_TAG_VERSION](https://repo1.dso.mil/platform-one/big-bang/apps/application-utilities/minio/-/blob/main/chart/Chart.yaml)
-```shell
-cd chart/deps
-kpt pkg update minio@${LATEST_BB_PACKAGE_TAG_VERSION} --strategy=force-delete-replace
-cd ../../
-```
 ### Update dependencies in chart.yml
-Ensure minio version in chart.yml matches the latest tag version.
+Ensure that the minio version in chart/Chart.yaml matches the latest tag version of minio available in the Big Bang minio package [Chart.yaml](https://repo1.dso.mil/big-bang/product/packages/minio/-/blob/main/chart/Chart.yaml)
 
 ## Update binaries
-If needed, log into registry1
+If needed, log into registry1.
 ```
+# Note, if you are using Ubuntu on WSL and get an error about storing credentials or about how `The name org.freedesktop.secrets was not 
+# provided by any .service files` when you run the command below, install the libsecret-1-dev and gnome-keyring packages. After doing this, 
+# you'll be prompted to set a keyring password the first time you run this command. 
+# 
 helm registry login https://registry1.dso.mil -u ${registry1.username}
-helm registry logout https://registry1.dso.mil
 ```
-
 Pull assets and commit the binaries as well as the Chart.lock file that was generated.
 ```
+# Note: You may need to resolve merge conflicts in chart/values.yaml before these commands work. Refer to the "Modifications made to upstream" 
+# section below for hinsts on how to resolve them. Also, you need to be logged in to registry1 thorough docker. 
 export HELM_EXPERIMENTAL_OCI=1
 helm dependency update ./chart
+```
+Then log out.
+```
+helm registry logout https://registry1.dso.mil
 ```
 
 ## Update main chart
@@ -52,7 +58,7 @@ helm dependency update ./chart
 
 - update loki `version` and `appVersion`
 - Ensure Big Bang version suffix is appended to chart version
-- Ensure minio, gluon, and loki dependencies are present and up to date
+- Ensure minio and gluon dependencies are present and up to date
 ```yaml
 version: $VERSION-bb.0
 dependencies:
@@ -76,29 +82,62 @@ annotations:
 
 ```chart/values.yaml```
 
-- Verify renovate correctly `tag` for the new version.
+- Verify that Renovate updated the loki: section with the correct value for  `tag`. For example, if Renovate wants to update Loki to version 2.8.3, you
+should see:
+```
+loki:
+  # Configures the readiness probe for all of the Loki pods
+  readinessProbe:
+    httpGet:
+      path: /ready
+      port: http-metrics
+    initialDelaySeconds: 30
+    timeoutSeconds: 1
+  image:
+    # -- The Docker registry
+    registry: registry1.dso.mil
+    # -- Docker image repository
+    repository: ironbank/opensource/grafana/loki
+    # -- Overrides the image tag whose default is the chart's appVersion
+    tag: 2.8.3
+```
 
 ```chart/tests/*```
 
-- add cypress testing configuration and/or tests _if necessary_.
+- Verify that cypress testing configuration and tests are present here. You should see contents similar to this in chart/tests/cypress/:
+```
+drwxr-xr-x 2 ubuntu ubuntu 4096 Aug  1 12:24 ./
+drwxr-xr-x 4 ubuntu ubuntu 4096 Aug  1 12:24 ../
+-rw-r--r-- 1 ubuntu ubuntu   86 Aug  1 12:24 cypress.json
+-rw-r--r-- 1 ubuntu ubuntu 1494 Aug  1 12:24 loki-health.spec.js
+```
+And this in chart/tests/scripts/:
+```
+drwxr-xr-x 2 ubuntu ubuntu 4096 Aug  1 12:24 ./
+drwxr-xr-x 4 ubuntu ubuntu 4096 Aug  1 12:24 ../
+-rw-r--r-- 1 ubuntu ubuntu 2192 Aug  1 12:24 test.sh
+```
+If you are unsure or if these directories do not exist or are empty, check with the code owners. 
 
 # Modifications made to upstream
 This is a high-level list of modifications that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
 
 ```chart/values.yaml```
 - line 14, Ensure nameOverride is set to `logging-loki`
-`nameOverride: logging-loki`
-
+```
+nameOverride: logging-loki
+```
 - line 17, Ensure fullnameOverride is set to `logging-loki`
-`fullnameOverride: logging-loki`
-
+```
+fullnameOverride: logging-loki
+```
 - line 21, Ensure `private-registry` IPS is present:
 ```
 imagePullSecrets:
   - name: private-registry
 ```
 
-- line 23, update the kubectl image to pull from registry1
+- line 23, verify that the latest image from from registry1 is specified. For example, if the latest image is 1.27.4, you should see:
 ```
   kubectlImage:
     # -- The Docker registry
@@ -106,10 +145,10 @@ imagePullSecrets:
     # -- Docker image repository
     repository: opensource/kubernetes/kubectl
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: v1.25.2
+    tag: v1.27.4
 ```
 
-line 40, Ensure `loki.image` section points to registry1 image and correct tag
+line 43, Ensure `loki.image` section points to registry1 image and correct tag. For example, for Loki 2.8.3:
 ```
   image:
     # -- The Docker registry
@@ -117,10 +156,10 @@ line 40, Ensure `loki.image` section points to registry1 image and correct tag
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: X.X.X
+    tag: 2.8.3
 ```
 
-- line 136, Ensure `136` config is present
+- Ensure that this block is present:
 ```
     ingester:
       chunk_target_size: 196608
@@ -133,12 +172,12 @@ line 40, Ensure `loki.image` section points to registry1 image and correct tag
           replication_factor: 1
 ```
 
-- line 209, Ensure by default auth is disabled
+- line 251, Ensure by default auth is disabled
 ```
   auth_enabled: false
 ```
 
-- line 231, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- line 277, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -147,7 +186,7 @@ line 40, Ensure `loki.image` section points to registry1 image and correct tag
       admin: loki-admin
 ```
 
-- line 283, Ensure `storage_config.boltdb_shipper` configuration is present
+- line 332, Ensure `storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -157,7 +196,7 @@ line 40, Ensure `loki.image` section points to registry1 image and correct tag
       shared_store: s3
 ```
 
-- line 343 , Ensure `enterprise.image` is pointed to registry1 image
+- line 403 , Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -168,14 +207,14 @@ line 40, Ensure `loki.image` section points to registry1 image and correct tag
     tag: vX.X.X
 ```
 
-- line 394, Ensure `provisioner.enabled` is  set to `false`
+- line 454, Ensure `provisioner.enabled` is  set to `false`
 ```
   provisioner:
     # -- Whether the job should be part of the deployment
     enabled: false
 ```
 
-- line 481, Ensure all monitoring sub-components are set to `enabled: false`
+- line 551, Ensure all monitoring sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
@@ -183,15 +222,15 @@ monitoring:
   enabled: false
 ```
 
-- line 572 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- line 647 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 601, Ensure `lokiCanary.enabled` is set to `false`
+- line 677, Ensure `lokiCanary.enabled` is set to `false`
 ```
     lokiCanary:
       enabled: false
 ```
 
-- line 664, write pod resources set
+- line 787, write pod resources set
 ```
   resources:
     limits:
@@ -202,7 +241,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 701, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
+- line 828, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -214,13 +253,7 @@ monitoring:
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
 ```
-
-- line 805, legacyReadTarget set to true to give users time to migrate 2/7/23
-```
-  legacyReadTarget: true
-```
-
-- line 819, read pod resources set
+- line 968, read pod resources set
 ```
   resources:
     limits:
@@ -230,8 +263,7 @@ monitoring:
       cpu: 300m
       memory: 2Gi
 ```
-
-- line 854, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
+- line 1004, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -244,7 +276,7 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 931, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
+- line 1110, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -257,14 +289,14 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 944, Ensure `singleBinary.replicas` is set to `1`
+- line 1123, Ensure `singleBinary.replicas` is set to `1`
 ```
 singleBinary:
   # -- Number of replicas for the single binary
   replicas: 1
 ```
 
-- line 986, set resource requests and limits for `singleBinary`
+- line 1169, set resource requests and limits for `singleBinary`
 ```
   resources:
     limits:
@@ -275,9 +307,9 @@ singleBinary:
       memory: 256Mi
 ```
 
-- line 1071 `gateway.enabled` set to `false` by default
+- line 1254 `gateway.enabled` set to `false` by default
 
-- line 1091, Ensure `gateway.image` is pointed to registry1 equivalent
+- line 1290, Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -288,7 +320,7 @@ singleBinary:
     tag: X.X.X
 ```
 
-- line 1236, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
+- line 1443, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -300,40 +332,10 @@ singleBinary:
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
 ```
-
-- line 1286 remove minio block added by upstream
-```
-  replicas: 1
-  # Minio requires 2 to 16 drives for erasure code (drivesPerNode * replicas)
-  # https://docs.min.io/docs/minio-erasure-code-quickstart-guide
-  # Since we only have 1 replica, that means 2 drives must be used.
-  drivesPerNode: 2
-  rootUser: enterprise-logs
-  rootPassword: supersecret
-  buckets:
-    - name: chunks
-      policy: none
-      purge: false
-    - name: ruler
-      policy: none
-      purge: false
-    - name: admin
-      policy: none
-      purge: false
-  persistence:
-    size: 5Gi
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-```
-
-- line 1287 or EOF. Move extraObjects configmap block up under loki. Above Minio.
-```
-# Create extra manifests via values. Would be passed through `tpl` for templating
-extraObjects: []
-```
-
+# *** Important ***
+Before following the step below, note that if there is only one minio: block, you shouldn't remove it.
+- Remove minio block added by upstream
+- line 1493-1593 or EOF. Move extraObjects configmap block up under loki. Above enterprise.
 - line 1311, ensure the following BB values are all set under minio key:
 ```
 minio:
