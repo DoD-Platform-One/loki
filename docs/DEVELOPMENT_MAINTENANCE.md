@@ -123,21 +123,21 @@ If you are unsure or if these directories do not exist or are empty, check with 
 This is a high-level list of modifications that Big Bang has made to the upstream helm chart. You can use this as as cross-check to make sure that no modifications were lost during the upgrade process.
 
 ```chart/values.yaml```
-- line 14, Ensure nameOverride is set to `logging-loki`
+- Ensure nameOverride is set to `logging-loki`
 ```
 nameOverride: logging-loki
 ```
-- line 17, Ensure fullnameOverride is set to `logging-loki`
+- Ensure fullnameOverride is set to `logging-loki`
 ```
 fullnameOverride: logging-loki
 ```
-- line 21, Ensure `private-registry` IPS is present:
+- Ensure `private-registry` IPS is present:
 ```
 imagePullSecrets:
   - name: private-registry
 ```
 
-- line 23, verify that the latest image from from registry1 is specified. For example, if the latest image is 1.27.4, you should see:
+- Verify that the latest image from from registry1 is specified in the kubectlImage section. For example, if the latest image is 1.27.4, you should see:
 ```
   kubectlImage:
     # -- The Docker registry
@@ -148,7 +148,7 @@ imagePullSecrets:
     tag: v1.27.4
 ```
 
-line 43, Ensure `loki.image` section points to registry1 image and correct tag. For example, for Loki 2.8.3:
+Verify that the `loki.image` section points to a registry1 image and has the correct tag. For example, for Loki 2.8.3:
 ```
   image:
     # -- The Docker registry
@@ -159,7 +159,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag. 
     tag: 2.8.3
 ```
 
-- Ensure that this block is present:
+- Ensure that this block is present somewher in the `loki:` section:
 ```
     ingester:
       chunk_target_size: 196608
@@ -172,12 +172,12 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag. 
           replication_factor: 1
 ```
 
-- line 251, Ensure by default auth is disabled
+- Ensure by default auth is disabled in `loki.auth_enabled`
 ```
   auth_enabled: false
 ```
 
-- line 277, Ensure `storage.bucketNames` points to `loki`, `loki` & `loki-admin`
+- Ensure that `loki.storage.bucketNames` points to `loki`, `loki` & `loki-admin`
 ```
   storage:
     bucketNames:
@@ -186,7 +186,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag. 
       admin: loki-admin
 ```
 
-- line 332, Ensure `storage_config.boltdb_shipper` configuration is present
+- Ensure `loki.storage_config.boltdb_shipper` configuration is present
 ```
   storage_config:
     boltdb_shipper:
@@ -196,7 +196,7 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag. 
       shared_store: s3
 ```
 
-- line 403 , Ensure `enterprise.image` is pointed to registry1 image
+- Ensure `enterprise.image` is pointed to registry1 image
 ```
   image:
     # -- The Docker registry
@@ -207,30 +207,31 @@ line 43, Ensure `loki.image` section points to registry1 image and correct tag. 
     tag: vX.X.X
 ```
 
-- line 454, Ensure `provisioner.enabled` is  set to `false`
+- Ensure `enterprise.provisioner.enabled` is  set to `false`
 ```
   provisioner:
     # -- Whether the job should be part of the deployment
     enabled: false
 ```
 
-- line 551, Ensure all monitoring sub-components are set to `enabled: false`
+- Ensure all `monitoring:` sub-components are set to `enabled: false`
 Including the added `monitoring.enabled` value
 ```
 monitoring:
   # -- Enable BigBang integration of Monitoring components
   enabled: false
 ```
+# Note that as of August 16, 2023, this is a little over 150 lines of code. 
 
-- line 647 ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+- Ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
-- line 677, Ensure `lokiCanary.enabled` is set to `false`
+- Ensure `monitoring.lokiCanary.enabled` is set to `false`
 ```
     lokiCanary:
       enabled: false
 ```
 
-- line 787, write pod resources set
+- Verify that `write.resources` are set:
 ```
   resources:
     limits:
@@ -241,7 +242,7 @@ monitoring:
       memory: 2Gi
 ```
 
-- line 828, ensure at the bottom of the `write:` block, there is a `podDisruptionBudget` section
+- Ensure that at the bottom of the `write:` block, there is a `podDisruptionBudget:` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -253,7 +254,7 @@ monitoring:
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
 ```
-- line 968, read pod resources set
+- Make sure `read.resources` are set to: 
 ```
   resources:
     limits:
@@ -263,7 +264,7 @@ monitoring:
       cpu: 300m
       memory: 2Gi
 ```
-- line 1004, ensure at the bottom of the `read:` block, there is a `podDisruptionBudget` section
+- Ensure that at the bottom of the `read:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -276,7 +277,7 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 1110, ensure at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
+- Ensure that at the bottom of the `backend:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -289,14 +290,14 @@ monitoring:
     maxUnavailable: "1"
 ```
 
-- line 1123, Ensure `singleBinary.replicas` is set to `1`
+- Verify that `singleBinary.replicas` is set to `1`
 ```
 singleBinary:
   # -- Number of replicas for the single binary
   replicas: 1
 ```
 
-- line 1169, set resource requests and limits for `singleBinary`
+- Verify that  `singleBinary.resources` is set to:
 ```
   resources:
     limits:
@@ -307,9 +308,9 @@ singleBinary:
       memory: 256Mi
 ```
 
-- line 1254 `gateway.enabled` set to `false` by default
+- Make sure `gateway.enabled` is set to `false`.
 
-- line 1290, Ensure `gateway.image` is pointed to registry1 equivalent
+- Ensure `gateway.image` is pointed to registry1 equivalent
 ```
   image:
     # -- The Docker registry for the gateway image
@@ -320,7 +321,7 @@ singleBinary:
     tag: X.X.X
 ```
 
-- line 1443, ensure at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
+- Ensure that at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
 ```
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
@@ -335,8 +336,10 @@ singleBinary:
 # *** Important ***
 Before following the step below, note that if there is only one minio: block, you shouldn't remove it.
 - Remove minio block added by upstream
-- line 1493-1593 or EOF. Move extraObjects configmap block up under loki. Above enterprise.
-- line 1311, ensure the following BB values are all set under minio key:
+
+- Move the `extraObjects:` configmap block up under `loki:`, so that it is bettween `loki:` and `enterprise:`.
+
+- Ensure the following BB values are all set under minio key:
 ```
 minio:
   # -- Enable minio instance support, must have minio-operator installed
@@ -501,7 +504,7 @@ spec:
 {{- $default := "loki" }
 ```
 
-- line 181 ensure the following block for minio looks like:
+- Ensure the following block for minio looks like:
 ```
 {{- if .Values.minio.enabled -}}
 s3:
