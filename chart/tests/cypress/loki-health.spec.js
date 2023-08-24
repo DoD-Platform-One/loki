@@ -21,7 +21,7 @@ beforeEach(function () {
             cy.contains("Log in").click()
             cy.get('.page-dashboard').contains('Welcome', {timeout: 30000})
             // Visit the datasources page
-            cy.visit(`${Cypress.env('grafana_url')}/connections/your-connections/datasources`)
+            cy.visit(`${Cypress.env('grafana_url')}/connections/datasources`)
   
             // // // Enter 'loki' in the search field and 
             cy.get('input[type="text"]').first()
@@ -31,7 +31,7 @@ beforeEach(function () {
             // Click on the 'Save & test` button
             cy.get('button[type="submit"]').click()
             // Check to ensure the data source is working
-            cy.get('.p-t-2').contains('Data source connected and labels found', {timeout: 10000})
+            cy.get('.p-t-2').contains('Data source successfully connected', {timeout: 10000})
           })
   
           after(function () {
