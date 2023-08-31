@@ -1,25 +1,4 @@
 global:
-# Create extra manifests via values. Would be passed through `tpl` for templating
-# extraObjects: []
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: loki-alerting-rules
-#   data:
-#     loki-alerting-rules.yaml: |-
-#       groups:
-#         - name: example
-#           rules:
-#           - alert: example
-#             expr: |
-#               sum(count_over_time({app="loki"} |~ "error")) > 0
-#             for: 3m
-#             labels:
-#               severity: warning
-#               category: logs
-#             annotations:
-#               message: "loki has encountered errors"
-
   image:
     # -- Overrides the Docker registry globally for all images
     registry: null
@@ -48,7 +27,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: 1.27.4
+  tag: 1.27.5
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -67,7 +46,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.8.3
+    tag: 2.8.4
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -205,9 +184,11 @@ loki:
 
     {{ include "loki.rulerConfig" . }}
 
+    {{- if or .Values.tableManager.retention_deletes_enabled .Values.tableManager.retention_period }}
     table_manager:
       retention_deletes_enabled: {{ .Values.tableManager.retention_deletes_enabled }}
       retention_period: {{ .Values.tableManager.retention_period }}
+    {{- end }}
 
     {{- with .Values.loki.memcached.results_cache }}
     query_range:
@@ -378,33 +359,11 @@ loki:
     scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
   frontend_worker:
     scheduler_address: '{{ include "loki.querySchedulerAddress" . }}'
-
-# Create extra manifests via values. Would be passed through `tpl` for templating
-extraObjects: []
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: loki-alerting-rules
-#   data:
-#     loki-alerting-rules.yaml: |-
-#       groups:
-#         - name: example
-#           rules:
-#           - alert: example
-#             expr: |
-#               sum(count_over_time({app="loki"} |~ "error")) > 0
-#             for: 3m
-#             labels:
-#               severity: warning
-#               category: logs
-#             annotations:
-#               message: "loki has encountered errors"
-
 enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
   # Default verion of GEL to deploy
-  version: v1.7.1
+  version: v1.7.3
   # -- Optional name of the GEL cluster, otherwise will use .Release.Name
   # The cluster name must match what is in your GEL license
   cluster_name: null
@@ -495,7 +454,7 @@ enterprise:
   # -- Configuration for `provisioner` target
   provisioner:
     # -- Whether the job should be part of the deployment
-    enabled: false
+    enabled: true
     # -- Name of the secret to store provisioned tokens in
     provisionedSecretPrefix: null
     # -- Additional tenants to be created. Each tenant will get a read and write policy
@@ -562,6 +521,12 @@ rbac:
   pspEnabled: false
   # -- For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints.
   sccEnabled: false
+  # -- Specify PSP annotations
+  # Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations
+  pspAnnotations: {}
+  # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+  # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+  # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 # -- Section for configuring optional Helm test
 test:
   enabled: false
@@ -753,11 +718,10 @@ monitoring:
       type: RollingUpdate
       rollingUpdate:
         maxUnavailable: 1
-
 # Configuration for the write pod(s)
 write:
   # -- Number of replicas for the write
-  replicas: 2
+  replicas: 3
   autoscaling:
     # -- Enable autoscaling for the write.
     enabled: false
@@ -766,12 +730,12 @@ write:
     # -- Maximum autoscaling replicas for the write.
     maxReplicas: 3
     # -- Target CPU utilisation percentage for the write.
-    targetCPUUtilizationPercentage: 80
+    targetCPUUtilizationPercentage: 60
     # -- Target memory utilization percentage for the write.
     targetMemoryUtilizationPercentage:
     # -- Behavior policies while scaling.
     behavior:
-    # -- see https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown for scaledown details
+      # -- see https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown for scaledown details
       scaleUp:
         policies:
           - type: Pods
@@ -854,7 +818,7 @@ write:
   podManagementPolicy: "Parallel"
   persistence:
     # -- Enable StatefulSetAutoDeletePVC feature
-    enableStatefulSetAutoDeletePVC: true
+    enableStatefulSetAutoDeletePVC: false
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
@@ -938,11 +902,10 @@ tableManager:
   retention_deletes_enabled: false
   # -- Set retention period
   retention_period: 0
-
 # Configuration for the read pod(s)
 read:
   # -- Number of replicas for the read
-  replicas: 2
+  replicas: 3
   autoscaling:
     # -- Enable autoscaling for the read, this is only used if `queryIndex.enabled: true`
     enabled: false
@@ -956,18 +919,18 @@ read:
     targetMemoryUtilizationPercentage:
     # -- Behavior policies while scaling.
     behavior: {}
-      #  scaleUp:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 60
-      #  scaleDown:
-      #   stabilizationWindowSeconds: 300
-      #   policies:
-      #   - type: Pods
-      #     value: 1
-      #     periodSeconds: 180
+    #  scaleUp:
+    #   stabilizationWindowSeconds: 300
+    #   policies:
+    #   - type: Pods
+    #     value: 1
+    #     periodSeconds: 60
+    #  scaleDown:
+    #   stabilizationWindowSeconds: 300
+    #   policies:
+    #   - type: Pods
+    #     value: 1
+    #     periodSeconds: 180
   image:
     # -- The Docker registry for the read image. Overrides `loki.image.registry`
     registry: null
@@ -1056,7 +1019,7 @@ read:
 # Configuration for the backend pod(s)
 backend:
   # -- Number of replicas for the backend
-  replicas: 2
+  replicas: 3
   autoscaling:
     # -- Enable autoscaling for the backend.
     enabled: false
@@ -1065,7 +1028,7 @@ backend:
     # -- Maximum autoscaling replicas for the backend.
     maxReplicas: 3
     # -- Target CPU utilization percentage for the backend.
-    targetCPUUtilizationPercentage: 80
+    targetCPUUtilizationPercentage: 60
     # -- Target memory utilization percentage for the backend.
     targetMemoryUtilizationPercentage:
     # -- Behavior policies while scaling.
@@ -1281,8 +1244,10 @@ ingress:
       - /loki/api/v1/rules
       - /prometheus/api/v1/rules
       - /prometheus/api/v1/alerts
+  # -- Hosts configuration for the ingress, passed through the `tpl` function to allow templating
   hosts:
     - loki.example.com
+  # -- TLS configuration for the ingress. Hosts passed through the `tpl` function to allow templating
   tls: []
 #    - hosts:
 #       - loki.example.com
@@ -1335,7 +1300,7 @@ gateway:
     # -- The gateway image repository
     repository: ironbank/opensource/nginx/nginx
     # -- The gateway image tag
-    tag: 1.25.1
+    tag: 1.25.2
     # -- Overrides the gateway image tag with an image digest
     digest: null
     # -- The gateway image pull policy
@@ -1416,14 +1381,14 @@ gateway:
     annotations: {}
     # -- Labels for the gateway ingress
     labels: {}
-    # -- Hosts configuration for the gateway ingress
+    # -- Hosts configuration for the gateway ingress, passed through the `tpl` function to allow templating
     hosts:
       - host: gateway.loki.example.com
         paths:
           - path: /
             # -- pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
             # pathType: Prefix
-    # -- TLS configuration for the gateway ingress
+    # -- TLS configuration for the gateway ingress. Hosts passed through the `tpl` function to allow templating
     tls:
       - secretName: loki-gateway-tls
         hosts:
@@ -1442,12 +1407,8 @@ gateway:
     # high CPU load.
     htpasswd: >-
       {{ if .Values.loki.tenants }}
-
-
         {{- range $t := .Values.loki.tenants }}
       {{ htpasswd (required "All tenants must have a 'name' set" $t.name) (required "All tenants must have a 'password' set" $t.password) }}
-
-
         {{- end }}
       {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required" .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password' is required" .Values.gateway.basicAuth.password) }} {{ end }}
     # -- Existing basic auth secret to use. Must contain '.htpasswd'
@@ -1532,7 +1493,6 @@ networkPolicy:
     namespaceSelector: {}
 tracing:
   jaegerAgentHost: ""
-
 # -------------------------------------
 # Configuration for `minio` child chart
 # -------------------------------------

@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.15.0-bb.0] - 2023-08-30
+### Changed
+- Updated docker.io/grafana/loki-canary 2.8.3 -> 2.8.4
+- Updated ironbank/opensource/grafana/loki 2.8.3 -> 2.8.4
+- Updated registry1.dso.mil/ironbank/opensource/grafana/loki 2.8.3 -> 2.8.4
+- Updated registry1.dso.mil/ironbank/opensource/kubernetes/kubectl 1.27.4 -> 1.27.5
+- Updated registry1.dso.mil/ironbank/opensource/nginx/nginx 1.25.1 -> 1.25.2
+
 ## [5.9.2-bb.1] - 2023-08-24
 ### Changed
 - Cypress test locations for datasources in Grafana 10.X
