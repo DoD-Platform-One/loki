@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.21.0-bb.0](https://img.shields.io/badge/Version-5.21.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.0](https://img.shields.io/badge/AppVersion-2.9.0-informational?style=flat-square)
+![Version: 5.21.0-bb.1](https://img.shields.io/badge/Version-5.21.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.0](https://img.shields.io/badge/AppVersion-2.9.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -63,6 +63,8 @@ helm install loki chart/
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
 | loki.podAnnotations | object | `{}` | Common annotations for all pods |
 | loki.podLabels | object | `{}` | Common labels for all pods |
+| loki.serviceAnnotations | object | `{}` | Common annotations for all services |
+| loki.serviceLabels | object | `{}` | Common labels for all services |
 | loki.revisionHistoryLimit | int | `10` | The number of old ReplicaSets to retain to allow rollback |
 | loki.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | The SecurityContext for Loki pods |
 | loki.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | The SecurityContext for Loki containers |
@@ -94,7 +96,7 @@ helm install loki chart/
 | loki.frontend.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | enterprise.enabled | bool | `false` |  |
-| enterprise.version | string | `"v1.7.3"` |  |
+| enterprise.version | string | `"v1.8.1"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
@@ -152,6 +154,7 @@ helm install loki chart/
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
 | rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations |
+| rbac.namespaced | bool | `false` | Whether to install RBAC in the namespace only or cluster-wide. Useful if you want to watch ConfigMap globally. |
 | test | object | `{"annotations":{},"enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
 | test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test |
 | test.timeout | string | `"1m"` | Number of times to retry the test before failing |
@@ -212,10 +215,13 @@ helm install loki chart/
 | monitoring.lokiCanary.enabled | bool | `false` |  |
 | monitoring.lokiCanary.annotations | object | `{}` | Additional annotations for the `loki-canary` Daemonset |
 | monitoring.lokiCanary.podLabels | object | `{}` | Additional labels for each `loki-canary` pod |
+| monitoring.lokiCanary.service.annotations | object | `{}` | Annotations for loki-canary Service |
+| monitoring.lokiCanary.service.labels | object | `{}` | Additional labels for loki-canary Service |
 | monitoring.lokiCanary.extraArgs | list | `[]` | Additional CLI arguments for the `loki-canary' command |
 | monitoring.lokiCanary.extraEnv | list | `[]` | Environment variables to add to the canary pods |
 | monitoring.lokiCanary.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the canary pods |
 | monitoring.lokiCanary.resources | object | `{}` | Resource requests and limits for the canary |
+| monitoring.lokiCanary.dnsConfig | object | `{}` | DNS config for canary pods |
 | monitoring.lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
 | monitoring.lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
 | monitoring.lokiCanary.priorityClassName | string | `nil` | The name of the PriorityClass for loki-canary pods |
@@ -228,8 +234,8 @@ helm install loki chart/
 | monitoring.lokiCanary.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | Update strategy for the `loki-canary` Daemonset pods |
 | write.replicas | int | `3` | Number of replicas for the write |
 | write.autoscaling.enabled | bool | `false` | Enable autoscaling for the write. |
-| write.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the write. |
-| write.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the write. |
+| write.autoscaling.minReplicas | int | `2` | Minimum autoscaling replicas for the write. |
+| write.autoscaling.maxReplicas | int | `6` | Maximum autoscaling replicas for the write. |
 | write.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the write. |
 | write.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the write. |
 | write.autoscaling.behavior | object | `{"scaleDown":{"policies":[{"periodSeconds":1800,"type":"Pods","value":1}],"stabilizationWindowSeconds":3600},"scaleUp":{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}}` | Behavior policies while scaling. |
@@ -242,7 +248,8 @@ helm install loki chart/
 | write.podAnnotations | object | `{}` | Annotations for write pods |
 | write.podLabels | object | `{}` | Additional labels for each `write` pod |
 | write.selectorLabels | object | `{}` | Additional selector labels for each `write` pod |
-| write.serviceLabels | object | `{}` | Labels for ingester service |
+| write.service.annotations | object | `{}` | Annotations for write Service |
+| write.service.labels | object | `{}` | Additional labels for write Service |
 | write.targetModule | string | `"write"` | Comma-separated list of Loki modules to load for the write |
 | write.extraArgs | list | `[]` | Additional CLI args for the write |
 | write.extraEnv | list | `[]` | Environment variables to add to the write pods |
@@ -255,6 +262,7 @@ helm install loki chart/
 | write.resources | object | `{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Resource requests and limits for the write |
 | write.terminationGracePeriodSeconds | int | `300` | Grace period to allow the write to shutdown before it is killed. Especially for the ingestor, this must be increased. It must be long enough so writes can be gracefully shutdown flushing/transferring all data and to successfully leave the member ring on shutdown. |
 | write.affinity | string | Hard node and soft zone anti-affinity | Affinity for write pods. Passed through `tpl` and, thus, to be configured as string |
+| write.dnsConfig | object | `{}` | DNS config for write pods |
 | write.nodeSelector | object | `{}` | Node selector for write pods |
 | write.tolerations | list | `[]` | Tolerations for write pods |
 | write.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
@@ -262,6 +270,8 @@ helm install loki chart/
 | write.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | write.persistence.selector | string | `nil` | Selector for persistent disk |
+| write.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
+| write.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | tableManager.enabled | bool | `false` | Specifies whether the table-manager should be enabled |
 | tableManager.image.registry | string | `nil` | The Docker registry for the table-manager image. Overrides `loki.image.registry` |
 | tableManager.image.repository | string | `nil` | Docker image repository for the table-manager image. Overrides `loki.image.repository` |
@@ -271,7 +281,8 @@ helm install loki chart/
 | tableManager.podLabels | object | `{}` | Labels for table-manager pods |
 | tableManager.annotations | object | `{}` | Annotations for table-manager deployment |
 | tableManager.podAnnotations | object | `{}` | Annotations for table-manager pods |
-| tableManager.serviceLabels | object | `{}` | Labels for table-manager service |
+| tableManager.service.annotations | object | `{}` | Annotations for table-manager Service |
+| tableManager.service.labels | object | `{}` | Additional labels for table-manager Service |
 | tableManager.extraArgs | list | `[]` | Additional CLI args for the table-manager |
 | tableManager.extraEnv | list | `[]` | Environment variables to add to the table-manager pods |
 | tableManager.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the table-manager pods |
@@ -281,14 +292,15 @@ helm install loki chart/
 | tableManager.extraContainers | list | `[]` | Containers to add to the table-manager pods |
 | tableManager.terminationGracePeriodSeconds | int | `30` | Grace period to allow the table-manager to shutdown before it is killed |
 | tableManager.affinity | string | Hard node and soft zone anti-affinity | Affinity for table-manager pods. Passed through `tpl` and, thus, to be configured as string |
+| tableManager.dnsConfig | object | `{}` | DNS config table-manager pods |
 | tableManager.nodeSelector | object | `{}` | Node selector for table-manager pods |
 | tableManager.tolerations | list | `[]` | Tolerations for table-manager pods |
 | tableManager.retention_deletes_enabled | bool | `false` | Enable deletes by retention |
 | tableManager.retention_period | int | `0` | Set retention period |
 | read.replicas | int | `3` | Number of replicas for the read |
 | read.autoscaling.enabled | bool | `false` | Enable autoscaling for the read, this is only used if `queryIndex.enabled: true` |
-| read.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the read |
-| read.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the read |
+| read.autoscaling.minReplicas | int | `2` | Minimum autoscaling replicas for the read |
+| read.autoscaling.maxReplicas | int | `6` | Maximum autoscaling replicas for the read |
 | read.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the read |
 | read.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilisation percentage for the read |
 | read.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
@@ -300,7 +312,8 @@ helm install loki chart/
 | read.podAnnotations | object | `{}` | Annotations for read pods |
 | read.podLabels | object | `{}` | Additional labels for each `read` pod |
 | read.selectorLabels | object | `{}` | Additional selector labels for each `read` pod |
-| read.serviceLabels | object | `{}` | Labels for read service |
+| read.service.annotations | object | `{}` | Annotations for read Service |
+| read.service.labels | object | `{}` | Additional labels for read Service |
 | read.targetModule | string | `"read"` | Comma-separated list of Loki modules to load for the read |
 | read.legacyReadTarget | bool | `false` | Whether or not to use the 2 target type simple scalable mode (read, write) or the 3 target type (read, write, backend). Legacy refers to the 2 target type, so true will run two targets, false will run 3 targets. |
 | read.extraArgs | list | `[]` | Additional CLI args for the read |
@@ -312,6 +325,7 @@ helm install loki chart/
 | read.resources | object | `{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}}` | Resource requests and limits for the read |
 | read.terminationGracePeriodSeconds | int | `30` | Grace period to allow the read to shutdown before it is killed |
 | read.affinity | string | Hard node and soft zone anti-affinity | Affinity for read pods. Passed through `tpl` and, thus, to be configured as string |
+| read.dnsConfig | object | `{}` | DNS config for read pods |
 | read.nodeSelector | object | `{}` | Node selector for read pods |
 | read.tolerations | list | `[]` | Tolerations for read pods |
 | read.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
@@ -319,10 +333,12 @@ helm install loki chart/
 | read.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | read.persistence.selector | string | `nil` | Selector for persistent disk |
+| read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
+| read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | backend.replicas | int | `3` | Number of replicas for the backend |
 | backend.autoscaling.enabled | bool | `false` | Enable autoscaling for the backend. |
-| backend.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the backend. |
-| backend.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the backend. |
+| backend.autoscaling.minReplicas | int | `2` | Minimum autoscaling replicas for the backend. |
+| backend.autoscaling.maxReplicas | int | `6` | Maximum autoscaling replicas for the backend. |
 | backend.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilization percentage for the backend. |
 | backend.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the backend. |
 | backend.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
@@ -334,7 +350,8 @@ helm install loki chart/
 | backend.podAnnotations | object | `{}` | Annotations for backend pods |
 | backend.podLabels | object | `{}` | Additional labels for each `backend` pod |
 | backend.selectorLabels | object | `{}` | Additional selector labels for each `backend` pod |
-| backend.serviceLabels | object | `{}` | Labels for ingester service |
+| backend.service.annotations | object | `{}` | Annotations for backend Service |
+| backend.service.labels | object | `{}` | Additional labels for backend Service |
 | backend.targetModule | string | `"backend"` | Comma-separated list of Loki modules to load for the read |
 | backend.extraArgs | list | `[]` | Additional CLI args for the backend |
 | backend.extraEnv | list | `[]` | Environment variables to add to the backend pods |
@@ -345,6 +362,7 @@ helm install loki chart/
 | backend.resources | object | `{}` | Resource requests and limits for the backend |
 | backend.terminationGracePeriodSeconds | int | `300` | Grace period to allow the backend to shutdown before it is killed. Especially for the ingester, this must be increased. It must be long enough so backends can be gracefully shutdown flushing/transferring all data and to successfully leave the member ring on shutdown. |
 | backend.affinity | string | Hard node and soft zone anti-affinity | Affinity for backend pods. Passed through `tpl` and, thus, to be configured as string |
+| backend.dnsConfig | object | `{}` | DNS config for backend pods |
 | backend.nodeSelector | object | `{}` | Node selector for backend pods |
 | backend.tolerations | list | `[]` | Tolerations for backend pods |
 | backend.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
@@ -352,7 +370,9 @@ helm install loki chart/
 | backend.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | backend.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | backend.persistence.selector | string | `nil` | Selector for persistent disk |
-| singleBinary.replicas | int | `0` | Number of replicas for the single binary |
+| backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
+| backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| singleBinary.replicas | int | `1` | Number of replicas for the single binary |
 | singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling |
 | singleBinary.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the single binary |
 | singleBinary.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the single binary |
@@ -366,6 +386,8 @@ helm install loki chart/
 | singleBinary.podAnnotations | object | `{}` | Annotations for single binary pods |
 | singleBinary.podLabels | object | `{}` | Additional labels for each `single binary` pod |
 | singleBinary.selectorLabels | object | `{}` | Additional selector labels for each `single binary` pod |
+| singleBinary.service.annotations | object | `{}` | Annotations for single binary Service |
+| singleBinary.service.labels | object | `{}` | Additional labels for single binary Service |
 | singleBinary.targetModule | string | `"all"` | Comma-separated list of Loki modules to load for the single binary |
 | singleBinary.extraArgs | list | `[]` | Labels for single binary service |
 | singleBinary.extraEnv | list | `[]` | Environment variables to add to the single binary pods |
@@ -377,6 +399,7 @@ helm install loki chart/
 | singleBinary.resources | object | `{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}}` | Resource requests and limits for the single binary |
 | singleBinary.terminationGracePeriodSeconds | int | `30` | Grace period to allow the single binary to shutdown before it is killed |
 | singleBinary.affinity | string | Hard node and soft zone anti-affinity | Affinity for single binary pods. Passed through `tpl` and, thus, to be configured as string |
+| singleBinary.dnsConfig | object | `{}` | DNS config for single binary pods |
 | singleBinary.nodeSelector | object | `{}` | Node selector for single binary pods |
 | singleBinary.tolerations | list | `[]` | Tolerations for single binary pods |
 | singleBinary.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
@@ -439,6 +462,7 @@ helm install loki chart/
 | gateway.resources | object | `{}` | Resource requests and limits for the gateway |
 | gateway.terminationGracePeriodSeconds | int | `30` | Grace period to allow the gateway to shutdown before it is killed |
 | gateway.affinity | string | Hard node and soft zone anti-affinity | Affinity for gateway pods. Passed through `tpl` and, thus, to be configured as string |
+| gateway.dnsConfig | object | `{}` | DNS config for gateway pods |
 | gateway.nodeSelector | object | `{}` | Node selector for gateway pods |
 | gateway.tolerations | list | `[]` | Tolerations for gateway pods |
 | gateway.service.port | int | `80` | Port of the gateway service |
@@ -457,7 +481,7 @@ helm install loki chart/
 | gateway.basicAuth.enabled | bool | `false` | Enables basic authentication for the gateway |
 | gateway.basicAuth.username | string | `nil` | The basic auth username for the gateway |
 | gateway.basicAuth.password | string | `nil` | The basic auth password for the gateway |
-| gateway.basicAuth.htpasswd | string | `"{{ if .Values.loki.tenants }}\n  {{- range $t := .Values.loki.tenants }}\n{{ htpasswd (required \"All tenants must have a 'name' set\" $t.name) (required \"All tenants must have a 'password' set\" $t.password) }}\n  {{- end }}\n{{ else }} {{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }} {{ end }}"` | Uses the specified users from the `loki.tenants` list to create the htpasswd file if `loki.tenants` is not set, the `gateway.basicAuth.username` and `gateway.basicAuth.password` are used The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
+| gateway.basicAuth.htpasswd | string | `"{{ if .Values.loki.tenants }}\n\n\n  {{- range $t := .Values.loki.tenants }}\n{{ htpasswd (required \"All tenants must have a 'name' set\" $t.name) (required \"All tenants must have a 'password' set\" $t.password) }}\n\n\n  {{- end }}\n{{ else }} {{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }} {{ end }}"` | Uses the specified users from the `loki.tenants` list to create the htpasswd file if `loki.tenants` is not set, the `gateway.basicAuth.username` and `gateway.basicAuth.password` are used The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
 | gateway.basicAuth.existingSecret | string | `nil` | Existing basic auth secret to use. Must contain '.htpasswd' |
 | gateway.readinessProbe.httpGet.path | string | `"/"` |  |
 | gateway.readinessProbe.httpGet.port | string | `"http"` |  |
@@ -470,6 +494,8 @@ helm install loki chart/
 | gateway.nginxConfig.customWriteUrl | string | `nil` | Override Write URL |
 | gateway.nginxConfig.customBackendUrl | string | `nil` | Override Backend URL |
 | gateway.nginxConfig.file | string | See values.yaml | Config file contents for Nginx. Passed through the `tpl` function to allow templating |
+| gateway.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
+| gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | networkPolicy.enabled | bool | `false` | Specifies whether Network Policies should be created |
 | networkPolicy.metrics.podSelector | object | `{}` | Specifies the Pods which are allowed to access the metrics port. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.metrics.namespaceSelector | object | `{}` | Specifies the namespaces which are allowed to access the metrics port |
@@ -503,6 +529,32 @@ helm install loki chart/
 | bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:2.0.0"` |  |
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
+| sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` |  |
+| sidecar.image.tag | string | `"1.22.4"` |  |
+| sidecar.image.sha | string | `""` |  |
+| sidecar.image.pullPolicy | string | `"IfNotPresent"` |  |
+| sidecar.resources.limits.cpu | string | `"100m"` |  |
+| sidecar.resources.limits.memory | string | `"100Mi"` |  |
+| sidecar.resources.requests.cpu | string | `"100m"` |  |
+| sidecar.resources.requests.memory | string | `"100Mi"` |  |
+| sidecar.securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| sidecar.securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| sidecar.securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| sidecar.skipTlsVerify | bool | `false` | Set to true to skip tls verification for kube api calls. |
+| sidecar.enableUniqueFilenames | bool | `false` | Ensure that rule files aren't conflicting and being overwritten by prefixing their name with the namespace they are defined in. |
+| sidecar.readinessProbe | object | `{}` | Readiness probe definition. Probe is disabled on the sidecar by default. |
+| sidecar.livenessProbe | object | `{}` | Liveness probe definition. Probe is disabled on the sidecar by default. |
+| sidecar.rules.enabled | bool | `false` | Whether or not to create a sidecar to ingest rule from specific ConfigMaps and/or Secrets. |
+| sidecar.rules.label | string | `"loki_rule"` | Label that the configmaps/secrets with rules will be marked with. |
+| sidecar.rules.labelValue | string | `""` | Label value that the configmaps/secrets with rules will be set to. |
+| sidecar.rules.folder | string | `"/rules"` | Folder into which the rules will be placed. |
+| sidecar.rules.searchNamespace | string | `nil` | Comma separated list of namespaces. If specified, the sidecar will search for config-maps/secrets inside these namespaces. Otherwise the namespace in which the sidecar is running will be used. It's also possible to specify 'ALL' to search in all namespaces. |
+| sidecar.rules.watchMethod | string | `"WATCH"` | Method to use to detect ConfigMap changes. With WATCH the sidecar will do a WATCH request, with SLEEP it will list all ConfigMaps, then sleep for 60 seconds. |
+| sidecar.rules.resource | string | `"both"` | Search in configmap, secret, or both. |
+| sidecar.rules.script | string | `nil` | Absolute path to the shell script to execute after a configmap or secret has been reloaded. |
+| sidecar.rules.watchServerTimeout | int | `60` | WatchServerTimeout: request to the server, asking it to cleanly close the connection after that. defaults to 60sec; much higher values like 3600 seconds (1h) are feasible for non-Azure K8S. |
+| sidecar.rules.watchClientTimeout | int | `60` | WatchClientTimeout: is a client-side timeout, configuring your local socket. If you have a network outage dropping all packets with no RST/FIN, this is how long your client waits before realizing & dropping the connection. Defaults to 66sec. |
+| sidecar.rules.logLevel | string | `"INFO"` | Log level of the sidecar container. |
 
 ## Contributing
 
