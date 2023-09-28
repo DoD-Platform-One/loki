@@ -1,10 +1,4 @@
-beforeEach(function () {
-    cy.getCookies().then(cookies => {
-      const namesOfCookies = cookies.map(cm => cm.name)
-      Cypress.Cookies.preserveOnce(...namesOfCookies)
-    })
-  })
-  
+
   describe('Loki Test', function() {
     Cypress.on('uncaught:exception', (err, runnable) => {
       return false
@@ -32,10 +26,6 @@ beforeEach(function () {
             cy.get('button[type="submit"]').click()
             // Check to ensure the data source is working
             cy.get('.p-t-2').contains('Data source successfully connected', {timeout: 10000})
-          })
-  
-          after(function () {
-            cy.clearCookies()
           })
     }
   })
