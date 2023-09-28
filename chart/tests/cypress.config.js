@@ -5,6 +5,7 @@ module.exports = defineConfig({
     env: {
       baseUrl: "https://grafana.bigbang.dev"
     },
+    testIsolation: true,
     video: true,
     screenshot: true,
     supportFile: false,
