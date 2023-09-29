@@ -130,14 +130,20 @@ spec:
               value: "{{ .Values.sidecar.rules.logLevel }}"
             {{- end }}
           {{- if .Values.sidecar.livenessProbe }}
-          livenessProbe: {{ toYaml .Values.sidecar.livenessProbe | nindent 12 }}
+          livenessProbe:
+          {{- toYaml .Values.sidecar.livenessProbe | nindent 12 }}
           {{- end }}
           {{- if .Values.sidecar.readinessProbe }}
-          readinessProbe: {{ toYaml .Values.sidecar.readinessProbe | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.sidecar.readinessProbe | nindent 12 }}
           {{- end }}
-          resources: {{ toYaml .Values.sidecar.resources | nindent 12 }}
+          {{- if .Values.sidecar.resources }}
+          resources:
+          {{- toYaml .Values.sidecar.resources | nindent 12 }}
+          {{- end }}
           {{- if .Values.sidecar.securityContext }}
-          securityContext: {{- toYaml .Values.sidecar.securityContext | nindent 12 }}
+          securityContext:
+          {{- toYaml .Values.sidecar.securityContext | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: sc-rules-volume
@@ -248,7 +254,9 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
   volumeClaimTemplates:
-    - metadata:
+    - apiVersion: v1	
+      kind: PersistentVolumeClaim
+      metadata:
         name: data
       spec:
         accessModes:

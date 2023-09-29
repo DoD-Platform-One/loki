@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.23.1-bb.0] - 2023-09-29
+### Changed
+- Updated docker.io/grafana/loki-canary 2.9.0 -> 2.9.1
+- Updated ironbank/opensource/grafana/loki 2.9.0 -> 2.9.1
+- Updated registry1.dso.mil/ironbank/opensource/kubernetes/kubectl 1.27.5 -> 1.27.6
+- Updated registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar 1.22.4 -> 1.25.1
+- Updated to latest upstream chart 5.23.1
+
 ## [5.21.0-bb.3] - 2023-09-28
 ### Changed
 - Fixed minor bug with cypress tests
