@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.23.1-bb.1](https://img.shields.io/badge/Version-5.23.1--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.1](https://img.shields.io/badge/AppVersion-2.9.1-informational?style=flat-square)
+![Version: 5.23.1-bb.2](https://img.shields.io/badge/Version-5.23.1--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.1](https://img.shields.io/badge/AppVersion-2.9.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -154,7 +154,7 @@ helm install loki chart/
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
 | rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations |
-| rbac.namespaced | bool | `false` | Whether to install RBAC in the namespace only or cluster-wide. Useful if you want to watch ConfigMap globally. |
+| rbac.namespaced | bool | `false` |  |
 | test | object | `{"annotations":{},"enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":null},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
 | test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test |
 | test.timeout | string | `"1m"` | Number of times to retry the test before failing |
@@ -255,7 +255,7 @@ helm install loki chart/
 | write.extraEnv | list | `[]` | Environment variables to add to the write pods |
 | write.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the write pods |
 | write.lifecycle | object | `{}` | Lifecycle for the write container |
-| write.initContainers | list | `[]` | Init containers to add to the write pods |
+| write.initContainers | list | `[]` | The default /flush_shutdown preStop hook is recommended as part of the ingester scaledown process so it's added to the template by default when autoscaling is enabled, but it's disabled to optimize rolling restarts in instances that will never be scaled down or when using chunks storage with WAL disabled. https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown -- Init containers to add to the write pods |
 | write.extraVolumeMounts | list | `[]` | Volume mounts to add to the write pods |
 | write.extraVolumes | list | `[]` | Volumes to add to the write pods |
 | write.extraVolumeClaimTemplates | list | `[]` | volumeClaimTemplates to add to StatefulSet |
@@ -271,7 +271,7 @@ helm install loki chart/
 | write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | write.persistence.selector | string | `nil` | Selector for persistent disk |
 | write.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
-| write.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| write.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). |
 | tableManager.enabled | bool | `false` | Specifies whether the table-manager should be enabled |
 | tableManager.image.registry | string | `nil` | The Docker registry for the table-manager image. Overrides `loki.image.registry` |
 | tableManager.image.repository | string | `nil` | Docker image repository for the table-manager image. Overrides `loki.image.repository` |
@@ -334,7 +334,7 @@ helm install loki chart/
 | read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | read.persistence.selector | string | `nil` | Selector for persistent disk |
 | read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
-| read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). |
 | backend.replicas | int | `3` | Number of replicas for the backend |
 | backend.autoscaling.enabled | bool | `false` | Enable autoscaling for the backend. |
 | backend.autoscaling.minReplicas | int | `2` | Minimum autoscaling replicas for the backend. |
@@ -371,7 +371,7 @@ helm install loki chart/
 | backend.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | backend.persistence.selector | string | `nil` | Selector for persistent disk |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
-| backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). |
 | singleBinary.replicas | int | `1` | Number of replicas for the single binary |
 | singleBinary.autoscaling.enabled | bool | `false` | Enable autoscaling |
 | singleBinary.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the single binary |
@@ -440,7 +440,7 @@ helm install loki chart/
 | gateway.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the gateway |
 | gateway.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the gateway |
 | gateway.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilisation percentage for the gateway |
-| gateway.autoscaling.behavior | object | `{}` | Behavior policies while scaling. |
+| gateway.autoscaling.behavior | object | `{}` | See `kubectl explain deployment.spec.strategy` for more -- ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy -- Behavior policies while scaling. |
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
@@ -495,7 +495,7 @@ helm install loki chart/
 | gateway.nginxConfig.customBackendUrl | string | `nil` | Override Backend URL |
 | gateway.nginxConfig.file | string | See values.yaml | Config file contents for Nginx. Passed through the `tpl` function to allow templating |
 | gateway.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
-| gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). |
 | networkPolicy.enabled | bool | `false` | Specifies whether Network Policies should be created |
 | networkPolicy.metrics.podSelector | object | `{}` | Specifies the Pods which are allowed to access the metrics port. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.metrics.namespaceSelector | object | `{}` | Specifies the namespaces which are allowed to access the metrics port |
@@ -511,12 +511,21 @@ helm install loki chart/
 | networkPolicy.discovery.podSelector | object | `{}` | Specifies the Pods labels used for discovery. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.discovery.namespaceSelector | object | `{}` | Specifies the namespace the discovery Pods are running in |
 | tracing.jaegerAgentHost | string | `""` |  |
-| minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
+| minio.service.nameOverride | string | `"minio.logging.svc.cluster.local"` |  |
 | minio.secrets | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"}]` | Buckets to be provisioned to for tenant |
 | minio.tenant.users | list | `[{"name":"minio-user"}]` | Users to to be provisioned to for tenant |
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
+| minio.tenant.pools[0].servers | int | `1` |  |
+| minio.tenant.pools[0].volumesPerServer | int | `4` |  |
+| minio.tenant.pools[0].size | string | `"750Mi"` |  |
+| minio.tenant.pools[0].securityContext.runAsUser | int | `1001` |  |
+| minio.tenant.pools[0].securityContext.runAsGroup | int | `1001` |  |
+| minio.tenant.pools[0].securityContext.fsGroup | int | `1001` |  |
+| minio.tenant.metrics.enabled | bool | `false` |  |
+| minio.tenant.metrics.port | int | `9000` |  |
+| minio.tenant.metrics.memory | string | `"128M"` |  |
 | domain | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
@@ -553,7 +562,7 @@ helm install loki chart/
 | sidecar.rules.resource | string | `"both"` | Search in configmap, secret, or both. |
 | sidecar.rules.script | string | `nil` | Absolute path to the shell script to execute after a configmap or secret has been reloaded. |
 | sidecar.rules.watchServerTimeout | int | `60` | WatchServerTimeout: request to the server, asking it to cleanly close the connection after that. defaults to 60sec; much higher values like 3600 seconds (1h) are feasible for non-Azure K8S. |
-| sidecar.rules.watchClientTimeout | int | `60` | WatchClientTimeout: is a client-side timeout, configuring your local socket. If you have a network outage dropping all packets with no RST/FIN, this is how long your client waits before realizing & dropping the connection. Defaults to 66sec. |
+| sidecar.rules.watchClientTimeout | int | `60` |  |
 | sidecar.rules.logLevel | string | `"INFO"` | Log level of the sidecar container. |
 
 ## Contributing
