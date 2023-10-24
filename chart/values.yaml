@@ -27,7 +27,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: 1.27.6
+  tag: v1.28.2
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -46,7 +46,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.9.1
+    tag: 2.9.2
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -368,7 +368,7 @@ enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
   # Default verion of GEL to deploy
-  version: v1.8.1
+  version: v1.8.3
   # -- Optional name of the GEL cluster, otherwise will use .Release.Name
   # The cluster name must match what is in your GEL license
   cluster_name: null
@@ -669,8 +669,12 @@ monitoring:
       enableConfigReadAPI: false
       # -- The name of the PriorityClass for GrafanaAgent pods
       priorityClassName: null
+      # -- Tolerations for GrafanaAgent pods
+      tolerations: []
     # PodLogs configuration
     podLogs:
+      # -- PodLogs version
+      apiVersion: monitoring.grafana.com/v1alpha1
       # -- PodLogs annotations
       annotations: {}
       # -- Additional PodLogs labels
@@ -836,6 +840,11 @@ write:
   # -- The default is to deploy all pods in parallel.
   podManagementPolicy: "Parallel"
   persistence:
+    # -- Enable volume claims in pod spec
+    volumeClaimsEnabled: true
+    # -- Parameters used for the `data` volume when volumeClaimEnabled if false
+    dataVolumeParameters:
+      emptyDir: {}
     # -- Enable StatefulSetAutoDeletePVC feature
     enableStatefulSetAutoDeletePVC: false
     # -- Size of persistent disk
@@ -1134,6 +1143,11 @@ backend:
   # -- The default is to deploy all pods in parallel.
   podManagementPolicy: "Parallel"
   persistence:
+    # -- Enable volume claims in pod spec
+    volumeClaimsEnabled: true
+    # -- Parameters used for the `data` volume when volumeClaimEnabled if false
+    dataVolumeParameters:
+      emptyDir: {}
     # -- Enable StatefulSetAutoDeletePVC feature
     enableStatefulSetAutoDeletePVC: true
     # -- Size of persistent disk
@@ -1450,12 +1464,8 @@ gateway:
     # high CPU load.
     htpasswd: >-
       {{ if .Values.loki.tenants }}
-
-
         {{- range $t := .Values.loki.tenants }}
       {{ htpasswd (required "All tenants must have a 'name' set" $t.name) (required "All tenants must have a 'password' set" $t.password) }}
-
-
         {{- end }}
       {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required" .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password' is required" .Values.gateway.basicAuth.password) }} {{ end }}
     # -- Existing basic auth secret to use. Must contain '.htpasswd'
@@ -1612,7 +1622,7 @@ bbtests:
 sidecar:
   image:
     repository: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar
-    tag: 1.25.1
+    tag: 1.25.2
     sha: ""
     pullPolicy: IfNotPresent
   resources:
