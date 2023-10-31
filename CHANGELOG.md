@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.31.0-bb.2] - 2023-10-31
+### Changed
+- Service Template changes for all 3 components to force TCP convention for the GRCP gossip ports
+
 ## [5.31.0-bb.1] - 2023-10-31
 ### Changed
 - Updated registry1.dso.mil/ironbank/opensource/kubernetes/kubectl v1.28.2 -> v1.28.3

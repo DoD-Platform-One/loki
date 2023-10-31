@@ -26,12 +26,14 @@ spec:
   ports:
     - name: http-metrics
       port: 3100
-      targetPort: http-metrics
+      targetPort: 3100
       protocol: TCP
-    - name: grpc
+    - name: grpclb
       port: 9095
-      targetPort: grpc
+      targetPort: 9095
+      appProtocol: tcp
       protocol: TCP
+  publishNotReadyAddresses: true
   selector:
     {{- include "loki.readSelectorLabels" . | nindent 4 }}
 {{- end }}

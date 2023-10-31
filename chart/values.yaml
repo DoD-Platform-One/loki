@@ -162,7 +162,6 @@ loki:
         ring:
           kvstore:
             store: memberlist
-          replication_factor: 1
 
     {{- if .Values.loki.schemaConfig }}
     schema_config:

@@ -34,6 +34,7 @@ spec:
     - name: grpc
       port: 9095
       targetPort: grpc
+      appProtocol: tcp
       protocol: TCP
   selector:
     {{- include "loki.backendSelectorLabels" . | nindent 4 }}
