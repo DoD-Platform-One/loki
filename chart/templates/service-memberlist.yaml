@@ -12,8 +12,9 @@ spec:
   ports:
     - name: tcp
       port: 7946
-      targetPort: http-memberlist
+      targetPort: 7946
       protocol: TCP
+      appProtocol: tcp
   {{- with .Values.memberlist.service.publishNotReadyAddresses }}
   publishNotReadyAddresses: {{ . }}
   {{- end }}
