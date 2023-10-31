@@ -3,7 +3,7 @@ name: loki
 description: Helm chart for Grafana Loki in simple, scalable mode
 type: application
 appVersion: 2.9.2
-version: 5.31.0-bb.0
+version: 5.31.0-bb.1
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -31,7 +31,7 @@ annotations:
     - name: loki
       image: registry1.dso.mil/ironbank/opensource/grafana/loki:2.9.2
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.28.2
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.28.3
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.7.1
       condition: enterprise.enabled
@@ -45,7 +45,7 @@ annotations:
       image: docker.io/grafana/loki-canary:2.9.2
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
-      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.25.2
+      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.25.3
       condition: gateway.enabled
     - name: minio
       image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2023-06-19T19-52-50Z
