@@ -10,8 +10,4 @@ spec:
   selector:
     matchLabels:
       {{- include "loki.selectorLabels" . | nindent 6 }}
-  portLevelMtls:
-    # GRPC exception to support Loki internal communication
-    "9095":
-      mode: PERMISSIVE
 {{- end }}
