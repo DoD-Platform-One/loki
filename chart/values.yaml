@@ -154,15 +154,6 @@ loki:
     {{- end }}
     {{- end }}
 
-    ingester:
-      chunk_target_size: 196608
-      flush_check_period: 5s
-      flush_op_timeout: 100m
-      lifecycler:
-        ring:
-          kvstore:
-            store: memberlist
-
     {{- if .Values.loki.schemaConfig }}
     schema_config:
     {{- toYaml .Values.loki.schemaConfig | nindent 2}}
@@ -355,7 +346,14 @@ loki:
   # --  Optional querier configuration
   querier: {}
   # --  Optional ingester configuration
-  ingester: {}
+  ingester:
+    chunk_target_size: 196608
+    flush_check_period: 5s
+    flush_op_timeout: 100m
+    lifecycler:
+      ring:
+        kvstore:
+          store: memberlist
   # --  Optional index gateway configuration
   index_gateway:
     mode: ring
