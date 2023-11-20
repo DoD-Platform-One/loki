@@ -1,4 +1,3 @@
-
   describe('Loki Test', function() {
     Cypress.on('uncaught:exception', (err, runnable) => {
       return false
@@ -7,6 +6,9 @@
     if (Cypress.env("check_datasource")) {
   
         it('Check Loki is available as a data source in grafana and connected', function() {
+            const saveOutputOptions = ['Data source is working', 'Data source successfully connected']
+            const saveOutput = new RegExp(`${saveOutputOptions.join('|')}`, 'g')
+
             cy.visit(Cypress.env('grafana_url'))
             cy.get('input[name="user"]')
               .type('admin')
@@ -25,7 +27,7 @@
             // Click on the 'Save & test` button
             cy.get('button[type="submit"]').click()
             // Check to ensure the data source is working
-            cy.get('.p-t-2').contains('Data source successfully connected', {timeout: 10000})
+            cy.get('.p-t-2').contains(saveOutput, { timeout: 10000 });
           })
     }
   })
