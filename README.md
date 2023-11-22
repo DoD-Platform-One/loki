@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.31.0-bb.6](https://img.shields.io/badge/Version-5.31.0--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.2](https://img.shields.io/badge/AppVersion-2.9.2-informational?style=flat-square)
+![Version: 5.31.0-bb.7](https://img.shields.io/badge/Version-5.31.0--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.2](https://img.shields.io/badge/AppVersion-2.9.2-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -91,7 +91,7 @@ helm install loki chart/
 | loki.compactor | object | `{}` | Optional compactor configuration |
 | loki.analytics | object | `{}` | Optional analytics configuration |
 | loki.querier | object | `{}` | Optional querier configuration |
-| loki.ingester | object | `{}` | Optional ingester configuration |
+| loki.ingester | object | `{"chunk_target_size":196608,"flush_check_period":"5s","flush_op_timeout":"100m","lifecycler":{"ring":{"kvstore":{"store":"memberlist"}}}}` | Optional ingester configuration |
 | loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
 | loki.frontend.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
@@ -150,7 +150,7 @@ helm install loki chart/
 | serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the service account |
 | serviceAccount.annotations | object | `{}` | Annotations for the service account |
 | serviceAccount.labels | object | `{}` | Labels for the service account |
-| serviceAccount.automountServiceAccountToken | bool | `true` | Set this toggle to false to opt out of automounting API credentials for the service account |
+| serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
 | rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations |

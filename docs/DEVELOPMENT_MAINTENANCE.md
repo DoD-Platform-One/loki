@@ -136,7 +136,12 @@ fullnameOverride: logging-loki
 imagePullSecrets:
   - name: private-registry
 ```
-
+- Ensure `automountServiceAccountToken` is set to `false`` for the service account.
+```
+serviceAccount:
+  # -- Set this toggle to false to opt out of automounting API credentials for the service account
+  automountServiceAccountToken: false
+```
 - Verify that the latest image from from registry1 is specified in the kubectlImage section. For example, if the latest image is 1.27.4, you should see:
 ```
   kubectlImage:
@@ -564,6 +569,11 @@ sed -i 's/(loki|enterprise-logs)/logging-loki/g' \*.json
 - modify the `loki-logs.json` dashboard to maintain the `expr` for log querying (lines 775 and 840):
   - 775: `"expr": "sum(rate({namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\" } |logfmt|= \"$filter\" [5m])) by (level)",`
   - 840: `"expr": "{namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\"} | logfmt | level=\"$level\" |= \"$filter\"",`
+
+### automountServiceAccountToken
+The mutating Kyverno policy named [update-automountserviceaccounttokens](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/chart/templates/kyverno-policies/values.yaml?ref_type=heads#L679) is leveraged to harden all ServiceAccounts in this package with `automountServiceAccountToken: false`. 
+
+This policy revokes access to the K8s API for Pods utilizing said ServiceAccounts. If a Pod truly requires access to the K8s API (for app functionality), the Pod is added to the `pods:` array of the same mutating policy. This grants the Pod access to the API, and creates a Kyverno PolicyException to prevent an alert.
 
 # Testing new Loki Version
 
