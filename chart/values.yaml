@@ -350,6 +350,7 @@ loki:
     chunk_target_size: 196608
     flush_check_period: 5s
     flush_op_timeout: 100m
+    autoforget_unhealthy: true
     lifecycler:
       ring:
         kvstore:
