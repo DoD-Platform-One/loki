@@ -27,7 +27,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.28.3
+  tag: v1.28.4
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
