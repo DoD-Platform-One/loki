@@ -612,6 +612,7 @@ loki:
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 
 ### Deploy Loki Monolith as a part of BigBang
+Loki Monolith is tested during the "package tests" stage of loki pipelines.
 ```
 helm upgrade \
   --install bigbang ./bigbang/chart \
@@ -625,9 +626,6 @@ helm upgrade \
   --set twistlock.enabled=false \
   --set loki.enabled=true \
   --set promtail.enabled=true \
-  --set logging.enabled=false \
-  --set eckoperator.enabled=false \
-  --set fluentbit.enabled=true \
   --set jaeger.enabled=false \
   --set tempo.enabled=true
 ```
