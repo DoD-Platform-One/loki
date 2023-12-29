@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.41.4-bb.0] - 2023-12-29
+### Changed
+- loki image 2.9.2 -> 2.9.3
+
 ## [5.31.0-bb.10] - 2023-12-04
 ### Changed
 - registry1.dso.mil/ironbank/opensource/kubernetes/kubectl v1.28.3 -> v1.28.4

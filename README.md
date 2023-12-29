@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.31.0-bb.10](https://img.shields.io/badge/Version-5.31.0--bb.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.2](https://img.shields.io/badge/AppVersion-2.9.2-informational?style=flat-square)
+![Version: 5.41.4-bb.0](https://img.shields.io/badge/Version-5.41.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.3](https://img.shields.io/badge/AppVersion-2.9.3-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -57,7 +57,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.9.2"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.9.3"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -78,10 +78,11 @@ helm install loki chart/
 | loki.extraMemberlistConfig | object | `{}` | Extra memberlist configuration |
 | loki.tenants | list | `[]` | Tenants list to be created on nginx htpasswd file, with name and password keys |
 | loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100}` | Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration. |
-| loki.limits_config | object | `{"enforce_metric_name":false,"max_cache_freshness_per_query":"10m","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m"}` | Limits config |
+| loki.limits_config | object | `{"max_cache_freshness_per_query":"10m","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m"}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":3}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"backoff_config":{},"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.storage.s3.backoff_config | object | `{}` | Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
@@ -95,8 +96,10 @@ helm install loki chart/
 | loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
 | loki.frontend.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
+| loki.distributor | object | `{}` | Optional distributor configuration |
+| loki.tracing | object | `{"enabled":false}` | Enable tracing |
 | enterprise.enabled | bool | `false` |  |
-| enterprise.version | string | `"v1.8.3"` |  |
+| enterprise.version | string | `"v1.8.4"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
@@ -125,8 +128,8 @@ helm install loki chart/
 | enterprise.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
 | enterprise.tokengen.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the tokengen pods |
 | enterprise.tokengen.priorityClassName | string | `""` | The name of the PriorityClass for tokengen Pods |
-| enterprise.provisioner | object | `{"additionalTenants":[],"annotations":{},"enabled":true,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `provisioner` target |
-| enterprise.provisioner.enabled | bool | `true` | Whether the job should be part of the deployment |
+| enterprise.provisioner | object | `{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `provisioner` target |
+| enterprise.provisioner.enabled | bool | `false` | Whether the job should be part of the deployment |
 | enterprise.provisioner.provisionedSecretPrefix | string | `nil` | Name of the secret to store provisioned tokens in |
 | enterprise.provisioner.additionalTenants | list | `[]` | Additional tenants to be created. Each tenant will get a read and write policy and associated token. Tenant must have a name and a namespace for the secret containting the token to be created in. For example additionalTenants:   - name: loki     secretNamespace: grafana |
 | enterprise.provisioner.env | list | `[]` | Additional Kubernetes environment |
@@ -258,6 +261,7 @@ helm install loki chart/
 | write.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the write pods |
 | write.lifecycle | object | `{}` | Lifecycle for the write container |
 | write.initContainers | list | `[]` | Init containers to add to the write pods |
+| write.extraContainers | list | `[]` | Containers to add to the write pods |
 | write.extraVolumeMounts | list | `[]` | Volume mounts to add to the write pods |
 | write.extraVolumes | list | `[]` | Volumes to add to the write pods |
 | write.extraVolumeClaimTemplates | list | `[]` | volumeClaimTemplates to add to StatefulSet |
@@ -266,6 +270,7 @@ helm install loki chart/
 | write.affinity | string | Hard node and soft zone anti-affinity | Affinity for write pods. Passed through `tpl` and, thus, to be configured as string |
 | write.dnsConfig | object | `{}` | DNS config for write pods |
 | write.nodeSelector | object | `{}` | Node selector for write pods |
+| write.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for write pods |
 | write.tolerations | list | `[]` | Tolerations for write pods |
 | write.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | write.persistence.volumeClaimsEnabled | bool | `true` | Enable volume claims in pod spec |
@@ -331,6 +336,7 @@ helm install loki chart/
 | read.affinity | string | Hard node and soft zone anti-affinity | Affinity for read pods. Passed through `tpl` and, thus, to be configured as string |
 | read.dnsConfig | object | `{}` | DNS config for read pods |
 | read.nodeSelector | object | `{}` | Node selector for read pods |
+| read.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for read pods |
 | read.tolerations | list | `[]` | Tolerations for read pods |
 | read.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | read.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
@@ -368,6 +374,7 @@ helm install loki chart/
 | backend.affinity | string | Hard node and soft zone anti-affinity | Affinity for backend pods. Passed through `tpl` and, thus, to be configured as string |
 | backend.dnsConfig | object | `{}` | DNS config for backend pods |
 | backend.nodeSelector | object | `{}` | Node selector for backend pods |
+| backend.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for backend pods |
 | backend.tolerations | list | `[]` | Tolerations for backend pods |
 | backend.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | backend.persistence.volumeClaimsEnabled | bool | `true` | Enable volume claims in pod spec |
@@ -466,10 +473,12 @@ helm install loki chart/
 | gateway.podSecurityContext | object | `{"fsGroup":101,"runAsGroup":101,"runAsNonRoot":true,"runAsUser":101}` | The SecurityContext for gateway containers |
 | gateway.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | The SecurityContext for gateway containers |
 | gateway.resources | object | `{}` | Resource requests and limits for the gateway |
+| gateway.extraContainers | list | `[]` | Containers to add to the gateway pods |
 | gateway.terminationGracePeriodSeconds | int | `30` | Grace period to allow the gateway to shutdown before it is killed |
 | gateway.affinity | string | Hard node and soft zone anti-affinity | Affinity for gateway pods. Passed through `tpl` and, thus, to be configured as string |
 | gateway.dnsConfig | object | `{}` | DNS config for gateway pods |
 | gateway.nodeSelector | object | `{}` | Node selector for gateway pods |
+| gateway.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for gateway pods |
 | gateway.tolerations | list | `[]` | Tolerations for gateway pods |
 | gateway.service.port | int | `80` | Port of the gateway service |
 | gateway.service.type | string | `"ClusterIP"` | Type of the gateway service |
@@ -487,7 +496,7 @@ helm install loki chart/
 | gateway.basicAuth.enabled | bool | `false` | Enables basic authentication for the gateway |
 | gateway.basicAuth.username | string | `nil` | The basic auth username for the gateway |
 | gateway.basicAuth.password | string | `nil` | The basic auth password for the gateway |
-| gateway.basicAuth.htpasswd | string | `"{{ if .Values.loki.tenants }}\n  {{- range $t := .Values.loki.tenants }}\n{{ htpasswd (required \"All tenants must have a 'name' set\" $t.name) (required \"All tenants must have a 'password' set\" $t.password) }}\n  {{- end }}\n{{ else }} {{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }} {{ end }}"` | Uses the specified users from the `loki.tenants` list to create the htpasswd file if `loki.tenants` is not set, the `gateway.basicAuth.username` and `gateway.basicAuth.password` are used The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
+| gateway.basicAuth.htpasswd | string | `"{{ if .Values.loki.tenants }}\n\n  {{- range $t := .Values.loki.tenants }}\n{{ htpasswd (required \"All tenants must have a 'name' set\" $t.name) (required \"All tenants must have a 'password' set\" $t.password) }}\n\n  {{- end }}\n{{ else }} {{ htpasswd (required \"'gateway.basicAuth.username' is required\" .Values.gateway.basicAuth.username) (required \"'gateway.basicAuth.password' is required\" .Values.gateway.basicAuth.password) }} {{ end }}"` | Uses the specified users from the `loki.tenants` list to create the htpasswd file if `loki.tenants` is not set, the `gateway.basicAuth.username` and `gateway.basicAuth.password` are used The value is templated using `tpl`. Override this to use a custom htpasswd, e.g. in case the default causes high CPU load. |
 | gateway.basicAuth.existingSecret | string | `nil` | Existing basic auth secret to use. Must contain '.htpasswd' |
 | gateway.readinessProbe.httpGet.path | string | `"/"` |  |
 | gateway.readinessProbe.httpGet.port | string | `"http"` |  |
@@ -499,10 +508,12 @@ helm install loki chart/
 | gateway.nginxConfig.customReadUrl | string | `nil` | Override Read URL |
 | gateway.nginxConfig.customWriteUrl | string | `nil` | Override Write URL |
 | gateway.nginxConfig.customBackendUrl | string | `nil` | Override Backend URL |
+| gateway.nginxConfig.resolver | string | `""` | Allows overriding the DNS resolver address nginx will use. |
 | gateway.nginxConfig.file | string | See values.yaml | Config file contents for Nginx. Passed through the `tpl` function to allow templating |
 | gateway.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
 | networkPolicy.enabled | bool | `false` | Specifies whether Network Policies should be created |
+| networkPolicy.flavor | string | `"kubernetes"` | Specifies whether the policies created will be standard Network Policies (flavor: kubernetes) or Cilium Network Policies (flavor: cilium) |
 | networkPolicy.metrics.podSelector | object | `{}` | Specifies the Pods which are allowed to access the metrics port. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.metrics.namespaceSelector | object | `{}` | Specifies the namespaces which are allowed to access the metrics port |
 | networkPolicy.metrics.cidrs | list | `[]` | Specifies specific network CIDRs which are allowed to access the metrics port. In case you use namespaceSelector, you also have to specify your kubelet networks here. The metrics ports are also used for probes. |
@@ -516,7 +527,6 @@ helm install loki chart/
 | networkPolicy.discovery.port | int | `nil` | Specify the port used for discovery |
 | networkPolicy.discovery.podSelector | object | `{}` | Specifies the Pods labels used for discovery. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.discovery.namespaceSelector | object | `{}` | Specifies the namespace the discovery Pods are running in |
-| tracing.jaegerAgentHost | string | `""` |  |
 | minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
 | minio.secrets | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
