@@ -1,0 +1,17 @@
+{{- if and .Values.istio.enabled .Values.istio.hardened.enabled .Values.istio.hardened.promtail.enabled -}}
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: promtail-authz-policy
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "loki.selectorLabels" . | nindent 6 }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: {{ .Values.istio.hardened.promtail.namespaces | toYaml | nindent 10 }}
+        principals: {{ .Values.istio.hardened.promtail.principals | toYaml | nindent 10 }}
+{{- end }}

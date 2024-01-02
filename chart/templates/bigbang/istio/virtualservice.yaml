@@ -1,0 +1,58 @@
+{{- if and .Values.istio.enabled .Values.istio.loki.enabled -}}
+{{- $rootScope := . }}
+{{- $uncleanChartName := printf "%s-%s" .Chart.Name .Chart.Version -}}
+{{- $chartName := regexReplaceAll "\\+" $uncleanChartName "_" -}}
+{{- $ingressPaths := include "loki.ingress.servicePaths" . | fromYamlArray -}}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: loki
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "loki.name" . }}
+    helm.sh/chart: {{ $chartName }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/part-of: loki
+    app.kubernetes.io/component: networking
+    {{- if .Values.istio.loki.labels }}
+    {{ toYaml .Values.istio.loki.labels | indent 4 }}
+    {{- end }}
+  {{- if .Values.istio.loki.annotations }}
+  annotations:
+  {{ toYaml .Values.istio.loki.annotations | indent 4 }}
+  {{- end }}
+spec:
+  gateways:
+  {{- range .Values.istio.loki.gateways }}
+    - {{ . | quote }}
+  {{- end }}
+  hosts:
+  {{- range .Values.istio.loki.hosts }}
+    - {{ tpl . $rootScope | quote }}
+  {{- end }}
+  http:
+  {{- if .Values.istio.loki.exposeReadyEndpoint }}
+  - match:
+    - uri:
+        prefix: /ready
+    route:
+    - destination:
+        port:
+          number: 3100
+        host: {{ printf "%s.%s.svc.cluster.local" (include "loki.ingress.serviceName" (dict "ctx" $rootScope "svcName" "read")) $.Release.Namespace | quote }}
+  {{- end }}
+  {{- range $ingressPaths }}
+  - match:
+    - uri:
+        prefix: {{ .path | quote }}
+    route:
+    - destination:
+        port:
+          number: {{ .backend.service.port.number }}
+        host: {{ printf "%s.%s.svc.cluster.local" .backend.service.name $.Release.Namespace | quote }}
+  {{- end }}
+{{- end }}
+
+{{/*
+*/}}
