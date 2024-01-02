@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.41.4-bb.0](https://img.shields.io/badge/Version-5.41.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.3](https://img.shields.io/badge/AppVersion-2.9.3-informational?style=flat-square)
+![Version: 5.41.4-bb.1](https://img.shields.io/badge/Version-5.41.4--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.3](https://img.shields.io/badge/AppVersion-2.9.3-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -535,9 +535,32 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | domain | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
+| istio.hardened.enabled | bool | `false` |  |
+| istio.hardened.customAuthorizationPolicies | list | `[]` |  |
+| istio.hardened.monitoring.enabled | bool | `true` |  |
+| istio.hardened.monitoring.namespaces[0] | string | `"monitoring"` |  |
+| istio.hardened.monitoring.principals[0] | string | `"cluster.local/ns/monitoring/sa/monitoring-grafana"` |  |
+| istio.hardened.monitoring.principals[1] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-alertmanager"` |  |
+| istio.hardened.monitoring.principals[2] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-operator"` |  |
+| istio.hardened.monitoring.principals[3] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-prometheus"` |  |
+| istio.hardened.monitoring.principals[4] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics"` |  |
+| istio.hardened.monitoring.principals[5] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter"` |  |
+| istio.hardened.promtail.enabled | bool | `true` |  |
+| istio.hardened.promtail.namespaces[0] | string | `"promtail"` |  |
+| istio.hardened.promtail.principals[0] | string | `"cluster.local/ns/promtail/sa/promtail-promtail"` |  |
+| istio.loki.enabled | bool | `false` |  |
+| istio.loki.annotations | object | `{}` |  |
+| istio.loki.labels | object | `{}` |  |
+| istio.loki.gateways[0] | string | `"istio-system/public"` |  |
+| istio.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
+| istio.loki.service | string | `""` |  |
+| istio.loki.port | string | `""` |  |
+| istio.loki.exposeReadyEndpoint | bool | `false` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | networkPolicies.enabled | bool | `false` |  |
 | networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API.   Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
+| networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
+| networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
 | bbtests.cypress.envs.cypress_check_datasource | string | `"false"` |  |
