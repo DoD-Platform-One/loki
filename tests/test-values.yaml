@@ -19,3 +19,9 @@ networkPolicies:
 
 bbtests:
   enabled: true
+
+# enable istio hardening
+istio:
+  enabled: true
+  hardened:
+    enabled: true
