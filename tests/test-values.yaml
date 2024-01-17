@@ -20,8 +20,8 @@ networkPolicies:
 bbtests:
   enabled: true
 
-# enable istio hardening
 istio:
-  enabled: true
+  enabled: false
+  # enable istio hardening
   hardened:
     enabled: true
