@@ -21,7 +21,6 @@ bbtests:
   enabled: true
 
 istio:
-  enabled: false
   # enable istio hardening
   hardened:
     enabled: true
