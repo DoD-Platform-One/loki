@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.41.4-bb.5] - 2024-01-18
+### Changed
+- removed a restriction on the allow-intranet authorization policy
+
 ## [5.41.4-bb.3] - 2024-01-17
 ### Changed
 - removed Istio.enabled from test-values
