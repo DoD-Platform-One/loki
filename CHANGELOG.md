@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.42.0-bb.0] - 2024-01-30
+### Upgrade
+- docker.io/grafana/loki-canary 2.9.3 -> 2.9.4
+- ironbank/opensource/grafana/loki 2.9.3 -> 2.9.4
+- registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar 1.25.2 -> 1.25.3
+- registry1.dso.mil/ironbank/opensource/grafana/loki 2.9.3 -> 2.9.4
+- registry1.dso.mil/ironbank/opensource/kubernetes/kubectl v1.28.4 -> v1.28.6
+
 ## [5.41.4-bb.5] - 2024-01-18
 ### Changed
 - removed a restriction on the allow-intranet authorization policy

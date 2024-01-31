@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.41.4-bb.5](https://img.shields.io/badge/Version-5.41.4--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.3](https://img.shields.io/badge/AppVersion-2.9.3-informational?style=flat-square)
+![Version: 5.42.0-bb.0](https://img.shields.io/badge/Version-5.42.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -48,7 +48,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.28.4"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.28.6"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
@@ -57,7 +57,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.9.3"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.9.4"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -178,6 +178,7 @@ helm install loki chart/
 | monitoring.dashboards.labels | object | `{"grafana_dashboard":"1"}` | Labels for the dashboards ConfigMap |
 | monitoring.rules.enabled | bool | `false` | If enabled, create PrometheusRule resource with Loki recording rules |
 | monitoring.rules.alerting | bool | `true` | Include alerting rules |
+| monitoring.rules.disabled | object | `{}` | If you disable all the alerts and keep .monitoring.rules.alerting set to true, the chart will fail to render. |
 | monitoring.rules.namespace | string | `nil` | Alternative namespace to create PrometheusRule resources in |
 | monitoring.rules.annotations | object | `{}` | Additional annotations for the rules PrometheusRule resource |
 | monitoring.rules.labels | object | `{}` | Additional labels for the rules PrometheusRule resource |
@@ -502,6 +503,7 @@ helm install loki chart/
 | gateway.readinessProbe.httpGet.port | string | `"http"` |  |
 | gateway.readinessProbe.initialDelaySeconds | int | `15` |  |
 | gateway.readinessProbe.timeoutSeconds | int | `1` |  |
+| gateway.nginxConfig.enableIPv6 | bool | `true` | Enable listener for IPv6, disable on IPv4-only systems |
 | gateway.nginxConfig.logFormat | string | `"main '$remote_addr - $remote_user [$time_local]  $status '\n        '\"$request\" $body_bytes_sent \"$http_referer\" '\n        '\"$http_user_agent\" \"$http_x_forwarded_for\"';"` | NGINX log format |
 | gateway.nginxConfig.serverSnippet | string | `""` | Allows appending custom configuration to the server block |
 | gateway.nginxConfig.httpSnippet | string | `"{{ if .Values.loki.tenants }}proxy_set_header X-Scope-OrgID $remote_user;{{ end }}"` | Allows appending custom configuration to the http block, passed through the `tpl` function to allow templating |
@@ -569,7 +571,7 @@ helm install loki chart/
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` |  |
-| sidecar.image.tag | string | `"1.25.2"` |  |
+| sidecar.image.tag | string | `"1.25.3"` |  |
 | sidecar.image.sha | string | `""` |  |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` |  |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |
