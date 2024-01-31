@@ -11,7 +11,7 @@
 apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
-  name: {{ $name }}-ingressgateway-authz-policy
+  name: "loki-{{ $name }}-ingressgateway-authz-policy"
   namespace: {{ $.Release.Namespace }}
 spec:
   selector:
