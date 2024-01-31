@@ -2,7 +2,7 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: promtail-authz-policy
+  name: loki-promtail-authz-policy
   namespace: {{ .Release.Namespace }}
 spec:
   selector:

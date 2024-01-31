@@ -2,7 +2,7 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: monitoring-authz-policy
+  name: loki-monitoring-authz-policy
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
