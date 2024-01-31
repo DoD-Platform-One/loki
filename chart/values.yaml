@@ -27,7 +27,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.28.4
+  tag: v1.28.6
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -46,7 +46,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 2.9.3
+    tag: 2.9.4
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -614,6 +614,12 @@ monitoring:
     enabled: false
     # -- Include alerting rules
     alerting: true
+    # -- Specify which individual alerts should be disabled
+    # -- Instead of turning off each alert one by one, set the .monitoring.rules.alerting value to false instead.
+    # -- If you disable all the alerts and keep .monitoring.rules.alerting set to true, the chart will fail to render.
+    disabled: {}
+    #  LokiRequestErrors: true
+    #  LokiRequestPanics: true
     # -- Alternative namespace to create PrometheusRule resources in
     namespace: null
     # -- Additional annotations for the rules PrometheusRule resource
@@ -1524,6 +1530,8 @@ gateway:
     initialDelaySeconds: 15
     timeoutSeconds: 1
   nginxConfig:
+    # -- Enable listener for IPv6, disable on IPv4-only systems
+    enableIPv6: true
     # -- NGINX log format
     logFormat: |-
       main '$remote_addr - $remote_user [$time_local]  $status '
@@ -1708,7 +1716,7 @@ bbtests:
 sidecar:
   image:
     repository: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar
-    tag: 1.25.2
+    tag: 1.25.3
     sha: ""
     pullPolicy: IfNotPresent
   resources:
