@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.42.0-bb.1] - 2024-01-31
+### Changed
+-  Changed loki commonConfig replication_factor to 1 from 3
+
 ## [5.42.0-bb.0] - 2024-01-30
 ### Upgrade
 - docker.io/grafana/loki-canary 2.9.3 -> 2.9.4
