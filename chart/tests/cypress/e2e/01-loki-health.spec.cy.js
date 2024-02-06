@@ -24,5 +24,13 @@
             // Check to ensure the data source is working
             cy.get('.p-t-2').contains(saveOutput, { timeout: 30000 });
           })
+
+        it('Test for Loki Dashboard log data', function () {
+            cy.visit(`${Cypress.env('grafana_url')}/dashboards`); 
+            cy.wait(1000);
+            cy.loadGrafanaDashboard("Loki Dashboard quick search");
+            cy.wait(1000);
+            cy.get('[data-testid="data-testid Panel header Logs Panel"]').should('not.contain', 'No data');
+          });
     }
   })
