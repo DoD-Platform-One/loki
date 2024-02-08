@@ -30,7 +30,7 @@
             cy.wait(1000);
             cy.loadGrafanaDashboard("Loki Dashboard quick search");
             cy.wait(1000);
-            cy.get('[data-testid="data-testid Panel header Logs Panel"]').should('not.contain', 'No data');
+            cy.get('[class$=-logs-row]').should('have.length.at.least', 10);
           });
     }
   })
