@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.42.0-bb.5](https://img.shields.io/badge/Version-5.42.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
+![Version: 5.42.0-bb.6](https://img.shields.io/badge/Version-5.42.0--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -550,6 +550,9 @@ helm install loki chart/
 | istio.hardened.promtail.enabled | bool | `true` |  |
 | istio.hardened.promtail.namespaces[0] | string | `"promtail"` |  |
 | istio.hardened.promtail.principals[0] | string | `"cluster.local/ns/promtail/sa/promtail-promtail"` |  |
+| istio.hardened.fluentbit.enabled | bool | `true` |  |
+| istio.hardened.fluentbit.namespaces[0] | string | `"fluentbit"` |  |
+| istio.hardened.fluentbit.principals[0] | string | `"cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit"` |  |
 | istio.loki.enabled | bool | `false` |  |
 | istio.loki.annotations | object | `{}` |  |
 | istio.loki.labels | object | `{}` |  |

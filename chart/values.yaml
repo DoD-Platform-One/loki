@@ -1675,6 +1675,12 @@ istio:
       - promtail
       principals:
       - cluster.local/ns/promtail/sa/promtail-promtail
+    fluentbit:
+      enabled: true
+      namespaces:
+      - fluentbit
+      principals:
+      - cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit
   loki:
     enabled: false
     annotations: {}
