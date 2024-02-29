@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.42.0-bb.7](https://img.shields.io/badge/Version-5.42.0--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
+![Version: 5.42.0-bb.8](https://img.shields.io/badge/Version-5.42.0--bb.8-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -538,6 +538,8 @@ helm install loki chart/
 | domain | string | `"bigbang.dev"` |  |
 | istio.enabled | bool | `false` |  |
 | istio.hardened.enabled | bool | `false` |  |
+| istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
+| istio.hardened.customServiceEntries | list | `[]` |  |
 | istio.hardened.customAuthorizationPolicies | list | `[]` |  |
 | istio.hardened.monitoring.enabled | bool | `true` |  |
 | istio.hardened.monitoring.namespaces[0] | string | `"monitoring"` |  |
