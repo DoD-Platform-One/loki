@@ -13,6 +13,9 @@ global:
 # -- Overrides the chart's name
 nameOverride: logging-loki
 
+# Default to false, override in openshift-test-values.yaml 
+openshift: false
+
 # -- Overrides the chart's computed fullname
 fullnameOverride: logging-loki
 # -- Overrides the chart's cluster label
