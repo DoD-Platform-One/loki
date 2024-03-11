@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.42.0-bb.9](https://img.shields.io/badge/Version-5.42.0--bb.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
+![Version: 5.42.0-bb.10](https://img.shields.io/badge/Version-5.42.0--bb.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -43,6 +43,7 @@ helm install loki chart/
 | global.dnsService | string | `"kube-dns"` | configures DNS service name |
 | global.dnsNamespace | string | `"kube-system"` | configures DNS service namespace |
 | nameOverride | string | `"logging-loki"` | Overrides the chart's name |
+| openshift | bool | `false` |  |
 | fullnameOverride | string | `"logging-loki"` | Overrides the chart's computed fullname |
 | clusterLabelOverride | string | `nil` | Overrides the chart's cluster label |
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
