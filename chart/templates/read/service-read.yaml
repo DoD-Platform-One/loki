@@ -25,12 +25,12 @@ spec:
   type: ClusterIP
   ports:
     - name: http-metrics
-      port: 3100
-      targetPort: 3100
+      port: {{ .Values.loki.server.http_listen_port }}
+      targetPort: http-metrics
       protocol: TCP
-    - name: grpclb
-      port: 9095
-      targetPort: 9095
+    - name: grpc
+      port: {{ .Values.loki.server.grpc_listen_port }}
+      targetPort: grpc
       appProtocol: tcp
       protocol: TCP
   publishNotReadyAddresses: true

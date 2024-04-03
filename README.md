@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.42.0-bb.11](https://img.shields.io/badge/Version-5.42.0--bb.11-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.4](https://img.shields.io/badge/AppVersion-2.9.4-informational?style=flat-square)
+![Version: 5.47.2-bb.0](https://img.shields.io/badge/Version-5.47.2--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.6](https://img.shields.io/badge/AppVersion-2.9.6-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -49,7 +49,7 @@ helm install loki chart/
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.28.6"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.28.8"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.readinessProbe.httpGet.path | string | `"/ready"` |  |
@@ -58,7 +58,7 @@ helm install loki chart/
 | loki.readinessProbe.timeoutSeconds | int | `1` |  |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"2.9.4"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"2.9.6"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -100,7 +100,7 @@ helm install loki chart/
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
 | enterprise.enabled | bool | `false` |  |
-| enterprise.version | string | `"v1.8.4"` |  |
+| enterprise.version | string | `"v1.8.6"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
@@ -211,11 +211,13 @@ helm install loki chart/
 | monitoring.selfMonitoring.grafanaAgent.labels | object | `{}` | Additional Grafana Agent labels |
 | monitoring.selfMonitoring.grafanaAgent.enableConfigReadAPI | bool | `false` | Enable the config read api on port 8080 of the agent |
 | monitoring.selfMonitoring.grafanaAgent.priorityClassName | string | `nil` | The name of the PriorityClass for GrafanaAgent pods |
+| monitoring.selfMonitoring.grafanaAgent.resources | object | `{}` | Resource requests and limits for the grafanaAgent pods |
 | monitoring.selfMonitoring.grafanaAgent.tolerations | list | `[]` | Tolerations for GrafanaAgent pods |
 | monitoring.selfMonitoring.podLogs.apiVersion | string | `"monitoring.grafana.com/v1alpha1"` | PodLogs version |
 | monitoring.selfMonitoring.podLogs.annotations | object | `{}` | PodLogs annotations |
 | monitoring.selfMonitoring.podLogs.labels | object | `{}` | Additional PodLogs labels |
 | monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.selfMonitoring.podLogs.additionalPipelineStages | list | `[]` | Additional pipeline stages to process logs after scraping https://grafana.com/docs/agent/latest/operator/api/#pipelinestagespec-a-namemonitoringgrafanacomv1alpha1pipelinestagespeca |
 | monitoring.selfMonitoring.logsInstance.annotations | object | `{}` | LogsInstance annotations |
 | monitoring.selfMonitoring.logsInstance.labels | object | `{}` | Additional LogsInstance labels |
 | monitoring.selfMonitoring.logsInstance.clients | string | `nil` | Additional clients for remote write |
@@ -328,6 +330,7 @@ helm install loki chart/
 | read.targetModule | string | `"read"` | Comma-separated list of Loki modules to load for the read |
 | read.legacyReadTarget | bool | `false` | Whether or not to use the 2 target type simple scalable mode (read, write) or the 3 target type (read, write, backend). Legacy refers to the 2 target type, so true will run two targets, false will run 3 targets. |
 | read.extraArgs | list | `[]` | Additional CLI args for the read |
+| read.extraContainers | list | `[]` | Containers to add to the read pods |
 | read.extraEnv | list | `[]` | Environment variables to add to the read pods |
 | read.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the read pods |
 | read.lifecycle | object | `{}` | Lifecycle for the read container |
@@ -459,7 +462,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.25.3"` | The gateway image tag |
+| gateway.image.tag | string | `"1.25.4"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -530,7 +533,9 @@ helm install loki chart/
 | networkPolicy.discovery.port | int | `nil` | Specify the port used for discovery |
 | networkPolicy.discovery.podSelector | object | `{}` | Specifies the Pods labels used for discovery. As this is cross-namespace communication, you also need the namespaceSelector. |
 | networkPolicy.discovery.namespaceSelector | object | `{}` | Specifies the namespace the discovery Pods are running in |
-| minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"securityContext":{"capabilities":{"drop":["ALL"]},"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
+| networkPolicy.egressWorld.enabled | bool | `false` | Enable additional cilium egress rules to external world for write, read and backend. |
+| networkPolicy.egressKubeApiserver.enabled | bool | `false` | Enable additional cilium egress rules to kube-apiserver for backend. |
+| minio | object | `{"enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"service":{"nameOverride":"minio.logging.svc.cluster.local"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | ----------------------------------- |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
 | minio.secrets | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"}]` | Buckets to be provisioned to for tenant |
@@ -577,9 +582,9 @@ helm install loki chart/
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` |  |
-| sidecar.image.tag | string | `"1.25.3"` |  |
+| sidecar.image.tag | string | `"1.26.1"` |  |
 | sidecar.image.sha | string | `""` |  |
-| sidecar.image.pullPolicy | string | `"IfNotPresent"` |  |
+| sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |
 | sidecar.resources.limits.memory | string | `"100Mi"` |  |
 | sidecar.resources.requests.cpu | string | `"100m"` |  |
