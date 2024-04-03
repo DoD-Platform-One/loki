@@ -605,13 +605,6 @@ You will want to install with:
 
 `overrides/loki.yaml`
 ```yaml
-domain: bigbang.dev
-
-flux:
-  interval: 1m
-  rollback:
-    cleanupOnFail: false
-
 clusterAuditor:
   enabled: false
 
@@ -671,13 +664,6 @@ You will want to install with:
 
 `overrides/loki.yaml`
 ```yaml
-domain: bigbang.dev
-
-flux:
-  interval: 1m
-  rollback:
-    cleanupOnFail: false
-
 clusterAuditor:
   enabled: false
 

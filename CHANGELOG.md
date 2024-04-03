@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [5.47.2-bb.0] - 2024-04-01
+### Upgrade
+- Updated loki 2.9.4 -> 2.9.6
+- Updated minio-instance 5.0.11-bb.3 -> 5.0.12-bb.6
+- Updated grafana-agent-operator 0.3.15 -> 0.3.19
+- Updated k8s-sidecar 1.25.3 -> 1.26.1
+- Updated kubectl v1.28.6 -> v1.28.8
+- Updated nginx 1.25.3 -> 1.25.4
+
+
 ## [5.42.0-bb.11] - 2024-03-29
 ### Added
 - Add drop all capabilities to minio
