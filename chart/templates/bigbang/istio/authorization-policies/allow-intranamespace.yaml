@@ -6,9 +6,6 @@ metadata:
   name: loki-allow-intranamespace
   namespace: {{ $namespace }}
 spec:
-  selector:
-    matchLabels:
-      {{- include "loki.selectorLabels" . | nindent 6 }}
   action: ALLOW
   rules:
   - from:

@@ -1721,6 +1721,12 @@ istio:
       - fluentbit
       principals:
       - cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit
+    minioOperator:
+      enabled: true
+      namespaces:
+      - minio-operator
+      principals:
+      - cluster.local/ns/minio-operator/sa/minio-operator
   loki:
     enabled: false
     annotations: {}
