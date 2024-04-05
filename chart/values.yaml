@@ -1751,6 +1751,7 @@ networkPolicies:
   ingressLabels:
     app: public-ingressgateway
     istio: ingressgateway
+  additionalPolicies: []
 
 bbtests:
   enabled: false
