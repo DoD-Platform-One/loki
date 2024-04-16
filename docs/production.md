@@ -41,8 +41,22 @@ loki:
 ### Cloud Credential Configuration
 Loki is able to use IAM Profiles attached to nodes on your instances, if you don't specify `loki.objectStorage.accessKey` or `loki.objectStorage.accessSecret` loki will use the Profile attached to the instance. If you specify `accessKey` & `accessSecret` they will be mounted within a non encrypted/obfuscated configMap via the loki-simple-scalable chart so it is encouraged to utilize instance profiles where possible.
 
+## AWS IRSA Configuration
+To use AWS IRSA within Loki, ensure the following values are set along with the usual `loki.objectStorage` values via BigBang:
+  ```
+  loki:
+    values:
+      loki:
+        storage:
+          s3:
+            endpoint: ""
+      serviceAccount:
+        annotations: 
+          eks.amazonaws.com/role-arn: "my-role-arn"
+  ```
+
 ## Override A Custom Configuration
-If the above recommended configuration is not enough, you would like to add in additional options or utilize something like AWS DynamoDB as a table-manager instead of boltdb-shipper, you can override in your own full configuration under the `global.config` value:
+If the above recommended configuration is not enough, you would like to add in additional options or utilize something like AWS DynamoDB as a table-manager instead of tsdb-shipper, you can override in your own full configuration under the `global.config` value:
 ```yaml
 loki:
   values:
