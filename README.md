@@ -1,6 +1,6 @@
 # loki
 
-![Version: 5.47.2-bb.2](https://img.shields.io/badge/Version-5.47.2--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.6](https://img.shields.io/badge/AppVersion-2.9.6-informational?style=flat-square)
+![Version: 5.47.2-bb.3](https://img.shields.io/badge/Version-5.47.2--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.6](https://img.shields.io/badge/AppVersion-2.9.6-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
@@ -99,6 +99,7 @@ helm install loki chart/
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
+| loki.analytics | object | `{"reporting_enabled":false}` | Disable anonymous usage statistics |
 | enterprise.enabled | bool | `false` |  |
 | enterprise.version | string | `"v1.8.6"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
