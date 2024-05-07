@@ -399,6 +399,9 @@ loki:
   # -- Enable tracing
   tracing:
     enabled: false
+  # -- Disable anonymous usage statistics
+  analytics:
+    reporting_enabled: false
 enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
