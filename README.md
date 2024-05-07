@@ -1,37 +1,31 @@
 # loki
 
-![Version: 5.47.2-bb.3](https://img.shields.io/badge/Version-5.47.2--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.6](https://img.shields.io/badge/AppVersion-2.9.6-informational?style=flat-square)
+![Version: 5.47.2-bb.4](https://img.shields.io/badge/Version-5.47.2--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.9.6](https://img.shields.io/badge/AppVersion-2.9.6-informational?style=flat-square)
 
 Helm chart for Grafana Loki in simple, scalable mode
 
-## Upstream References
-* <https://grafana.github.io/helm-charts>
+**Homepage:** <https://grafana.github.io/helm-charts>
+
+## Maintainers
+
+| Name | Email | Url |
+| ---- | ------ | --- |
+| trevorwhitney |  |  |
+| jeschkies |  |  |
+
+## Source Code
 
 * <https://github.com/grafana/loki>
 * <https://grafana.com/oss/loki/>
 * <https://grafana.com/docs/loki/latest/>
 
-## Learn More
-* [Application Overview](docs/overview.md)
-* [Other Documentation](docs/)
+## Requirements
 
-## Pre-Requisites
-
-* Kubernetes Cluster deployed
-* Kubernetes config installed in `~/.kube/config`
-* Helm installed
-
-Install Helm
-
-https://helm.sh/docs/intro/install/
-
-## Deployment
-
-* Clone down the repository
-* cd into directory
-```bash
-helm install loki chart/
-```
+| Repository | Name | Version |
+|------------|------|---------|
+| https://grafana.github.io/helm-charts | grafana-agent-operator(grafana-agent-operator) | 0.3.19 |
+| oci://registry1.dso.mil/bigbang | gluon | 0.4.8 |
+| oci://registry1.dso.mil/bigbang | minio(minio-instance) | 5.0.12-bb.6 |
 
 ## Values
 
@@ -108,7 +102,7 @@ helm install loki chart/
 | enterprise.externalLicenseName | string | `nil` | Name of external license secret to use |
 | enterprise.externalConfigName | string | `""` | Name of the external config secret to use |
 | enterprise.adminApi | object | `{"enabled":true}` | If enabled, the correct admin_client storage will be configured. If disabled while running enterprise, make sure auth is set to `type: trust`, or that `auth_enabled` is set to `false`. |
-| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") (eq .Values.loki.storage.type \"azure\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
+| enterprise.config | string | `"{{- if .Values.enterprise.adminApi.enabled }}\n{{- if or .Values.minio.enabled (eq .Values.loki.storage.type \"s3\") (eq .Values.loki.storage.type \"gcs\") (eq .Values.loki.storage.type \"azure\") }}\nadmin_client:\n  storage:\n    s3:\n      bucket_name: {{ .Values.loki.storage.bucketNames.admin }}\n{{- end }}\n{{- end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled | ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n"` |  |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
 | enterprise.image.tag | string | `"v1.7.1"` | Overrides the image tag whose default is the chart's appVersion |
@@ -613,6 +607,3 @@ helm install loki chart/
 | sidecar.rules.watchClientTimeout | int | `60` | WatchClientTimeout: is a client-side timeout, configuring your local socket. If you have a network outage dropping all packets with no RST/FIN, this is how long your client waits before realizing & dropping the connection. Defaults to 66sec. |
 | sidecar.rules.logLevel | string | `"INFO"` | Log level of the sidecar container. |
 
-## Contributing
-
-Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in contributing.
