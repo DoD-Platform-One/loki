@@ -374,7 +374,9 @@ loki:
   # --  Optional compactor configuration
   compactor: {}
   # --  Optional analytics configuration
-  analytics: {}
+  analytics:
+    # -- Disable anonymous usage statistics
+    reporting_enabled: false
   # --  Optional querier configuration
   querier: {}
   # --  Optional ingester configuration
@@ -399,9 +401,6 @@ loki:
   # -- Enable tracing
   tracing:
     enabled: false
-  # -- Disable anonymous usage statistics
-  analytics:
-    reporting_enabled: false
 enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
@@ -664,7 +663,7 @@ monitoring:
     scrapeTimeout: null
     # -- ServiceMonitor relabel configs to apply to samples before scraping
     # https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig
-    relabelings: []
+    relabelings: [] 
     # -- ServiceMonitor metric relabel configs to apply to samples before ingestion
     # https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint
     metricRelabelings: []

@@ -85,7 +85,8 @@ Helm chart for Grafana Loki in simple, scalable mode
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
 | loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h"},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h"}}` | Additional storage config |
 | loki.compactor | object | `{}` | Optional compactor configuration |
-| loki.analytics | object | `{}` | Optional analytics configuration |
+| loki.analytics | object | `{"reporting_enabled":false}` | Optional analytics configuration |
+| loki.analytics.reporting_enabled | bool | `false` | Disable anonymous usage statistics |
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{"autoforget_unhealthy":true,"chunk_target_size":196608,"flush_check_period":"5s","flush_op_timeout":"100m","lifecycler":{"ring":{"kvstore":{"store":"memberlist"}}}}` | Optional ingester configuration |
 | loki.index_gateway | object | `{"mode":"ring"}` | Optional index gateway configuration |
@@ -93,7 +94,6 @@ Helm chart for Grafana Loki in simple, scalable mode
 | loki.frontend_worker.scheduler_address | string | `"{{ include \"loki.querySchedulerAddress\" . }}"` |  |
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
-| loki.analytics | object | `{"reporting_enabled":false}` | Disable anonymous usage statistics |
 | enterprise.enabled | bool | `false` |  |
 | enterprise.version | string | `"v1.8.6"` |  |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
