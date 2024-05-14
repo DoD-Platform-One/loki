@@ -1,4 +1,4 @@
-{{- if (lt (int .Values.backend.replicas) 2) }}
+{{- if and (lt (int .Values.backend.replicas) 2) (ne .Values.deploymentMode "SingleBinary") }}
 {{- fail "Loki backend.replicas must be set to 2 or greater." }}
 {{- end }}
 
