@@ -217,7 +217,6 @@ Verify that the `loki.image` section points to a registry1 image and has the cor
       active_index_directory: /var/loki/boltdb-shipper-active
       cache_location: /var/loki/boltdb-shipper-cache
       cache_ttl: 24h
-      shared_store: s3
 ```
 
 - Ensure `enterprise.image` is pointed to registry1 image
@@ -357,6 +356,65 @@ singleBinary:
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
 ```
+
+- Ensure that `singleBinary.persistence.size` is set to `12Gi`
+
+- Ensure that `singleBinary.persistence.enableStatefulAutoDeletePVC` is set to `false`.
+
+- Ensure that `memcachedExporter.enabled` is set to `false`.
+
+- Ensure that `chunksCache.enabled` is set to `false`.
+
+- Esnure that `resultsCache.enabled` is set to `false`.
+
+- The default value for `loki.schemaConfig` has changed. To keep the prior value, ensure that the following block is present:
+
+```yaml
+  schemaConfig:
+    configs:
+      - from: 2022-01-11
+        store: boltdb-shipper
+        object_store: "{{ .Values.loki.storage.type }}"
+        schema: v12
+        index:
+          prefix: loki_index_
+          period: 24h
+      - from: 2023-08-01
+        store: tsdb
+        object_store: "{{ .Values.loki.storage.type }}"
+        schema: v12
+        index:
+          prefix: loki_tsdb_
+          period: 24h
+      - from: 2024-04-01
+        store: tsdb
+        object_store: "{{ .Values.loki.storage.type }}"
+        schema: v13
+        index:
+          prefix: loki_tsdb_
+          period: 24h
+```
+
+- Ensure that the value for `memcached.image.repository` and `memcached.image.tag` are set to valid values from registry1.
+
+```yaml
+memcached:
+  image:
+    # -- Memcached Docker image repository
+    repository: registry1.dso.mil/ironbank/opensource/memcached/memcached
+    # -- Memcached Docker image tag
+    tag: 1.6.23
+```
+
+- Ensured that `memcached.containerSecurityContext` includes the following:
+
+```yaml
+    fsGroup: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true
+    runAsUser: 10001
+```
+
 # ** **Important** **
 Before following the step below, note that if there is only one minio: block, you shouldn't remove it.
 - Remove minio block added by upstream
@@ -368,9 +426,8 @@ Before following the step below, note that if there is only one minio: block, yo
 minio:
   # -- Enable minio instance support, must have minio-operator installed
   enabled: false
-  # Override the minio service name for easier connection setup
-  service:
-    nameOverride: "minio.logging.svc.cluster.local"
+  # Allow the address used by Loki to refer to Minio to be overridden
+  address: "minio.logging.svc.cluster.local"
   # -- Minio root credentials
   secrets:
     name: "loki-objstore-creds"
@@ -532,7 +589,7 @@ spec:
 ```yaml
 {{- if .Values.minio.enabled -}}
 s3:
-  endpoint: {{ $.Values.minio.service.nameOverride }}
+  endpoint: {{ include "loki.minio" $ }} 
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
   secret_access_key: {{ $.Values.minio.secrets.secretKey }}
   access_key_id: {{ $.Values.minio.secrets.accessKey }}
@@ -651,8 +708,8 @@ addons:
 ```
 
 - Visit `https://grafana.bigbang.dev` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
-- Navigate to `configuration -> Data Sources -> Loki` 
-    - Click `Save & Test` to ensure Data Source changes can be saved successfully.
+- Navigate to `Connections -> Data Sources -> Loki`
+  - Click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 
 ### Deploy Loki Monolith as a part of BigBang

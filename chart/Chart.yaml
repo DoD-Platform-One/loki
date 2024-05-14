@@ -2,8 +2,8 @@ apiVersion: v2
 name: loki
 description: Helm chart for Grafana Loki in simple, scalable mode
 type: application
-appVersion: 2.9.6
-version: 5.47.2-bb.4
+appVersion: 3.0.0
+version: 6.3.4-bb.0
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -13,25 +13,30 @@ icon: https://grafana.com/docs/loki/latest/logo_and_name.png
 dependencies:
   - name: minio-instance
     alias: minio
-    version: 5.0.12-bb.6
+    version: 5.0.12-bb.13
     repository: oci://registry1.dso.mil/bigbang
     condition: minio.enabled
   - name: grafana-agent-operator
     alias: grafana-agent-operator
-    version: 0.3.19
+    version: 0.3.21
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.4.8
+    version: 0.5.0
     repository: "oci://registry1.dso.mil/bigbang"
+  - name: rollout-operator
+    alias: rollout_operator
+    repository: https://grafana.github.io/helm-charts
+    version: 0.13.0
+    condition: rollout_operator.enabled
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 2.9.6
+    - Loki: 3.0.0
   helm.sh/images: |
     - name: loki
-      image: registry1.dso.mil/ironbank/opensource/grafana/loki:2.9.6
+      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.0.0
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.28.8
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.29.3
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.7.1
       condition: enterprise.enabled
@@ -42,7 +47,7 @@ annotations:
       image: docker.io/grafana/loki-helm-test:latest
       condition: test.enabled
     - name: loki-canary
-      image: docker.io/grafana/loki-canary:2.9.6
+      image: docker.io/grafana/loki-canary:3.0.0
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
       image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.25.4

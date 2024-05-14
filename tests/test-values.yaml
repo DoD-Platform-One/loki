@@ -9,7 +9,6 @@ loki:
       active_index_directory: /var/loki/boltdb-shipper-active
       cache_location: /var/loki/boltdb-shipper-cache
       cache_ttl: 24h
-      shared_store: filesystem
     filesystem:
       directory: /var/loki/chunks
 
