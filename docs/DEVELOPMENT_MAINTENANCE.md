@@ -755,7 +755,7 @@ twistlock:
   enabled: false
 ```
 - Visit `https://grafana.bigbang.dev` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
-- Navigate to `configuration -> Data Sources -> Loki` 
+- Navigate to `Connections -> Data Sources -> Loki`
     - Click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 

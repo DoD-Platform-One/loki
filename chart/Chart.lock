@@ -4,12 +4,12 @@ dependencies:
   version: 5.0.12-bb.13
 - name: grafana-agent-operator
   repository: https://grafana.github.io/helm-charts
-  version: 0.3.21
+  version: 0.3.22
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
   version: 0.5.0
 - name: rollout-operator
   repository: https://grafana.github.io/helm-charts
-  version: 0.13.0
-digest: sha256:24f4d930b16c3a434c4d919e2116ba509a9a113360dc3025cc50240b0f1a4edf
-generated: "2024-05-10T12:57:00.428961-04:00"
+  version: 0.15.0
+digest: sha256:5100e31e5d871a41a569c9310003f19fede80a5eb539d4e81b6d51704fdfc765
+generated: "2024-05-17T10:25:41.690275-04:00"
