@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.5.2-bb.0] - 2024-05-17
+### Upgrade
+- Updated k8s-sidecar 1.26.1 -> 1.27.1
+- Updated kubectl 1.29.3 -> 1.29.5
+- Updated memcached 1.6.23 -> 1.6.27
+- Updated nginx 1.25.4 -> 1.26.0
+- Updated rollout-operator 0.13.0 -> 0.15.0
+- Updated grafana-agent-operator 0.3.21 -> 0.3.22
+
 ## [6.3.4-bb.0] - 2024-05-14
 ### Upgrade
 - Updated loki 2.9.6 -> 3.0.0
