@@ -702,6 +702,22 @@ fluentbit:
 twistlock:
   enabled: false
 
+kyvernoPolicies:
+  values:
+    exclude:
+      any:
+      # Allows k3d load balancer to bypass policies.
+      - resources:
+          namespaces:
+          - istio-system
+          names:
+          - svclb-*
+    policies:
+      restrict-host-path-mount-pv:
+        parameters:
+          allow:
+          - /var/lib/rancher/k3s/storage/pvc-*
+
 addons:
   minioOperator:
     enabled: true
