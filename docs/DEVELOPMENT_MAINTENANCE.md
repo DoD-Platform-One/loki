@@ -403,7 +403,7 @@ memcached:
     # -- Memcached Docker image repository
     repository: registry1.dso.mil/ironbank/opensource/memcached/memcached
     # -- Memcached Docker image tag
-    tag: 1.6.23
+    tag: 1.6.27
 ```
 
 - Ensured that `memcached.containerSecurityContext` includes the following:
