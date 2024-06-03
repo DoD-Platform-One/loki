@@ -477,6 +477,38 @@ loki:
   # -- Enable tracing
   tracing:
     enabled: false
+
+# Create extra manifests via values. Would be passed through `tpl` for templating
+# objects can also be provided as multiline strings, useful for templating field names
+extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: loki-alerting-rules
+#   data:
+#     loki-alerting-rules.yaml: |-
+#       groups:
+#         - name: example
+#           rules:
+#           - alert: example
+#             expr: |
+#               sum(count_over_time({app="loki"} |~ "error")) > 0
+#             for: 3m
+#             labels:
+#               severity: warning
+#               category: logs
+#             annotations:
+#               message: "loki has encountered errors"
+# - |
+#     apiVersion: v1
+#     kind: Secret
+#     type: Opaque
+#     metadata:
+#       name: loki-distributed-basic-auth
+#     data:
+#       {{- range .Values.loki.tenants }}
+#       {{ .name }}: {{ b64enc .password | quote }}
+#       {{- end }}
 ######################################################################################################################
 #
 # Enterprise Loki Configs
@@ -1350,6 +1382,8 @@ singleBinary:
     storageClass: null
     # -- Selector for persistent disk
     selector: null
+    # -- Annotations for volume claim
+    annotations: {}
 ######################################################################################################################
 #
 # Simple Scalable Deployment (SSD) Mode
@@ -1483,6 +1517,8 @@ write:
     storageClass: null
     # -- Selector for persistent disk
     selector: null
+    # -- Annotations for volume claim
+    annotations: {}
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   podDisruptionBudget:
@@ -1605,6 +1641,8 @@ read:
     storageClass: null
     # -- Selector for persistent disk
     selector: null
+    # -- Annotations for volume claim
+    annotations: {}
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   podDisruptionBudget:
@@ -1614,7 +1652,6 @@ read:
     # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
-
 # --  Configuration for the backend pod(s)
 backend:
   # -- Number of replicas for the backend
@@ -1723,6 +1760,8 @@ backend:
     storageClass: null
     # -- Selector for persistent disk
     selector: null
+    # -- Annotations for volume claim
+    annotations: {}
   ## -- Application controller Pod Disruption Budget Configuration
   ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   podDisruptionBudget:
@@ -2468,7 +2507,7 @@ compactor:
     # -- Annotations for the compactor service account
     annotations: {}
     # -- Set this toggle to false to opt out of automounting API credentials for the service account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
 # -- Configuration for the bloom gateway
 bloomGateway:
   # -- Number of replicas for the bloom gateway
@@ -2574,7 +2613,7 @@ bloomGateway:
     # -- Annotations for the bloom gateway service account
     annotations: {}
     # -- Set this toggle to false to opt out of automounting API credentials for the service account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
 # -- Configuration for the bloom compactor
 bloomCompactor:
   # -- Number of replicas for the bloom compactor
@@ -2680,7 +2719,7 @@ bloomCompactor:
     # -- Annotations for the bloom compactor service account
     annotations: {}
     # -- Set this toggle to false to opt out of automounting API credentials for the service account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
 # -- Configuration for the pattern ingester
 patternIngester:
   # -- Number of replicas for the pattern ingester
@@ -2792,7 +2831,7 @@ patternIngester:
     # -- Annotations for the pattern ingester service account
     annotations: {}
     # -- Set this toggle to false to opt out of automounting API credentials for the service account
-    automountServiceAccountToken: true
+    automountServiceAccountToken: false
 # -- Configuration for the ruler
 ruler:
   # -- The ruler component is optional and can be disabled if desired.
@@ -3234,42 +3273,10 @@ minio:
       port: 9000
       memory: 128M
 
-# Create extra manifests via values. Would be passed through `tpl` for templating
-# objects can also be provided as multiline strings, useful for templating field names
-extraObjects: []
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: loki-alerting-rules
-#   data:
-#     loki-alerting-rules.yaml: |-
-#       groups:
-#         - name: example
-#           rules:
-#           - alert: example
-#             expr: |
-#               sum(count_over_time({app="loki"} |~ "error")) > 0
-#             for: 3m
-#             labels:
-#               severity: warning
-#               category: logs
-#             annotations:
-#               message: "loki has encountered errors"
-# - |
-#     apiVersion: v1
-#     kind: Secret
-#     type: Opaque
-#     metadata:
-#       name: loki-distributed-basic-auth
-#     data:
-#       {{- range .Values.loki.tenants }}
-#       {{ .name }}: {{ b64enc .password | quote }}
-#       {{- end }}
-
 sidecar:
   image:
     repository: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar
-    tag: 1.27.1
+    tag: 1.27.2
     sha: ""
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
