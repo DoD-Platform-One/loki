@@ -3333,7 +3333,7 @@ sidecar:
     # -- Log level of the sidecar container.
     logLevel: INFO
 
-domain: bigbang.dev
+domain: dev.bigbang.mil
 
 fluentbit:
   enabled: false
