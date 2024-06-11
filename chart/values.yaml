@@ -399,7 +399,7 @@ loki:
         index:
           prefix: loki_tsdb_
           period: 24h
-      - from: 2024-04-01
+      - from: 2024-05-30
         store: tsdb
         object_store: "{{ .Values.loki.storage.type }}"
         schema: v13
