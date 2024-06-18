@@ -70,9 +70,11 @@ spec:
       tolerations:
         {{- toYaml .tolerations | nindent 8 }}
       terminationGracePeriodSeconds: {{ .terminationGracePeriodSeconds }}
-      {{- with $.ctx.Values.imagePullSecrets }}
+      {{- if $.ctx.Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+      {{- range $.ctx.Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end }}
       {{- end }}
       {{- if .extraVolumes }}
       volumes:

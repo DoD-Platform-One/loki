@@ -1,6 +1,6 @@
 # loki
 
-![Version: 6.6.2-bb.2](https://img.shields.io/badge/Version-6.6.2--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
+![Version: 6.6.2-bb.3](https://img.shields.io/badge/Version-6.6.2--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -43,7 +43,6 @@ helm install loki chart/
 | global.dnsService | string | `"kube-dns"` | configures DNS service name |
 | global.dnsNamespace | string | `"kube-system"` | configures DNS service namespace |
 | nameOverride | string | `"logging-loki"` | Overrides the chart's name |
-| openshift | bool | `false` |  |
 | fullnameOverride | string | `"logging-loki"` | Overrides the chart's computed fullname |
 | clusterLabelOverride | string | `nil` | Overrides the chart's cluster label |
 | imagePullSecrets | list | `[{"name":"private-registry"}]` | Image pull secrets for Docker images |
@@ -87,12 +86,12 @@ helm install loki chart/
 | loki.pattern_ingester | object | `{"enabled":false}` | Optional pattern ingester configuration |
 | loki.analytics | object | `{"reporting_enabled":false}` | Optional analytics configuration |
 | loki.analytics.reporting_enabled | bool | `false` | Disable anonymous usage statistics |
+| loki.query_range | object | `{}` | Optional querier configuration |
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{"autoforget_unhealthy":true,"chunk_target_size":196608,"flush_check_period":"5s","flush_op_timeout":"100m","lifecycler":{"ring":{"kvstore":{"store":"memberlist"},"replication_factor":1}}}` | Optional ingester configuration |
 | loki.index_gateway | object | `{"mode":"simple"}` | Optional index gateway configuration |
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
-| extraObjects | list | `[]` |  |
 | enterprise | object | `{"adminApi":{"enabled":true},"adminToken":{"additionalNamespaces":[],"secret":null},"canarySecret":null,"cluster_name":null,"config":"{{- if .Values.enterprise.adminApi.enabled }}\nadmin_client:\n  {{ include \"enterprise-logs.adminAPIStorageConfig\" . \\| nindent 2 }}\n{{ end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \\| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n","enabled":false,"externalConfigName":"","externalLicenseName":null,"gelGateway":true,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"v1.7.1"},"license":{"contents":"NOTAVALIDLICENSE"},"provisioner":{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}},"tokengen":{"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]},"useExternalLicense":false,"version":"3.0.1"}` | Configuration for running Enterprise Loki |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
@@ -103,7 +102,7 @@ helm install loki chart/
 | enterprise.adminApi | object | `{"enabled":true}` | If enabled, the correct admin_client storage will be configured. If disabled while running enterprise, make sure auth is set to `type: trust`, or that `auth_enabled` is set to `false`. |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
-| enterprise.image.tag | string | `"v1.7.1"` | Overrides the image tag whose default is the chart's appVersion |
+| enterprise.image.tag | string | `"v1.7.1"` | Docker image tag, default is the chart's appVersion |
 | enterprise.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.adminToken.secret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
@@ -298,6 +297,7 @@ helm install loki chart/
 | gateway.nginxConfig.file | string | See values.yaml | Config file contents for Nginx. Passed through the `tpl` function to allow templating |
 | gateway.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | gateway.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
+| enterpriseGateway | object | `{"affinity":{},"annotations":{},"containerSecurityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"initContainers":[],"labels":{},"nodeSelector":{},"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"service":{"annotations":{},"labels":{},"type":"ClusterIP"},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[],"useDefaultProxyURLs":true}` | If running enterprise and using the default enterprise gateway, configs go here. |
 | enterpriseGateway.replicas | int | `1` | Define the amount of instances |
 | enterpriseGateway.hostAliases | list | `[]` | hostAliases to add |
 | enterpriseGateway.extraArgs | object | `{}` | Additional CLI arguments for the `gateway` target |
@@ -305,9 +305,7 @@ helm install loki chart/
 | enterpriseGateway.annotations | object | `{}` | Additional annotations for the `gateway` Pod |
 | enterpriseGateway.service | object | `{"annotations":{},"labels":{},"type":"ClusterIP"}` | Service overriding service type |
 | enterpriseGateway.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run container as user `enterprise-logs(uid=10001)` |
-| enterpriseGateway.containerSecurityContext.readOnlyRootFilesystem | bool | `true` |  |
-| enterpriseGateway.containerSecurityContext.capabilities.drop[0] | string | `"ALL"` |  |
-| enterpriseGateway.containerSecurityContext.allowPrivilegeEscalation | bool | `false` |  |
+| enterpriseGateway.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | The SecurityContext for enterpriseGateway containers |
 | enterpriseGateway.useDefaultProxyURLs | bool | `true` | If you want to use your own proxy URLs, set this to false. |
 | enterpriseGateway.strategy | object | `{"type":"RollingUpdate"}` | update strategy |
 | enterpriseGateway.readinessProbe | object | `{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45}` | Readiness probe |
@@ -982,9 +980,10 @@ helm install loki chart/
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"}]` | Buckets to be provisioned to for tenant |
 | minio.tenant.users | list | `[{"name":"minio-user"}]` | Users to to be provisioned to for tenant |
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
-| sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` |  |
-| sidecar.image.tag | string | `"1.27.2"` |  |
-| sidecar.image.sha | string | `""` |  |
+| extraObjects | list | `[]` |  |
+| sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
+| sidecar.image.tag | string | `"1.27.2"` | Docker image tag |
+| sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |
 | sidecar.resources.limits.memory | string | `"100Mi"` |  |
@@ -1009,6 +1008,7 @@ helm install loki chart/
 | sidecar.rules.watchClientTimeout | int | `60` | WatchClientTimeout: is a client-side timeout, configuring your local socket. If you have a network outage dropping all packets with no RST/FIN, this is how long your client waits before realizing & dropping the connection. Defaults to 66sec. |
 | sidecar.rules.logLevel | string | `"INFO"` | Log level of the sidecar container. |
 | domain | string | `"dev.bigbang.mil"` |  |
+| openshift | bool | `false` |  |
 | fluentbit.enabled | bool | `false` |  |
 | promtail.enabled | bool | `false` |  |
 | istio.enabled | bool | `false` |  |

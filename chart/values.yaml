@@ -12,10 +12,6 @@ global:
   dnsNamespace: "kube-system"
 # -- Overrides the chart's name
 nameOverride: logging-loki
-
-# Default to false, override in openshift-test-values.yaml 
-openshift: false
-
 # -- Overrides the chart's computed fullname
 fullnameOverride: logging-loki
 # -- Overrides the chart's cluster label
@@ -313,6 +309,8 @@ loki:
     compactor_address: '{{ include "loki.compactorAddress" . }}'
   # -- Storage config. Providing this will automatically populate all necessary storage configs in the templated config.
   storage:
+    # Loki requires a bucket for chunks and the ruler. GEL requires a third bucket for the admin API.
+    # Please provide these values if you are using object storage.
     bucketNames:
       chunks: loki
       ruler: loki
@@ -411,13 +409,13 @@ loki:
   useTestSchema: false
   testSchemaConfig:
     configs:
-    - from: 2024-04-01
-      store: tsdb
-      object_store: '{{ include "loki.testSchemaObjectStore" . }}'
-      schema: v13
-      index:
-        prefix: index_
-        period: 24h
+      - from: 2024-04-01
+        store: tsdb
+        object_store: '{{ include "loki.testSchemaObjectStore" . }}'
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
   # -- Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler
   rulerConfig: {}
   # -- Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig`
@@ -452,6 +450,8 @@ loki:
     # -- Disable anonymous usage statistics
     reporting_enabled: false
   # --  Optional querier configuration
+  query_range: {}
+  # --  Optional querier configuration
   querier: {}
   # --  Optional ingester configuration
   ingester:
@@ -477,38 +477,6 @@ loki:
   # -- Enable tracing
   tracing:
     enabled: false
-
-# Create extra manifests via values. Would be passed through `tpl` for templating
-# objects can also be provided as multiline strings, useful for templating field names
-extraObjects: []
-# - apiVersion: v1
-#   kind: ConfigMap
-#   metadata:
-#     name: loki-alerting-rules
-#   data:
-#     loki-alerting-rules.yaml: |-
-#       groups:
-#         - name: example
-#           rules:
-#           - alert: example
-#             expr: |
-#               sum(count_over_time({app="loki"} |~ "error")) > 0
-#             for: 3m
-#             labels:
-#               severity: warning
-#               category: logs
-#             annotations:
-#               message: "loki has encountered errors"
-# - |
-#     apiVersion: v1
-#     kind: Secret
-#     type: Opaque
-#     metadata:
-#       name: loki-distributed-basic-auth
-#     data:
-#       {{- range .Values.loki.tenants }}
-#       {{ .name }}: {{ b64enc .password | quote }}
-#       {{- end }}
 ######################################################################################################################
 #
 # Enterprise Loki Configs
@@ -561,7 +529,7 @@ enterprise:
     registry: registry1.dso.mil
     # -- Docker image repository
     repository: ironbank/grafana/grafana-enterprise-logs
-    # -- Overrides the image tag whose default is the chart's appVersion
+    # -- Docker image tag, default is the chart's appVersion
     tag: v1.7.1
     # -- Overrides the image tag with an image digest
     digest: null
@@ -647,7 +615,6 @@ enterprise:
       pullPolicy: IfNotPresent
     # -- Volume mounts to add to the provisioner pods
     extraVolumeMounts: []
-
 # -- kubetclImage is used in the enterprise provisioner and tokengen jobs
 kubectlImage:
   # -- The Docker registry
@@ -881,7 +848,7 @@ adminApi:
     readOnlyRootFilesystem: true
     capabilities:
       drop:
-      - ALL
+        - ALL
     allowPrivilegeEscalation: false
   # -- Update strategy
   strategy:
@@ -1003,7 +970,7 @@ gateway:
     readOnlyRootFilesystem: true
     capabilities:
       drop:
-      - ALL
+        - ALL
     allowPrivilegeEscalation: false
   # -- Resource requests and limits for the gateway
   resources: {}
@@ -1016,10 +983,10 @@ gateway:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: gateway
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: gateway
+          topologyKey: kubernetes.io/hostname
   # -- DNS config for gateway pods
   dnsConfig: {}
   # -- Node selector for gateway pods
@@ -1056,16 +1023,16 @@ gateway:
     labels: {}
     # -- Hosts configuration for the gateway ingress, passed through the `tpl` function to allow templating
     hosts:
-    - host: gateway.loki.example.com
-      paths:
-      - path: /
-        # -- pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
-        # pathType: Prefix
+      - host: gateway.loki.example.com
+        paths:
+          - path: /
+            # -- pathType (e.g. ImplementationSpecific, Prefix, .. etc.) might also be required by some Ingress Controllers
+            # pathType: Prefix
     # -- TLS configuration for the gateway ingress. Hosts passed through the `tpl` function to allow templating
     tls:
-    - secretName: loki-gateway-tls
-      hosts:
-      - gateway.loki.example.com
+      - secretName: loki-gateway-tls
+        hosts:
+          - gateway.loki.example.com
   # Basic auth configuration
   basicAuth:
     # -- Enables basic authentication for the gateway
@@ -1084,9 +1051,7 @@ gateway:
         {{- range $t := .Values.loki.tenants }}
       {{ htpasswd (required "All tenants must have a 'name' set" $t.name) (required "All tenants must have a 'password' set" $t.password) }}
         {{- end }}
-      {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required"
-      .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password'
-      is required" .Values.gateway.basicAuth.password) }} {{ end }}
+      {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required" .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password' is required" .Values.gateway.basicAuth.password) }} {{ end }}
     # -- Existing basic auth secret to use. Must contain '.htpasswd'
     existingSecret: null
   # Configures the readiness probe for the gateway
@@ -1110,8 +1075,7 @@ gateway:
     serverSnippet: ""
     # -- Allows appending custom configuration to the http block, passed through the `tpl` function to allow templating
     httpSnippet: >-
-      {{ if .Values.loki.tenants }}proxy_set_header X-Scope-OrgID $remote_user;{{
-      end }}
+      {{ if .Values.loki.tenants }}proxy_set_header X-Scope-OrgID $remote_user;{{ end }}
     # -- Whether ssl should be appended to the listen directive of the server block or not.
     ssl: false
     # -- Override Read URL
@@ -1126,7 +1090,8 @@ gateway:
     # @default -- See values.yaml
     file: |
       {{- include "loki.nginxFile" . | indent 2 -}}
-# -- If running enterprise and using the default enterprise gateway, configs go here.
+  ## -- Application controller Pod Disruption Budget Configuration
+  ## Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
   podDisruptionBudget:
     # -- Number of pods that are available after eviction as number or percentage (eg.: 50%)
     # @default -- `""` (defaults to 0 if not specified)
@@ -1134,6 +1099,7 @@ gateway:
     # -- Number of pods that are unavailable after eviction as number or percentage (eg.: 50%).
     ## Has higher precedence over `controller.pdb.minAvailable`
     maxUnavailable: "1"
+# -- If running enterprise and using the default enterprise gateway, configs go here.
 enterpriseGateway:
   # -- Define the amount of instances
   replicas: 1
@@ -1160,11 +1126,12 @@ enterpriseGateway:
     runAsGroup: 10001
     runAsUser: 10001
     fsGroup: 10001
+  # -- The SecurityContext for enterpriseGateway containers
   containerSecurityContext:
     readOnlyRootFilesystem: true
     capabilities:
       drop:
-      - ALL
+        - ALL
     allowPrivilegeEscalation: false
   # -- If you want to use your own proxy URLs, set this to false.
   useDefaultProxyURLs: true
@@ -1259,7 +1226,7 @@ ingress:
       - /prometheus/api/v1/alerts
   # -- Hosts configuration for the ingress, passed through the `tpl` function to allow templating
   hosts:
-  - loki.example.com
+    - loki.example.com
   # -- TLS configuration for the ingress. Hosts passed through the `tpl` function to allow templating
   tls: []
 #    - hosts:
@@ -1357,10 +1324,10 @@ singleBinary:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: single-binary
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: single-binary
+          topologyKey: kubernetes.io/hostname
   # -- DNS config for single binary pods
   dnsConfig: {}
   # -- Node selector for single binary pods
@@ -1485,10 +1452,10 @@ write:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: write
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: write
+          topologyKey: kubernetes.io/hostname
   # -- DNS config for write pods
   dnsConfig: {}
   # -- Node selector for write pods
@@ -1614,10 +1581,10 @@ read:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: read
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: read
+          topologyKey: kubernetes.io/hostname
   # -- DNS config for read pods
   dnsConfig: {}
   # -- Node selector for read pods
@@ -1728,10 +1695,10 @@ backend:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: backend
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: backend
+          topologyKey: kubernetes.io/hostname
   # -- DNS config for backend pods
   dnsConfig: {}
   # -- Node selector for backend pods
@@ -1858,21 +1825,21 @@ ingester:
   # -- topologySpread for ingester pods.
   # @default -- Defaults to allow skew no more than 1 node
   topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/component: ingester
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/component: ingester
   # -- Affinity for ingester pods. Ignored if zoneAwareReplication is enabled.
   # @default -- Hard node anti-affinity
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: ingester
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: ingester
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: 1
   # -- Node selector for ingester pods
@@ -2029,10 +1996,10 @@ distributor:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: distributor
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: distributor
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: null
   # -- Max Surge for distributor pods
@@ -2125,21 +2092,21 @@ querier:
   # -- topologySpread for querier pods.
   # @default -- Defaults to allow skew no more then 1 node
   topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: ScheduleAnyway
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/component: querier
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/component: querier
   # -- Affinity for querier pods.
   # @default -- Hard node anti-affinity
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: querier
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: querier
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: null
   # -- Max Surge for querier pods
@@ -2241,10 +2208,10 @@ queryFrontend:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: query-frontend
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: query-frontend
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: null
   # -- Node selector for query-frontend pods
@@ -2302,10 +2269,10 @@ queryScheduler:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: query-scheduler
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: query-scheduler
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: 1
   # -- Node selector for query-scheduler pods
@@ -2364,10 +2331,10 @@ indexGateway:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: index-gateway
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: index-gateway
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: null
   # -- Node selector for index-gateway pods
@@ -2425,10 +2392,10 @@ compactor:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: compactor
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: compactor
+          topologyKey: kubernetes.io/hostname
   # -- Labels for compactor service
   serviceLabels: {}
   # -- Additional CLI args for the compactor
@@ -2537,10 +2504,10 @@ bloomGateway:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: bloom-gateway
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: bloom-gateway
+          topologyKey: kubernetes.io/hostname
   # -- Labels for bloom gateway service
   serviceLabels: {}
   # -- Additional CLI args for the bloom gateway
@@ -2643,10 +2610,10 @@ bloomCompactor:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: bloom-compactor
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: bloom-compactor
+          topologyKey: kubernetes.io/hostname
   # -- Labels for bloom compactor service
   serviceLabels: {}
   # -- Additional CLI args for the bloom compactor
@@ -2749,10 +2716,10 @@ patternIngester:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: pattern-ingester
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: pattern-ingester
+          topologyKey: kubernetes.io/hostname
   # -- Labels for pattern ingester service
   serviceLabels: {}
   # -- Additional CLI args for the pattern ingester
@@ -2883,10 +2850,10 @@ ruler:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: ruler
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: ruler
+          topologyKey: kubernetes.io/hostname
   # -- Pod Disruption Budget maxUnavailable
   maxUnavailable: null
   # -- Node selector for ruler pods
@@ -3273,10 +3240,45 @@ minio:
       port: 9000
       memory: 128M
 
+# Create extra manifests via values. Would be passed through `tpl` for templating
+# objects can also be provided as multiline strings, useful for templating field names
+extraObjects: []
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: loki-alerting-rules
+#   data:
+#     loki-alerting-rules.yaml: |-
+#       groups:
+#         - name: example
+#           rules:
+#           - alert: example
+#             expr: |
+#               sum(count_over_time({app="loki"} |~ "error")) > 0
+#             for: 3m
+#             labels:
+#               severity: warning
+#               category: logs
+#             annotations:
+#               message: "loki has encountered errors"
+# - |
+#     apiVersion: v1
+#     kind: Secret
+#     type: Opaque
+#     metadata:
+#       name: loki-distributed-basic-auth
+#     data:
+#       {{- range .Values.loki.tenants }}
+#       {{ .name }}: {{ b64enc .password | quote }}
+#       {{- end }}
+
 sidecar:
   image:
+    # -- The Docker registry and image for the k8s sidecar
     repository: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar
+    # -- Docker image tag
     tag: 1.27.2
+    # -- Docker image sha. If empty, no sha will be used
     sha: ""
     # -- Docker image pull policy
     pullPolicy: IfNotPresent
@@ -3334,6 +3336,9 @@ sidecar:
     logLevel: INFO
 
 domain: dev.bigbang.mil
+
+# Default to false, override in openshift-test-values.yaml 
+openshift: false
 
 fluentbit:
   enabled: false
@@ -3630,10 +3635,10 @@ tableManager:
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/component: table-manager
-        topologyKey: kubernetes.io/hostname
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: table-manager
+          topologyKey: kubernetes.io/hostname
   # -- DNS config table-manager pods
   dnsConfig: {}
   # -- Node selector for table-manager pods
