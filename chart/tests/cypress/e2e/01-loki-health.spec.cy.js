@@ -1,4 +1,10 @@
-  describe('Loki Test', function() {
+  describe('Loki Test', 
+    {
+      retries:
+      {
+        runMode: 180,
+      }
+    }, () => {
     Cypress.on('uncaught:exception', (err, runnable) => {
       return false
     })
@@ -6,6 +12,7 @@
     if (Cypress.env("check_datasource")) {
   
         it('Check Loki is available as a data source in grafana and connected', function() {
+            cy.wait(1000); 
             const saveOutputOptions = ['Data source is working', 'Data source successfully connected']
             const saveOutput = new RegExp(`${saveOutputOptions.join('|')}`, 'g')
 

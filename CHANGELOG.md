@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.6.2-bb.4] - 2024-06-24
+### Added
+- Cypress retries and wait added to tests
+
 ## [6.6.2-bb.3] - 2024-06-13
 ### Fix
 - Synchronize chart with upstream version 6.6.2
