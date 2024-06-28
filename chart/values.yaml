@@ -300,6 +300,7 @@ loki:
     split_queries_by_interval: 15m
     query_timeout: 300s
     volume_enabled: true
+    discover_service_name: []
   # -- Provides a reloadable runtime configuration file for some specific configuration
   runtimeConfig: {}
   # -- Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration

@@ -1,11 +1,10 @@
 # loki
 
-![Version: 6.6.2-bb.4](https://img.shields.io/badge/Version-6.6.2--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
+![Version: 6.6.2-bb.5](https://img.shields.io/badge/Version-6.6.2--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
 ## Upstream References
-
 * <https://grafana.github.io/helm-charts>
 
 * <https://github.com/grafana/loki>
@@ -13,7 +12,6 @@ Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, 
 * <https://grafana.com/docs/loki/latest/>
 
 ## Learn More
-
 * [Application Overview](docs/overview.md)
 * [Other Documentation](docs/)
 
@@ -25,13 +23,12 @@ Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, 
 
 Install Helm
 
-<https://helm.sh/docs/intro/install/>
+https://helm.sh/docs/intro/install/
 
 ## Deployment
 
 * Clone down the repository
 * cd into directory
-
 ```bash
 helm install loki chart/
 ```
@@ -72,16 +69,16 @@ helm install loki chart/
 | loki.memberlistConfig | object | `{}` | memberlist configuration (overrides embedded default) |
 | loki.extraMemberlistConfig | object | `{}` | Extra memberlist configuration |
 | loki.tenants | list | `[]` | Tenants list to be created on nginx htpasswd file, with name and password keys |
-| loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100,"http_server_read_timeout":"600s","http_server_write_timeout":"600s"}` | Check <https://grafana.com/docs/loki/latest/configuration/#server> for more info on the server configuration. |
-| loki.limits_config | object | `{"max_cache_freshness_per_query":"10m","query_timeout":"300s","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m","volume_enabled":true}` | Limits config |
+| loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100,"http_server_read_timeout":"600s","http_server_write_timeout":"600s"}` | Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration. |
+| loki.limits_config | object | `{"discover_service_name":[],"max_cache_freshness_per_query":"10m","query_timeout":"300s","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m","volume_enabled":true}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
-| loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":1}` | Check <https://grafana.com/docs/loki/latest/configuration/#common_config> for more info on how to provide a common configuration |
+| loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":1}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
 | loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"backoff_config":{},"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
-| loki.storage.s3.backoff_config | object | `{}` | Check <https://grafana.com/docs/loki/latest/configure/#s3_storage_config> for more info on how to provide a backoff_config |
+| loki.storage.s3.backoff_config | object | `{}` | Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
-| loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check <https://grafana.com/docs/loki/latest/configuration/#schema_config> for more info on how to configure schemas |
+| loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.useTestSchema | bool | `false` | a real Loki install requires a proper schemaConfig defined above this, however for testing or playing around you can enable useTestSchema |
-| loki.rulerConfig | object | `{}` | Check <https://grafana.com/docs/loki/latest/configuration/#ruler> for more info on configuring ruler |
+| loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
 | loki.structuredConfig | object | `{}` | Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig` |
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
 | loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}}}` | Additional storage config |
@@ -148,7 +145,7 @@ helm install loki chart/
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
 | test.canaryServiceAddress | string | `"http://loki-canary:3500/metrics"` | Used to directly query the metrics endpoint of the canary for testing, this approach avoids needing prometheus for testing. This in a newer approach to using prometheusAddress such that tests do not have a dependency on prometheus |
-| test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test. This overrides any value set for canaryServiceAddress. This is kept for backward compatibility and may be removed in future releases. Previous value was '<http://prometheus:9090>' |
+| test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test. This overrides any value set for canaryServiceAddress. This is kept for backward compatibility and may be removed in future releases. Previous value was 'http://prometheus:9090' |
 | test.timeout | string | `"1m"` | Number of times to retry the test before failing |
 | test.labels | object | `{}` | Additional labels for the test pods |
 | test.annotations | object | `{}` | Additional annotations for test pods |
@@ -190,7 +187,7 @@ helm install loki chart/
 | serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
-| rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: <https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations> |
+| rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations |
 | rbac.namespaced | bool | `false` | Whether to install RBAC in the namespace only or cluster-wide. Useful if you want to watch ConfigMap globally. |
 | networkPolicy.enabled | bool | `false` | Specifies whether Network Policies should be created |
 | networkPolicy.flavor | string | `"kubernetes"` | Specifies whether the policies created will be standard Network Policies (flavor: kubernetes) or Cilium Network Policies (flavor: cilium) |
@@ -375,7 +372,7 @@ helm install loki chart/
 | write.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the write. |
 | write.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the write. |
 | write.autoscaling.behavior | object | `{"scaleDown":{"policies":[{"periodSeconds":1800,"type":"Pods","value":1}],"stabilizationWindowSeconds":3600},"scaleUp":{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}}` | Behavior policies while scaling. |
-| write.autoscaling.behavior.scaleUp | object | `{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}` | see <https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown> for scaledown details |
+| write.autoscaling.behavior.scaleUp | object | `{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}` | see https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown for scaledown details |
 | write.image.registry | string | `nil` | The Docker registry for the write image. Overrides `loki.image.registry` |
 | write.image.repository | string | `nil` | Docker image repository for the write image. Overrides `loki.image.repository` |
 | write.image.tag | string | `nil` | Docker image tag for the write image. Overrides `loki.image.tag` |
@@ -975,7 +972,7 @@ helm install loki chart/
 | chunksCache.extraVolumeMounts | list | `[]` | Additional volume mounts to be added to the chunks-cache pod (applies to both memcached and exporter containers). Example: extraVolumeMounts: - name: extra-volume   mountPath: /etc/extra-volume   readOnly: true |
 | chunksCache.resources | string | `nil` | Resource requests and limits for the chunks-cache By default a safe memory limit will be requested based on allocatedMemory value (floor (* 1.2 allocatedMemory)). |
 | chunksCache.service | object | `{"annotations":{},"labels":{}}` | Service annotations and labels |
-| rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator <https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator> |
+| rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator |
 | rollout_operator.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | podSecurityContext is the pod security context for the rollout operator. When installing on OpenShift, override podSecurityContext settings with  rollout_operator:   podSecurityContext:     fsGroup: null     runAsGroup: null     runAsUser: null |
 | minio | object | `{"address":"minio.logging.svc.cluster.local","enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | Configuration for the minio subchart |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
@@ -1057,7 +1054,7 @@ helm install loki chart/
 | bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
-| monitoring | object | `{"dashboards":{"annotations":{},"enabled":false,"labels":{"grafana_dashboard":"1"},"namespace":null},"enabled":false,"rules":{"additionalGroups":[],"additionalRuleLabels":{},"alerting":true,"annotations":{},"disabled":{},"enabled":false,"labels":{},"namespace":null},"selfMonitoring":{"enabled":false,"grafanaAgent":{"annotations":{},"enableConfigReadAPI":false,"installOperator":false,"labels":{},"priorityClassName":null,"resources":{},"tolerations":[]},"logsInstance":{"annotations":{},"clients":null,"labels":{}},"podLogs":{"additionalPipelineStages":[],"annotations":{},"apiVersion":"monitoring.grafana.com/v1alpha1","labels":{},"relabelings":[]},"tenant":{"name":"self-monitoring","password":null,"secretNamespace":"{{ .Release.Namespace }}"}},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"15s","labels":{},"metricRelabelings":[],"metricsInstance":{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null},"namespaceSelector":{},"relabelings":[],"scheme":"http","scrapeTimeout":null,"tlsConfig":null}}` | DEPRECATED Monitoring section determines which monitoring features to enable, this section is being replaced by <https://github.com/grafana/meta-monitoring-chart> |
+| monitoring | object | `{"dashboards":{"annotations":{},"enabled":false,"labels":{"grafana_dashboard":"1"},"namespace":null},"enabled":false,"rules":{"additionalGroups":[],"additionalRuleLabels":{},"alerting":true,"annotations":{},"disabled":{},"enabled":false,"labels":{},"namespace":null},"selfMonitoring":{"enabled":false,"grafanaAgent":{"annotations":{},"enableConfigReadAPI":false,"installOperator":false,"labels":{},"priorityClassName":null,"resources":{},"tolerations":[]},"logsInstance":{"annotations":{},"clients":null,"labels":{}},"podLogs":{"additionalPipelineStages":[],"annotations":{},"apiVersion":"monitoring.grafana.com/v1alpha1","labels":{},"relabelings":[]},"tenant":{"name":"self-monitoring","password":null,"secretNamespace":"{{ .Release.Namespace }}"}},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"15s","labels":{},"metricRelabelings":[],"metricsInstance":{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null},"namespaceSelector":{},"relabelings":[],"scheme":"http","scrapeTimeout":null,"tlsConfig":null}}` | DEPRECATED Monitoring section determines which monitoring features to enable, this section is being replaced by https://github.com/grafana/meta-monitoring-chart |
 | monitoring.enabled | bool | `false` | Enable BigBang integration of Monitoring components |
 | monitoring.dashboards.enabled | bool | `false` | If enabled, create configmap with dashboards for monitoring Loki |
 | monitoring.dashboards.namespace | string | `nil` | Alternative namespace to create dashboards ConfigMap in |
@@ -1077,8 +1074,8 @@ helm install loki chart/
 | monitoring.serviceMonitor.labels | object | `{}` | Additional ServiceMonitor labels |
 | monitoring.serviceMonitor.interval | string | `"15s"` | ServiceMonitor scrape interval Default is 15s because included recording rules use a 1m rate, and scrape interval needs to be at least 1/4 rate interval. |
 | monitoring.serviceMonitor.scrapeTimeout | string | `nil` | ServiceMonitor scrape timeout in Go duration format (e.g. 15s) |
-| monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping <https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig> |
-| monitoring.serviceMonitor.metricRelabelings | list | `[]` | ServiceMonitor metric relabel configs to apply to samples before ingestion <https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint> |
+| monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.serviceMonitor.metricRelabelings | list | `[]` | ServiceMonitor metric relabel configs to apply to samples before ingestion https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint |
 | monitoring.serviceMonitor.scheme | string | `"http"` | ServiceMonitor will use http by default, but you can pick https as well |
 | monitoring.serviceMonitor.tlsConfig | string | `nil` | ServiceMonitor will use these tlsConfig settings to make the health check requests |
 | monitoring.serviceMonitor.metricsInstance | object | `{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null}` | If defined, will create a MetricsInstance for the Grafana Agent Operator. |
@@ -1090,7 +1087,7 @@ helm install loki chart/
 | monitoring.selfMonitoring.tenant.name | string | `"self-monitoring"` | Name of the tenant |
 | monitoring.selfMonitoring.tenant.password | string | `nil` | Password of the gateway for Basic auth |
 | monitoring.selfMonitoring.tenant.secretNamespace | string | `"{{ .Release.Namespace }}"` | Namespace to create additional tenant token secret in. Useful if your Grafana instance is in a separate namespace. Token will still be created in the canary namespace. |
-| monitoring.selfMonitoring.grafanaAgent.installOperator | bool | `false` | Controls whether to install the Grafana Agent Operator and its CRDs. Note that helm will not install CRDs if this flag is enabled during an upgrade. In that case install the CRDs manually from <https://github.com/grafana/agent/tree/main/production/operator/crds> |
+| monitoring.selfMonitoring.grafanaAgent.installOperator | bool | `false` | Controls whether to install the Grafana Agent Operator and its CRDs. Note that helm will not install CRDs if this flag is enabled during an upgrade. In that case install the CRDs manually from https://github.com/grafana/agent/tree/main/production/operator/crds |
 | monitoring.selfMonitoring.grafanaAgent.annotations | object | `{}` | Grafana Agent annotations |
 | monitoring.selfMonitoring.grafanaAgent.labels | object | `{}` | Additional Grafana Agent labels |
 | monitoring.selfMonitoring.grafanaAgent.enableConfigReadAPI | bool | `false` | Enable the config read api on port 8080 of the agent |
@@ -1100,8 +1097,8 @@ helm install loki chart/
 | monitoring.selfMonitoring.podLogs.apiVersion | string | `"monitoring.grafana.com/v1alpha1"` | PodLogs version |
 | monitoring.selfMonitoring.podLogs.annotations | object | `{}` | PodLogs annotations |
 | monitoring.selfMonitoring.podLogs.labels | object | `{}` | Additional PodLogs labels |
-| monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping <https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig> |
-| monitoring.selfMonitoring.podLogs.additionalPipelineStages | list | `[]` | Additional pipeline stages to process logs after scraping <https://grafana.com/docs/agent/latest/operator/api/#pipelinestagespec-a-namemonitoringgrafanacomv1alpha1pipelinestagespeca> |
+| monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.selfMonitoring.podLogs.additionalPipelineStages | list | `[]` | Additional pipeline stages to process logs after scraping https://grafana.com/docs/agent/latest/operator/api/#pipelinestagespec-a-namemonitoringgrafanacomv1alpha1pipelinestagespeca |
 | monitoring.selfMonitoring.logsInstance.annotations | object | `{}` | LogsInstance annotations |
 | monitoring.selfMonitoring.logsInstance.labels | object | `{}` | Additional LogsInstance labels |
 | monitoring.selfMonitoring.logsInstance.clients | string | `nil` | Additional clients for remote write |
