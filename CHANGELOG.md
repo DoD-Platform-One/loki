@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.6.2-bb.7] - 2024-07-01
+
+### Fixed
+
+- Fixed minio pool to use required pool name
+
 ## [6.6.2-bb.6] - 2024-06-28
 
 ### Fixed
