@@ -1,6 +1,6 @@
 # loki
 
-![Version: 6.6.2-bb.7](https://img.shields.io/badge/Version-6.6.2--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
+![Version: 6.6.4-bb.0](https://img.shields.io/badge/Version-6.6.4--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -137,10 +137,10 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.29.5"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.29.6"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.29.5"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.29.6"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -229,6 +229,7 @@ helm install loki chart/
 | adminApi.terminationGracePeriodSeconds | int | `60` | Grace period to allow the admin-api to shutdown before it is killed |
 | gateway.enabled | bool | `false` | Specifies whether the gateway should be enabled |
 | gateway.replicas | int | `1` | Number of replicas for the gateway |
+| gateway.containerPort | int | `8080` | Default container port |
 | gateway.verboseLogging | bool | `true` | Enable logging of 2xx and 3xx HTTP requests |
 | gateway.autoscaling.enabled | bool | `false` | Enable autoscaling for the gateway |
 | gateway.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the gateway |
@@ -239,7 +240,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.26.0"` | The gateway image tag |
+| gateway.image.tag | string | `"1.26.1"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -895,7 +896,7 @@ helm install loki chart/
 | ruler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | ruler.directories | object | `{}` | Directories containing rules files |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.27"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.29"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
 | memcached.podSecurityContext | object | `{}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
@@ -982,7 +983,7 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
-| sidecar.image.tag | string | `"1.27.2"` | Docker image tag |
+| sidecar.image.tag | string | `"1.27.4"` | Docker image tag |
 | sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |

@@ -4,6 +4,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.6.4-bb.0] - 2024-07-01
+
+### Updated
+
+- Update `k8s-sidecar` from `1.27.2` -> `1.27.4`
+- Update `kubectl` from `v1.29.5` -> `v1.29.6`
+- Update `memcached` from `1.6.27` -> `1.6.29`
+- Update `nginx` from `1.26.0` -> `1.26.1`
+
 ## [6.6.2-bb.7] - 2024-07-01
 
 ### Fixed
