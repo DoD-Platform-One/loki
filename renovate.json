@@ -6,7 +6,7 @@
     "draftPR": true,
     "enabledManagers": ["helm-values","regex","helmv3"],
     "ignorePaths": ["chart/charts/**"],
-    "labels": ["loki","renovate"],
+    "labels": ["loki","renovate", "kind::maintenance"],
     "commitMessagePrefix": "SKIP UPDATE CHECK",
     "packageRules": [
         {
@@ -15,15 +15,7 @@
             "registryUrls": ["https://registry1.dso.mil"]
         }
     ],
-    "ignoreDeps": ["docker.io/nginxinc/nginx-unprivileged"],
     "regexManagers": [
-        {
-            "fileMatch": ["^chart/values\\.yaml$"],
-            "matchStrings": [
-                "repository\\S*:\\s*(?<depName>\\S+).*\n\\s+tag:\\s*(?<currentValue>.+)"
-            ],
-            "datasourceTemplate": "docker"
-        },
         {
             "fileMatch": ["^chart/Chart\\.yaml$"],
             "matchStrings": [
