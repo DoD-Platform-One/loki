@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.6.4-bb.4] - 2024-07-16
+
+### Fixed
+
+- Fixed Loki VirtualService for `scalable` and `monolith` deployments
+
 ## [6.6.4-bb.3] - 2024-07-15
 
 ### Changed
