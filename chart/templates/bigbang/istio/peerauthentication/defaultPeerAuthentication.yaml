@@ -1,8 +1,8 @@
-{{- if and .Values.istio.enabled  (eq (include "loki.deployment.isSingleBinary" .) "true") }}
+{{- if .Values.istio.enabled }}
 apiVersion: "security.istio.io/v1beta1"
 kind: PeerAuthentication
 metadata:
-  name: loki
+  name: default-loki
   namespace: {{ .Release.Namespace }}
 spec:
   mtls:

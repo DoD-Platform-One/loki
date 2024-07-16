@@ -12,7 +12,7 @@ spec:
       app: minio
       app.kubernetes.io/instance: {{ .Release.Name }}
   portLevelMtls:
-    # Enterprise jobs exception
+    # Allows minio-operator to reach mino-tenant, can be remove if future implementation allows mounting the Istio proxy mtls certificates
     "9000":
       mode: PERMISSIVE
 {{- end }}
