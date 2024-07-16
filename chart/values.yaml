@@ -3401,16 +3401,13 @@ istio:
       principals:
       - cluster.local/ns/minio-operator/sa/minio-operator
   loki:
-    enabled: false
+    enabled: true
     annotations: {}
     labels: {}
     gateways:
       - istio-system/public
     hosts:
       - "loki.{{ .Values.domain }}"
-    service: ""
-    port: ""
-    exposeReadyEndpoint: false
   mtls:
     # STRICT = Allow only mutual TLS traffic
     # PERMISSIVE = Allow both plain text and mutual TLS traffic
