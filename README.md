@@ -1,6 +1,6 @@
 # loki
 
-![Version: 6.6.4-bb.5](https://img.shields.io/badge/Version-6.6.4--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
+![Version: 6.6.4-bb.6](https://img.shields.io/badge/Version-6.6.4--bb.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -1034,7 +1034,7 @@ helm install loki chart/
 | istio.hardened.minioOperator.enabled | bool | `true` |  |
 | istio.hardened.minioOperator.namespaces[0] | string | `"minio-operator"` |  |
 | istio.hardened.minioOperator.principals[0] | string | `"cluster.local/ns/minio-operator/sa/minio-operator"` |  |
-| istio.loki.enabled | bool | `true` |  |
+| istio.loki.enabled | bool | `false` |  |
 | istio.loki.annotations | object | `{}` |  |
 | istio.loki.labels | object | `{}` |  |
 | istio.loki.gateways[0] | string | `"istio-system/public"` |  |
