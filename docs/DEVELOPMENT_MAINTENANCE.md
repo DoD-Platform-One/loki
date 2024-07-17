@@ -238,6 +238,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
       chunks: loki
       ruler: loki
       admin: loki-admin
+      deletion: loki-deletion
   ```
 
 - Ensure the following is present for `loki.schemaConfig`:
@@ -868,6 +869,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
         chunks: loki
         ruler: loki
         admin: loki-admin
+        deletion: loki-deletion
     ```
 
 ### ```chart/src/dashboards/```
