@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Add support for the deletion of log entries from a specified stream.
+- Add support for the deletion of log entries from a specified stream and set retention to forever.
 
 ## [6.6.4-bb.4] - 2024-07-16
 
