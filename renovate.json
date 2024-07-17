@@ -15,6 +15,7 @@
             "registryUrls": ["https://registry1.dso.mil"]
         }
     ],
+    "ignoreDeps": ["prom/memcached-exporter"],
     "regexManagers": [
         {
             "fileMatch": ["^chart/Chart\\.yaml$"],
