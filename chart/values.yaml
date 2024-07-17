@@ -301,6 +301,8 @@ loki:
     query_timeout: 300s
     volume_enabled: true
     discover_service_name: []
+    deletion_mode: "filter-and-delete"
+    retention_period: 744h
   # -- Provides a reloadable runtime configuration file for some specific configuration
   runtimeConfig: {}
   # -- Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration
@@ -316,6 +318,7 @@ loki:
       chunks: loki
       ruler: loki
       admin: loki-admin
+      deletion: loki-deletion
     type: s3
     s3:
       s3: null
@@ -441,8 +444,16 @@ loki:
       at: "250ms"
       max_per_second: 20
       up_to: 3
-  # --  Optional compactor configuration
-  compactor: {}
+  # --  Default compactor configuration
+  compactor:
+    # Enables Loki retention features
+    retention_enabled: true
+    # Sets storage type for bucket holding delete requests
+    delete_request_store: "{{ .Values.loki.storage.type }}"
+    # Sets interval for all Loki compaction tasks
+    compaction_interval: 1m # default 10m
+    # Sets time period between a delete request and the actual object deletion
+    retention_delete_delay: 10m # default 2h
   # --  Optional pattern ingester configuration
   pattern_ingester:
     enabled: false
@@ -3216,6 +3227,7 @@ minio:
     buckets:
       - name: loki
       - name: loki-admin
+      - name: loki-deletion
     # -- Users to to be provisioned to for tenant
     users:
       - name: minio-user

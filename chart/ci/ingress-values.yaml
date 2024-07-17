@@ -17,6 +17,7 @@ loki:
       chunks: loki
       ruler: loki
       admin: loki-admin
+      deletion: loki-deletion
 read:
   replicas: 1
 write:

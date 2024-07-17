@@ -85,6 +85,7 @@ loki:
         buckets:
           - name: loki-logs
           - name: loki-admin
+          - name: loki-deletion
 
     read:
       replicas: 1
@@ -97,6 +98,7 @@ loki:
         bucketNames:
           chunks: loki-logs
           admin: loki-admin
+          deletion: loki-deletion
         access_key_id: minio
         secret_access_key: minio123
 

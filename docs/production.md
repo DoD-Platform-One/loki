@@ -18,6 +18,7 @@ loki:
       chunks: loki-logs  #For storage of log data in 'chunks'
       ruler: loki-logs   #For Loki configured rules https://grafana.com/docs/loki/latest/rules/
       admin: loki-admin  #For Grafana Enterprise configuration/persistence only
+      deletion: loki-deletion #The storage bucket that stores the delete requests
   values:
     loki:
       memcached:
