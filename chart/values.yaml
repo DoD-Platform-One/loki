@@ -51,7 +51,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 3.0.0
+    tag: 3.1.0
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -501,7 +501,7 @@ enterprise:
   # Enable enterprise features, license must be provided
   enabled: false
   # Default verion of GEL to deploy
-  version: 3.0.1
+  version: 3.1.0
   # -- Optional name of the GEL cluster, otherwise will use .Release.Name
   # The cluster name must match what is in your GEL license
   cluster_name: null
@@ -635,7 +635,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.29.6
+  tag: v1.29.7
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -1063,8 +1063,10 @@ gateway:
     # @default -- Either `loki.tenants` or `gateway.basicAuth.username` and `gateway.basicAuth.password`.
     htpasswd: >-
       {{ if .Values.loki.tenants }}
+
         {{- range $t := .Values.loki.tenants }}
       {{ htpasswd (required "All tenants must have a 'name' set" $t.name) (required "All tenants must have a 'password' set" $t.password) }}
+
         {{- end }}
       {{ else }} {{ htpasswd (required "'gateway.basicAuth.username' is required" .Values.gateway.basicAuth.username) (required "'gateway.basicAuth.password' is required" .Values.gateway.basicAuth.password) }} {{ end }}
     # -- Existing basic auth secret to use. Must contain '.htpasswd'
@@ -3294,7 +3296,7 @@ sidecar:
     # -- The Docker registry and image for the k8s sidecar
     repository: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar
     # -- Docker image tag
-    tag: 1.27.4
+    tag: 1.27.5
     # -- Docker image sha. If empty, no sha will be used
     sha: ""
     # -- Docker image pull policy
