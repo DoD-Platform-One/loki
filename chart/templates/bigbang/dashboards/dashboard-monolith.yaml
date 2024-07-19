@@ -1,0 +1,13 @@
+{{- if and (eq .Values.deploymentMode "SingleBinary") (.Values.monitoring.enabled) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "loki.dashboardsName" $ }}-monolith
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  "loki-logs.json": |
+    {{ $.Files.Get "src/dashboards/loki-logs.json" | fromJson | toJson }}
+{{- end -}}

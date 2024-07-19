@@ -1,0 +1,31 @@
+{{- if and (eq .Values.deploymentMode "Distributed") (.Values.monitoring.enabled) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "loki.dashboardsName" $ }}-distributed
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  "loki-reads-resources.json": |
+    {{ $.Files.Get "src/dashboards/loki-reads-resources.json" | fromJson | toJson }}
+  "loki-reads.json": |
+    {{ $.Files.Get "src/dashboards/loki-reads.json" | fromJson | toJson }}
+  "loki-retention.json": |
+    {{ $.Files.Get "src/dashboards/loki-retention.json" | fromJson | toJson }}
+  "loki-deletion.json": |
+    {{ $.Files.Get "src/dashboards/loki-deletion.json" | fromJson | toJson }}
+  "loki-writes-resources.json": |
+    {{ $.Files.Get "src/dashboards/loki-writes-resources.json" | fromJson | toJson }}
+  "loki-writes.json": |
+    {{ $.Files.Get "src/dashboards/loki-writes.json" | fromJson | toJson }}
+  "loki-mixin-recording-rules.json": |
+    {{ $.Files.Get "src/dashboards/loki-mixin-recording-rules.json" | fromJson | toJson }}
+  "loki-operational.json": |
+    {{ $.Files.Get "src/dashboards/loki-operational.json" | fromJson | toJson }}
+  "loki-chunks.json": |
+    {{ $.Files.Get "src/dashboards/loki-chunks.json" | fromJson | toJson }}
+  "loki-logs.json": |
+    {{ $.Files.Get "src/dashboards/loki-logs.json" | fromJson | toJson }}
+{{- end -}}
