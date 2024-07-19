@@ -1,0 +1,17 @@
+{{- if and (eq .Values.deploymentMode "SimpleScalable") (.Values.monitoring.enabled) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "loki.dashboardsName" $ }}-scalable
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  "loki-retention.json": |
+    {{ $.Files.Get "src/dashboards/loki-retention.json" | fromJson | toJson }}
+  "loki-deletion.json": |
+    {{ $.Files.Get "src/dashboards/loki-deletion.json" | fromJson | toJson }}
+  "loki-logs.json": |
+    {{ $.Files.Get "src/dashboards/loki-logs.json" | fromJson | toJson }}
+{{- end -}}

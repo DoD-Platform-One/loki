@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [6.7.1-bb.1] - 2024-07-19
+
+### Added
+
+- Add support for toggling dashboard sets between deployment strategies
+
+## [6.7.1-bb.0] - 2024-07-19
+
+### Updated
+
+- Updated `loki-canary` from `v3.0.0` -> `v3.1.0`
+- Updated `loki` from `v3.0.0` -> `v3.1.0`
+- Updated `minio-instance` from `5.0.15-bb.0` -> `5.0.16-bb.0`
+- Updated `k8s-sidecar` from `1.27.4` -> `1.27.5`
+- Updated `kubectl` from `v1.29.6` -> `v1.29.7`
+
 ## [6.6.4-bb.6] - 2024-07-17
 
 ### Fixed
