@@ -2,8 +2,8 @@ apiVersion: v2
 name: loki
 description: Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 type: application
-appVersion: 3.0.0
-version: 6.6.4-bb.6
+appVersion: 3.1.0
+version: 6.7.1-bb.0
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -13,7 +13,7 @@ icon: https://grafana.com/docs/loki/latest/logo_and_name.png
 dependencies:
   - name: minio-instance
     alias: minio
-    version: 5.0.15-bb.0
+    version: 5.0.16-bb.0
     repository: oci://registry1.dso.mil/bigbang
     condition: minio.enabled
   - name: grafana-agent-operator
@@ -31,12 +31,12 @@ dependencies:
     condition: rollout_operator.enabled
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 3.0.0
+    - Loki: 3.1.0
   helm.sh/images: |
     - name: loki
-      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.0.0
+      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.1.0
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.29.6
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.29.7
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.7.1
       condition: enterprise.enabled
@@ -47,7 +47,7 @@ annotations:
       image: docker.io/grafana/loki-helm-test:latest
       condition: test.enabled
     - name: loki-canary
-      image: docker.io/grafana/loki-canary:3.0.0
+      image: docker.io/grafana/loki-canary:3.1.0
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
       image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.1
