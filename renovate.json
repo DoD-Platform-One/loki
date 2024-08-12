@@ -20,7 +20,8 @@
         {
             "fileMatch": ["^chart/Chart\\.yaml$"],
             "matchStrings": [
-                "- Loki:\\s*(?<currentValue>.+)"
+                "- Loki:\\s*(?<currentValue>.+)",
+                "appVersion:\\s+(?<currentValue>.+)"
             ],
             "depNameTemplate": "ironbank/opensource/grafana/loki",
             "datasourceTemplate": "docker",
