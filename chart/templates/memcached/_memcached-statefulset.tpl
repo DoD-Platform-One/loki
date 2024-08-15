@@ -39,7 +39,7 @@ spec:
         app.kubernetes.io/component: "memcached-{{ $.component }}"
         name: "memcached-{{ $.component }}"
         {{- with $.ctx.Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .podLabels }}
         {{- toYaml . | nindent 8 }}
