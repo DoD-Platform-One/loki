@@ -61,7 +61,7 @@ spec:
         name: ingester-zone-a
         rollout-group: ingester
         {{- with .Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.ingester.podLabels }}
         {{- toYaml . | nindent 8 }}

@@ -44,7 +44,7 @@ spec:
         app.kubernetes.io/part-of: memberlist
         {{- include "loki.readSelectorLabels" . | nindent 8 }}
         {{- with .Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.read.podLabels }}
         {{- toYaml . | nindent 8 }}

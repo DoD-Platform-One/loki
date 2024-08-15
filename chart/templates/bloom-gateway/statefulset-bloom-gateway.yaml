@@ -42,7 +42,7 @@ spec:
         {{- include "loki.bloomGatewaySelectorLabels" . | nindent 8 }}
         app.kubernetes.io/part-of: memberlist
         {{- with .Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.bloomGateway.podLabels }}
         {{- toYaml . | nindent 8 }}

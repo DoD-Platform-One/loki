@@ -39,7 +39,7 @@ spec:
         {{- end }}
       labels:
         {{- with .Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.gateway.podLabels }}
         {{- toYaml . | nindent 8 }}

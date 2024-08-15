@@ -38,7 +38,7 @@ spec:
         {{- include "loki.querierSelectorLabels" . | nindent 8 }}
         app.kubernetes.io/part-of: memberlist
         {{- with .Values.loki.podLabels }}
-        {{- toYaml . | nindent 8 }}
+        {{- tpl (toYaml .) $ | nindent 8 }}
         {{- end }}
         {{- with .Values.querier.podLabels }}
         {{- toYaml . | nindent 8 }}
