@@ -1183,13 +1183,18 @@ istio:
 
 monitoring:
   enabled: true
+  values:
+    istio:
+      enabled: true
 
 loki:
   enabled: true
+  values:
+    istio:
+      enabled: true
   git:
     tag: ""
     branch: "renovate/ironbank"
-  strategy: scalable
 
 promtail:
   enabled: true
@@ -1199,12 +1204,6 @@ tempo:
 
 jaeger:
   enabled: false
-
-eckOperator:
-  enabled: false
-
-fluentbit:
-  enabled: true
 
 twistlock:
   enabled: false
@@ -1224,10 +1223,6 @@ kyvernoPolicies:
         parameters:
           allow:
           - /var/lib/rancher/k3s/storage/pvc-*
-
-addons:
-  minioOperator:
-    enabled: true
 ```
 
 - Visit `https://grafana.bigbang.dev` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
