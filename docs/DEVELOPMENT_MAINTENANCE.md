@@ -296,7 +296,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     reporting_enabled: false
   ```
 
-- Ensure `loki.ingeester` configuration is set to:
+- Ensure `loki.ingester` configuration is set to:
 
   ```yaml
   ingester:
@@ -707,7 +707,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 - Ensure the `sidecar.securityContext` is set to:
 
   ```yaml
-    securityContext:
+  securityContext:
     allowPrivilegeEscalation: false
     capabilities:
       drop:
@@ -1225,7 +1225,7 @@ kyvernoPolicies:
           - /var/lib/rancher/k3s/storage/pvc-*
 ```
 
-- Visit `https://grafana.bigbang.dev` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
+- Visit `https://grafana.dev.bigbang.mil` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
 - Navigate to `Connections -> Data Sources -> Loki`
   - Click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
