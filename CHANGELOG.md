@@ -3,6 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [6.12.0-bb.0] - 2024-09-08
+
+### Updated
+- Updated `gluon` from `0.5.3` -> `0.5.4`
+- Updated `minio-instance` from `5.0.16-bb.0` -> `6.0.2-bb.0`
+- Updated `k8s-sidecar` from `1.27.5` -> `1.27.6`
+- Updated `kubectl` from `v1.29.7` -> `v1.29.8`
+- Updated `memcached` from `1.6.29` -> `1.6.30`
+- Updated `nginx` from `1.26.1` -> `1.26.2`
+
 ## [6.10.0-bb.0] - 2024-08-14
 
 ### Updated

@@ -1,12 +1,11 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.10.0-bb.0](https://img.shields.io/badge/Version-6.10.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.1.1](https://img.shields.io/badge/AppVersion-3.1.1-informational?style=flat-square)
+![Version: 6.12.0-bb.0](https://img.shields.io/badge/Version-6.12.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.1.1](https://img.shields.io/badge/AppVersion-3.1.1-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
 ## Upstream References
-
 * <https://grafana.github.io/helm-charts>
 
 * <https://github.com/grafana/loki>
@@ -25,7 +24,6 @@ annotations:
 ```
 
 ## Learn More
-
 * [Application Overview](docs/overview.md)
 * [Other Documentation](docs/)
 
@@ -37,13 +35,12 @@ annotations:
 
 Install Helm
 
-<https://helm.sh/docs/intro/install/>
+https://helm.sh/docs/intro/install/
 
 ## Deployment
 
 * Clone down the repository
 * cd into directory
-
 ```bash
 helm install loki chart/
 ```
@@ -84,16 +81,16 @@ helm install loki chart/
 | loki.memberlistConfig | object | `{}` | memberlist configuration (overrides embedded default) |
 | loki.extraMemberlistConfig | object | `{}` | Extra memberlist configuration |
 | loki.tenants | list | `[]` | Tenants list to be created on nginx htpasswd file, with name and password keys |
-| loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100,"http_server_read_timeout":"600s","http_server_write_timeout":"600s"}` | Check <https://grafana.com/docs/loki/latest/configuration/#server> for more info on the server configuration. |
+| loki.server | object | `{"grpc_listen_port":9095,"http_listen_port":3100,"http_server_read_timeout":"600s","http_server_write_timeout":"600s"}` | Check https://grafana.com/docs/loki/latest/configuration/#server for more info on the server configuration. |
 | loki.limits_config | object | `{"deletion_mode":"filter-and-delete","discover_service_name":[],"max_cache_freshness_per_query":"10m","query_timeout":"300s","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m","volume_enabled":true}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":1}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
 | loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","deletion":"loki-deletion","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"backoff_config":{},"disable_dualstack":false,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
 | loki.storage.s3.backoff_config | object | `{}` | Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
-| loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check <https://grafana.com/docs/loki/latest/configuration/#schema_config> for more info on how to configure schemas |
+| loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.useTestSchema | bool | `false` | a real Loki install requires a proper schemaConfig defined above this, however for testing or playing around you can enable useTestSchema |
-| loki.rulerConfig | object | `{}` | Check <https://grafana.com/docs/loki/latest/configuration/#ruler> for more info on configuring ruler |
+| loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
 | loki.structuredConfig | object | `{}` | Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig` |
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
 | loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}}}` | Additional storage config |
@@ -152,15 +149,15 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.29.7"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.29.8"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.29.7"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.29.8"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
 | test.canaryServiceAddress | string | `"http://loki-canary:3500/metrics"` | Used to directly query the metrics endpoint of the canary for testing, this approach avoids needing prometheus for testing. This in a newer approach to using prometheusAddress such that tests do not have a dependency on prometheus |
-| test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test. This overrides any value set for canaryServiceAddress. This is kept for backward compatibility and may be removed in future releases. Previous value was '<http://prometheus:9090>' |
+| test.prometheusAddress | string | `"http://prometheus:9090"` | Address of the prometheus server to query for the test. This overrides any value set for canaryServiceAddress. This is kept for backward compatibility and may be removed in future releases. Previous value was 'http://prometheus:9090' |
 | test.timeout | string | `"1m"` | Number of times to retry the test before failing |
 | test.labels | object | `{}` | Additional labels for the test pods |
 | test.annotations | object | `{}` | Additional annotations for test pods |
@@ -202,7 +199,7 @@ helm install loki chart/
 | serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
 | rbac.pspEnabled | bool | `false` | If pspEnabled true, a PodSecurityPolicy is created for K8s that use psp. |
 | rbac.sccEnabled | bool | `false` | For OpenShift set pspEnabled to 'false' and sccEnabled to 'true' to use the SecurityContextConstraints. |
-| rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: <https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations> |
+| rbac.pspAnnotations | object | `{}` | Specify PSP annotations Ref: https://kubernetes.io/docs/reference/access-authn-authz/psp-to-pod-security-standards/#podsecuritypolicy-annotations |
 | rbac.namespaced | bool | `false` | Whether to install RBAC in the namespace only or cluster-wide. Useful if you want to watch ConfigMap globally. |
 | networkPolicy.enabled | bool | `false` | Specifies whether Network Policies should be created |
 | networkPolicy.flavor | string | `"kubernetes"` | Specifies whether the policies created will be standard Network Policies (flavor: kubernetes) or Cilium Network Policies (flavor: cilium) |
@@ -255,7 +252,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.26.1"` | The gateway image tag |
+| gateway.image.tag | string | `"1.26.2"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -378,7 +375,7 @@ helm install loki chart/
 | singleBinary.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | singleBinary.persistence.enabled | bool | `true` | Enable persistent disk |
 | singleBinary.persistence.size | string | `"12Gi"` | Size of persistent disk |
-| singleBinary.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| singleBinary.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | singleBinary.persistence.selector | string | `nil` | Selector for persistent disk |
 | singleBinary.persistence.annotations | object | `{}` | Annotations for volume claim |
 | write.replicas | int | `0` | Number of replicas for the write |
@@ -388,7 +385,7 @@ helm install loki chart/
 | write.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the write. |
 | write.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilization percentage for the write. |
 | write.autoscaling.behavior | object | `{"scaleDown":{"policies":[{"periodSeconds":1800,"type":"Pods","value":1}],"stabilizationWindowSeconds":3600},"scaleUp":{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}}` | Behavior policies while scaling. |
-| write.autoscaling.behavior.scaleUp | object | `{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}` | see <https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown> for scaledown details |
+| write.autoscaling.behavior.scaleUp | object | `{"policies":[{"periodSeconds":900,"type":"Pods","value":1}]}` | see https://github.com/grafana/loki/blob/main/docs/sources/operations/storage/wal.md#how-to-scale-updown for scaledown details |
 | write.image.registry | string | `nil` | The Docker registry for the write image. Overrides `loki.image.registry` |
 | write.image.repository | string | `nil` | Docker image repository for the write image. Overrides `loki.image.repository` |
 | write.image.tag | string | `nil` | Docker image tag for the write image. Overrides `loki.image.tag` |
@@ -421,7 +418,7 @@ helm install loki chart/
 | write.persistence.dataVolumeParameters | object | `{"emptyDir":{}}` | Parameters used for the `data` volume when volumeClaimEnabled if false |
 | write.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | write.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| write.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | write.persistence.selector | string | `nil` | Selector for persistent disk |
 | write.persistence.annotations | object | `{}` | Annotations for volume claim |
 | write.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
@@ -463,7 +460,7 @@ helm install loki chart/
 | read.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
 | read.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | read.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | read.persistence.selector | string | `nil` | Selector for persistent disk |
 | read.persistence.annotations | object | `{}` | Annotations for volume claim |
 | read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
@@ -505,7 +502,7 @@ helm install loki chart/
 | backend.persistence.dataVolumeParameters | object | `{"emptyDir":{}}` | Parameters used for the `data` volume when volumeClaimEnabled if false |
 | backend.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | backend.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| backend.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| backend.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | backend.persistence.selector | string | `nil` | Selector for persistent disk |
 | backend.persistence.annotations | object | `{}` | Annotations for volume claim |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
@@ -642,7 +639,7 @@ helm install loki chart/
 | querier.dnsConfig | object | `{}` | DNSConfig for querier pods |
 | querier.persistence.enabled | bool | `false` | Enable creating PVCs for the querier cache |
 | querier.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| querier.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| querier.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | querier.persistence.annotations | object | `{}` | Annotations for querier PVCs |
 | querier.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the querier service. This allows querier to work with istio protocol selection. |
 | querier.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
@@ -730,7 +727,7 @@ helm install loki chart/
 | indexGateway.persistence.enabled | bool | `false` | Enable creating PVCs which is required when using boltdb-shipper |
 | indexGateway.persistence.inMemory | bool | `false` | Use emptyDir with ramdisk for storage. **Please note that all data in indexGateway will be lost on pod restart** |
 | indexGateway.persistence.size | string | `"10Gi"` | Size of persistent or memory disk |
-| indexGateway.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| indexGateway.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | indexGateway.persistence.annotations | object | `{}` | Annotations for index gateway PVCs |
 | indexGateway.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | indexGateway.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
@@ -762,7 +759,7 @@ helm install loki chart/
 | compactor.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | compactor.persistence.enabled | bool | `false` | Enable creating PVCs for the compactor |
 | compactor.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| compactor.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| compactor.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | compactor.persistence.annotations | object | `{}` | Annotations for compactor PVCs |
 | compactor.persistence.claims | list |  | List of the compactor PVCs |
 | compactor.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
@@ -771,77 +768,111 @@ helm install loki chart/
 | compactor.serviceAccount.annotations | object | `{}` | Annotations for the compactor service account |
 | compactor.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
 | bloomGateway | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-gateway"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom gateway |
-| bloomGateway.replicas | int | `0` | Number of replicas for the bloom gateway |
+| bloomGateway.replicas | int | `0` | Number of replicas for the bloom-gateway |
 | bloomGateway.hostAliases | list | `[]` | hostAliases to add |
-| bloomGateway.image.registry | string | `nil` | The Docker registry for the bloom gateway image. Overrides `loki.image.registry` |
-| bloomGateway.image.repository | string | `nil` | Docker image repository for the bloom gateway image. Overrides `loki.image.repository` |
-| bloomGateway.image.tag | string | `nil` | Docker image tag for the bloom gateway image. Overrides `loki.image.tag` |
+| bloomGateway.image.registry | string | `nil` | The Docker registry for the bloom-gateway image. Overrides `loki.image.registry` |
+| bloomGateway.image.repository | string | `nil` | Docker image repository for the bloom-gateway image. Overrides `loki.image.repository` |
+| bloomGateway.image.tag | string | `nil` | Docker image tag for the bloom-gateway image. Overrides `loki.image.tag` |
 | bloomGateway.command | string | `nil` | Command to execute instead of defined in Docker image |
-| bloomGateway.priorityClassName | string | `nil` | The name of the PriorityClass for bloom gateway pods |
-| bloomGateway.podLabels | object | `{}` | Labels for bloom gateway pods |
-| bloomGateway.podAnnotations | object | `{}` | Annotations for bloom gateway pods |
-| bloomGateway.affinity | object | Hard node anti-affinity | Affinity for bloom gateway pods. |
-| bloomGateway.serviceLabels | object | `{}` | Labels for bloom gateway service |
-| bloomGateway.extraArgs | list | `[]` | Additional CLI args for the bloom gateway |
-| bloomGateway.extraEnv | list | `[]` | Environment variables to add to the bloom gateway pods |
-| bloomGateway.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom gateway pods |
-| bloomGateway.extraVolumeMounts | list | `[]` | Volume mounts to add to the bloom gateway pods |
-| bloomGateway.extraVolumes | list | `[]` | Volumes to add to the bloom gateway pods |
+| bloomGateway.priorityClassName | string | `nil` | The name of the PriorityClass for bloom-gateway pods |
+| bloomGateway.podLabels | object | `{}` | Labels for bloom-gateway pods |
+| bloomGateway.podAnnotations | object | `{}` | Annotations for bloom-gateway pods |
+| bloomGateway.affinity | object | Hard node anti-affinity | Affinity for bloom-gateway pods. |
+| bloomGateway.serviceLabels | object | `{}` | Labels for bloom-gateway service |
+| bloomGateway.extraArgs | list | `[]` | Additional CLI args for the bloom-gateway |
+| bloomGateway.extraEnv | list | `[]` | Environment variables to add to the bloom-gateway pods |
+| bloomGateway.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-gateway pods |
+| bloomGateway.extraVolumeMounts | list | `[]` | Volume mounts to add to the bloom-gateway pods |
+| bloomGateway.extraVolumes | list | `[]` | Volumes to add to the bloom-gateway pods |
 | bloomGateway.readinessProbe | object | `{}` | readiness probe settings for ingester pods. If empty, use `loki.readinessProbe` |
 | bloomGateway.livenessProbe | object | `{}` | liveness probe settings for ingester pods. If empty use `loki.livenessProbe` |
-| bloomGateway.resources | object | `{}` | Resource requests and limits for the bloom gateway |
-| bloomGateway.extraContainers | list | `[]` | Containers to add to the bloom gateway pods |
-| bloomGateway.initContainers | list | `[]` | Init containers to add to the bloom gateway pods |
-| bloomGateway.terminationGracePeriodSeconds | int | `30` | Grace period to allow the bloom gateway to shutdown before it is killed |
-| bloomGateway.nodeSelector | object | `{}` | Node selector for bloom gateway pods |
-| bloomGateway.tolerations | list | `[]` | Tolerations for bloom gateway pods |
+| bloomGateway.resources | object | `{}` | Resource requests and limits for the bloom-gateway |
+| bloomGateway.extraContainers | list | `[]` | Containers to add to the bloom-gateway pods |
+| bloomGateway.initContainers | list | `[]` | Init containers to add to the bloom-gateway pods |
+| bloomGateway.terminationGracePeriodSeconds | int | `30` | Grace period to allow the bloom-gateway to shutdown before it is killed |
+| bloomGateway.nodeSelector | object | `{}` | Node selector for bloom-gateway pods |
+| bloomGateway.tolerations | list | `[]` | Tolerations for bloom-gateway pods |
 | bloomGateway.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| bloomGateway.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom gateway |
+| bloomGateway.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom-gateway |
 | bloomGateway.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| bloomGateway.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
-| bloomGateway.persistence.annotations | object | `{}` | Annotations for bloom gateway PVCs |
-| bloomGateway.persistence.claims | list |  | List of the bloom gateway PVCs |
+| bloomGateway.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| bloomGateway.persistence.annotations | object | `{}` | Annotations for bloom-gateway PVCs |
+| bloomGateway.persistence.claims | list |  | List of the bloom-gateway PVCs |
 | bloomGateway.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
-| bloomGateway.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom gateway. If not set and create is true, a name is generated by appending "-bloom-gateway" to the common ServiceAccount. |
-| bloomGateway.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom gateway service account |
-| bloomGateway.serviceAccount.annotations | object | `{}` | Annotations for the bloom gateway service account |
+| bloomGateway.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom-gateway. If not set and create is true, a name is generated by appending "-bloom-gateway" to the common ServiceAccount. |
+| bloomGateway.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom-gateway service account |
+| bloomGateway.serviceAccount.annotations | object | `{}` | Annotations for the bloom-gateway service account |
 | bloomGateway.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
-| bloomCompactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-compactor"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom compactor |
+| bloomCompactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-planner"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom compactor |
 | bloomCompactor.replicas | int | `0` | Number of replicas for the bloom compactor |
 | bloomCompactor.hostAliases | list | `[]` | hostAliases to add |
-| bloomCompactor.image.registry | string | `nil` | The Docker registry for the bloom compactor image. Overrides `loki.image.registry` |
-| bloomCompactor.image.repository | string | `nil` | Docker image repository for the bloom compactor image. Overrides `loki.image.repository` |
-| bloomCompactor.image.tag | string | `nil` | Docker image tag for the bloom compactor image. Overrides `loki.image.tag` |
+| bloomCompactor.image.registry | string | `nil` | The Docker registry for the bloom-planner image. Overrides `loki.image.registry` |
+| bloomCompactor.image.repository | string | `nil` | Docker image repository for the bloom-planner image. Overrides `loki.image.repository` |
+| bloomCompactor.image.tag | string | `nil` | Docker image tag for the bloom-planner image. Overrides `loki.image.tag` |
 | bloomCompactor.command | string | `nil` | Command to execute instead of defined in Docker image |
-| bloomCompactor.priorityClassName | string | `nil` | The name of the PriorityClass for bloom compactor pods |
-| bloomCompactor.podLabels | object | `{}` | Labels for bloom compactor pods |
-| bloomCompactor.podAnnotations | object | `{}` | Annotations for bloom compactor pods |
-| bloomCompactor.affinity | object | Hard node anti-affinity | Affinity for bloom compactor pods. |
-| bloomCompactor.serviceLabels | object | `{}` | Labels for bloom compactor service |
-| bloomCompactor.extraArgs | list | `[]` | Additional CLI args for the bloom compactor |
-| bloomCompactor.extraEnv | list | `[]` | Environment variables to add to the bloom compactor pods |
-| bloomCompactor.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom compactor pods |
-| bloomCompactor.extraVolumeMounts | list | `[]` | Volume mounts to add to the bloom compactor pods |
-| bloomCompactor.extraVolumes | list | `[]` | Volumes to add to the bloom compactor pods |
+| bloomCompactor.priorityClassName | string | `nil` | The name of the PriorityClass for bloom-planner pods |
+| bloomCompactor.podLabels | object | `{}` | Labels for bloom-planner pods |
+| bloomCompactor.podAnnotations | object | `{}` | Annotations for bloom-planner pods |
+| bloomCompactor.affinity | object | Hard node anti-affinity | Affinity for bloom-planner pods. |
+| bloomCompactor.serviceLabels | object | `{}` | Labels for bloom-planner service |
+| bloomCompactor.extraArgs | list | `[]` | Additional CLI args for the bloom-planner |
+| bloomCompactor.extraEnv | list | `[]` | Environment variables to add to the bloom-planner pods |
+| bloomCompactor.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-planner pods |
+| bloomCompactor.extraVolumeMounts | list | `[]` | Volume mounts to add to the bloom-planner pods |
+| bloomCompactor.extraVolumes | list | `[]` | Volumes to add to the bloom-planner pods |
 | bloomCompactor.readinessProbe | object | `{}` | readiness probe settings for ingester pods. If empty, use `loki.readinessProbe` |
 | bloomCompactor.livenessProbe | object | `{}` | liveness probe settings for ingester pods. If empty use `loki.livenessProbe` |
-| bloomCompactor.resources | object | `{}` | Resource requests and limits for the bloom compactor |
-| bloomCompactor.extraContainers | list | `[]` | Containers to add to the bloom compactor pods |
-| bloomCompactor.initContainers | list | `[]` | Init containers to add to the bloom compactor pods |
-| bloomCompactor.terminationGracePeriodSeconds | int | `30` | Grace period to allow the bloom compactor to shutdown before it is killed |
-| bloomCompactor.nodeSelector | object | `{}` | Node selector for bloom compactor pods |
-| bloomCompactor.tolerations | list | `[]` | Tolerations for bloom compactor pods |
+| bloomCompactor.resources | object | `{}` | Resource requests and limits for the bloom-planner |
+| bloomCompactor.extraContainers | list | `[]` | Containers to add to the bloom-planner pods |
+| bloomCompactor.initContainers | list | `[]` | Init containers to add to the bloom-planner pods |
+| bloomCompactor.terminationGracePeriodSeconds | int | `30` | Grace period to allow the bloom-planner to shutdown before it is killed |
+| bloomCompactor.nodeSelector | object | `{}` | Node selector for bloom-planner pods |
+| bloomCompactor.tolerations | list | `[]` | Tolerations for bloom-planner pods |
 | bloomCompactor.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| bloomCompactor.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom compactor |
+| bloomCompactor.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom-planner |
 | bloomCompactor.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| bloomCompactor.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
-| bloomCompactor.persistence.annotations | object | `{}` | Annotations for bloom compactor PVCs |
-| bloomCompactor.persistence.claims | list |  | List of the bloom compactor PVCs |
+| bloomCompactor.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| bloomCompactor.persistence.annotations | object | `{}` | Annotations for bloom-planner PVCs |
+| bloomCompactor.persistence.claims | list | [] | List of the bloom-planner PVCs |
 | bloomCompactor.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
-| bloomCompactor.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom compactor. If not set and create is true, a name is generated by appending "-bloom-compactor" to the common ServiceAccount. |
-| bloomCompactor.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom compactor service account |
-| bloomCompactor.serviceAccount.annotations | object | `{}` | Annotations for the bloom compactor service account |
+| bloomCompactor.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom-planner. If not set and create is true, a name is generated by appending "-bloom-planner" to the common ServiceAccount. |
+| bloomCompactor.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom-planner service account |
+| bloomCompactor.serviceAccount.annotations | object | `{}` | Annotations for the bloom-planner service account |
 | bloomCompactor.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
+| bloomBuilder | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-builder"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom-builder |
+| bloomBuilder.replicas | int | `0` | Number of replicas for the bloom-builder |
+| bloomBuilder.hostAliases | list | `[]` | hostAliases to add |
+| bloomBuilder.autoscaling.enabled | bool | `false` | Enable autoscaling for the bloom-builder |
+| bloomBuilder.autoscaling.minReplicas | int | `1` | Minimum autoscaling replicas for the bloom-builder |
+| bloomBuilder.autoscaling.maxReplicas | int | `3` | Maximum autoscaling replicas for the bloom-builder |
+| bloomBuilder.autoscaling.targetCPUUtilizationPercentage | int | `60` | Target CPU utilisation percentage for the bloom-builder |
+| bloomBuilder.autoscaling.targetMemoryUtilizationPercentage | string | `nil` | Target memory utilisation percentage for the bloom-builder |
+| bloomBuilder.autoscaling.customMetrics | list | `[]` | Allows one to define custom metrics using the HPA/v2 schema (for example, Pods, Object or External metrics) |
+| bloomBuilder.autoscaling.behavior.enabled | bool | `false` | Enable autoscaling behaviours |
+| bloomBuilder.autoscaling.behavior.scaleDown | object | `{}` | define scale down policies, must conform to HPAScalingRules |
+| bloomBuilder.autoscaling.behavior.scaleUp | object | `{}` | define scale up policies, must conform to HPAScalingRules |
+| bloomBuilder.image.registry | string | `nil` | The Docker registry for the bloom-builder image. Overrides `loki.image.registry` |
+| bloomBuilder.image.repository | string | `nil` | Docker image repository for the bloom-builder image. Overrides `loki.image.repository` |
+| bloomBuilder.image.tag | string | `nil` | Docker image tag for the bloom-builder image. Overrides `loki.image.tag` |
+| bloomBuilder.command | string | `nil` | Command to execute instead of defined in Docker image |
+| bloomBuilder.priorityClassName | string | `nil` | The name of the PriorityClass for bloom-builder pods |
+| bloomBuilder.podLabels | object | `{}` | Labels for bloom-builder pods |
+| bloomBuilder.podAnnotations | object | `{}` | Annotations for bloom-builder pods |
+| bloomBuilder.serviceLabels | object | `{}` | Labels for bloom-builder service |
+| bloomBuilder.extraArgs | list | `[]` | Additional CLI args for the bloom-builder |
+| bloomBuilder.extraEnv | list | `[]` | Environment variables to add to the bloom-builder pods |
+| bloomBuilder.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-builder pods |
+| bloomBuilder.extraVolumeMounts | list | `[]` | Volume mounts to add to the bloom-builder pods |
+| bloomBuilder.extraVolumes | list | `[]` | Volumes to add to the bloom-builder pods |
+| bloomBuilder.resources | object | `{}` | Resource requests and limits for the bloom-builder |
+| bloomBuilder.extraContainers | list | `[]` | Containers to add to the bloom-builder pods |
+| bloomBuilder.terminationGracePeriodSeconds | int | `30` | Grace period to allow the bloom-builder to shutdown before it is killed |
+| bloomBuilder.affinity | object | Hard node anti-affinity | Affinity for bloom-builder pods. |
+| bloomBuilder.maxUnavailable | string | `nil` | Pod Disruption Budget maxUnavailable |
+| bloomBuilder.nodeSelector | object | `{}` | Node selector for bloom-builder pods |
+| bloomBuilder.tolerations | list | `[]` | Tolerations for bloom-builder pods |
+| bloomBuilder.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the queryFrontend service. This allows bloomBuilder to work with istio protocol selection. |
+| bloomBuilder.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | patternIngester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"pattern-ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the pattern ingester |
 | patternIngester.replicas | int | `0` | Number of replicas for the pattern ingester |
 | patternIngester.hostAliases | list | `[]` | hostAliases to add |
@@ -870,7 +901,7 @@ helm install loki chart/
 | patternIngester.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | patternIngester.persistence.enabled | bool | `false` | Enable creating PVCs for the pattern ingester |
 | patternIngester.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| patternIngester.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| patternIngester.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | patternIngester.persistence.annotations | object | `{}` | Annotations for pattern ingester PVCs |
 | patternIngester.persistence.claims | list |  | List of the pattern ingester PVCs |
 | patternIngester.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
@@ -906,12 +937,12 @@ helm install loki chart/
 | ruler.dnsConfig | object | `{}` | DNSConfig for ruler pods |
 | ruler.persistence.enabled | bool | `false` | Enable creating PVCs which is required when using recording rules |
 | ruler.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| ruler.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: `<storageClass>`. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| ruler.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | ruler.persistence.annotations | object | `{}` | Annotations for ruler PVCs |
 | ruler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | ruler.directories | object | `{}` | Directories containing rules files |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.29"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.30"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
 | memcached.podSecurityContext | object | `{}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
@@ -955,6 +986,11 @@ helm install loki chart/
 | resultsCache.extraVolumeMounts | list | `[]` | Additional volume mounts to be added to the results-cache pod (applies to both memcached and exporter containers). Example: extraVolumeMounts: - name: extra-volume   mountPath: /etc/extra-volume   readOnly: true |
 | resultsCache.resources | string | `nil` | Resource requests and limits for the results-cache By default a safe memory limit will be requested based on allocatedMemory value (floor (* 1.2 allocatedMemory)). |
 | resultsCache.service | object | `{"annotations":{},"labels":{}}` | Service annotations and labels |
+| resultsCache.persistence | object | `{"enabled":false,"mountPath":"/data","storageClass":null,"storageSize":"10G"}` | Persistence settings for the results-cache |
+| resultsCache.persistence.enabled | bool | `false` | Enable creating PVCs for the results-cache |
+| resultsCache.persistence.storageSize | string | `"10G"` | Size of persistent disk |
+| resultsCache.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| resultsCache.persistence.mountPath | string | `"/data"` | Volume mount path |
 | chunksCache.enabled | bool | `false` | Specifies whether memcached based chunks-cache should be enabled |
 | chunksCache.batchSize | int | `4` | Batchsize for sending and receiving chunks from chunks cache |
 | chunksCache.parallelism | int | `5` | Parallel threads for sending and receiving chunks from chunks cache |
@@ -988,7 +1024,12 @@ helm install loki chart/
 | chunksCache.extraVolumeMounts | list | `[]` | Additional volume mounts to be added to the chunks-cache pod (applies to both memcached and exporter containers). Example: extraVolumeMounts: - name: extra-volume   mountPath: /etc/extra-volume   readOnly: true |
 | chunksCache.resources | string | `nil` | Resource requests and limits for the chunks-cache By default a safe memory limit will be requested based on allocatedMemory value (floor (* 1.2 allocatedMemory)). |
 | chunksCache.service | object | `{"annotations":{},"labels":{}}` | Service annotations and labels |
-| rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator <https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator> |
+| chunksCache.persistence | object | `{"enabled":false,"mountPath":"/data","storageClass":null,"storageSize":"10G"}` | Persistence settings for the chunks-cache |
+| chunksCache.persistence.enabled | bool | `false` | Enable creating PVCs for the chunks-cache |
+| chunksCache.persistence.storageSize | string | `"10G"` | Size of persistent disk |
+| chunksCache.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
+| chunksCache.persistence.mountPath | string | `"/data"` | Volume mount path |
+| rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator |
 | rollout_operator.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | podSecurityContext is the pod security context for the rollout operator. When installing on OpenShift, override podSecurityContext settings with  rollout_operator:   podSecurityContext:     fsGroup: null     runAsGroup: null     runAsUser: null |
 | minio | object | `{"address":"minio.logging.svc.cluster.local","enabled":false,"secrets":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}],"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"name":"pool-0","securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | Configuration for the minio subchart |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
@@ -1049,7 +1090,7 @@ helm install loki chart/
 | istio.hardened.minioOperator.enabled | bool | `true` |  |
 | istio.hardened.minioOperator.namespaces[0] | string | `"minio-operator"` |  |
 | istio.hardened.minioOperator.principals[0] | string | `"cluster.local/ns/minio-operator/sa/minio-operator"` |  |
-| istio.loki.enabled | bool | `false` |  |
+| istio.loki.enabled | bool | `true` |  |
 | istio.loki.annotations | object | `{}` |  |
 | istio.loki.labels | object | `{}` |  |
 | istio.loki.gateways[0] | string | `"istio-system/public"` |  |
@@ -1067,7 +1108,7 @@ helm install loki chart/
 | bbtests.scripts.image | string | `"registry1.dso.mil/ironbank/big-bang/base:2.1.0"` |  |
 | bbtests.scripts.envs.LOKI_URL | string | `"http://{{ .Values.fullnameOverride }}.{{ .Release.Namespace }}.svc:3100"` |  |
 | bbtests.scripts.envs.LOKI_VERSION | string | `"{{ .Values.loki.image.tag }}"` |  |
-| monitoring | object | `{"dashboards":{"annotations":{},"enabled":false,"labels":{"grafana_dashboard":"1"},"namespace":null},"enabled":false,"rules":{"additionalGroups":[],"additionalRuleLabels":{},"alerting":true,"annotations":{},"disabled":{},"enabled":false,"labels":{},"namespace":null},"selfMonitoring":{"enabled":false,"grafanaAgent":{"annotations":{},"enableConfigReadAPI":false,"installOperator":false,"labels":{},"priorityClassName":null,"resources":{},"tolerations":[]},"logsInstance":{"annotations":{},"clients":null,"labels":{}},"podLogs":{"additionalPipelineStages":[],"annotations":{},"apiVersion":"monitoring.grafana.com/v1alpha1","labels":{},"relabelings":[]},"tenant":{"name":"self-monitoring","password":null,"secretNamespace":"{{ .Release.Namespace }}"}},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"15s","labels":{},"metricRelabelings":[],"metricsInstance":{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null},"namespaceSelector":{},"relabelings":[],"scheme":"http","scrapeTimeout":null,"tlsConfig":null}}` | DEPRECATED Monitoring section determines which monitoring features to enable, this section is being replaced by <https://github.com/grafana/meta-monitoring-chart> |
+| monitoring | object | `{"dashboards":{"annotations":{},"enabled":false,"labels":{"grafana_dashboard":"1"},"namespace":null},"enabled":false,"rules":{"additionalGroups":[],"additionalRuleLabels":{},"alerting":true,"annotations":{},"disabled":{},"enabled":false,"labels":{},"namespace":null},"selfMonitoring":{"enabled":false,"grafanaAgent":{"annotations":{},"enableConfigReadAPI":false,"installOperator":false,"labels":{},"priorityClassName":null,"resources":{},"tolerations":[]},"logsInstance":{"annotations":{},"clients":null,"labels":{}},"podLogs":{"additionalPipelineStages":[],"annotations":{},"apiVersion":"monitoring.grafana.com/v1alpha1","labels":{},"relabelings":[]},"tenant":{"name":"self-monitoring","password":null,"secretNamespace":"{{ .Release.Namespace }}"}},"serviceMonitor":{"annotations":{},"enabled":false,"interval":"15s","labels":{},"metricRelabelings":[],"metricsInstance":{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null},"namespaceSelector":{},"relabelings":[],"scheme":"http","scrapeTimeout":null,"tlsConfig":null}}` | DEPRECATED Monitoring section determines which monitoring features to enable, this section is being replaced by https://github.com/grafana/meta-monitoring-chart |
 | monitoring.enabled | bool | `false` | Enable BigBang integration of Monitoring components |
 | monitoring.dashboards.enabled | bool | `false` | If enabled, create configmap with dashboards for monitoring Loki |
 | monitoring.dashboards.namespace | string | `nil` | Alternative namespace to create dashboards ConfigMap in |
@@ -1088,8 +1129,8 @@ helm install loki chart/
 | monitoring.serviceMonitor.labels | object | `{}` | Additional ServiceMonitor labels |
 | monitoring.serviceMonitor.interval | string | `"15s"` | ServiceMonitor scrape interval Default is 15s because included recording rules use a 1m rate, and scrape interval needs to be at least 1/4 rate interval. |
 | monitoring.serviceMonitor.scrapeTimeout | string | `nil` | ServiceMonitor scrape timeout in Go duration format (e.g. 15s) |
-| monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping <https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig> |
-| monitoring.serviceMonitor.metricRelabelings | list | `[]` | ServiceMonitor metric relabel configs to apply to samples before ingestion <https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint> |
+| monitoring.serviceMonitor.relabelings | list | `[]` | ServiceMonitor relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.serviceMonitor.metricRelabelings | list | `[]` | ServiceMonitor metric relabel configs to apply to samples before ingestion https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#endpoint |
 | monitoring.serviceMonitor.scheme | string | `"http"` | ServiceMonitor will use http by default, but you can pick https as well |
 | monitoring.serviceMonitor.tlsConfig | string | `nil` | ServiceMonitor will use these tlsConfig settings to make the health check requests |
 | monitoring.serviceMonitor.metricsInstance | object | `{"annotations":{},"enabled":false,"labels":{},"remoteWrite":null}` | If defined, will create a MetricsInstance for the Grafana Agent Operator. |
@@ -1113,8 +1154,8 @@ helm install loki chart/
 | monitoring.selfMonitoring.podLogs.apiVersion | string | `"monitoring.grafana.com/v1alpha1"` | PodLogs version |
 | monitoring.selfMonitoring.podLogs.annotations | object | `{}` | PodLogs annotations |
 | monitoring.selfMonitoring.podLogs.labels | object | `{}` | Additional PodLogs labels |
-| monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping <https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig> |
-| monitoring.selfMonitoring.podLogs.additionalPipelineStages | list | `[]` | Additional pipeline stages to process logs after scraping <https://grafana.com/docs/agent/latest/operator/api/#pipelinestagespec-a-namemonitoringgrafanacomv1alpha1pipelinestagespeca> |
+| monitoring.selfMonitoring.podLogs.relabelings | list | `[]` | PodLogs relabel configs to apply to samples before scraping https://github.com/prometheus-operator/prometheus-operator/blob/master/Documentation/api.md#relabelconfig |
+| monitoring.selfMonitoring.podLogs.additionalPipelineStages | list | `[]` | Additional pipeline stages to process logs after scraping https://grafana.com/docs/agent/latest/operator/api/#pipelinestagespec-a-namemonitoringgrafanacomv1alpha1pipelinestagespeca |
 | monitoring.selfMonitoring.logsInstance.annotations | object | `{}` | LogsInstance annotations |
 | monitoring.selfMonitoring.logsInstance.labels | object | `{}` | Additional LogsInstance labels |
 | monitoring.selfMonitoring.logsInstance.clients | string | `nil` | Additional clients for remote write |
@@ -1152,3 +1193,4 @@ Please see the [contributing guide](./CONTRIBUTING.md) if you are interested in 
 ---
 
 _This file is programatically generated using `helm-docs` and some BigBang-specific templates. The `gluon` repository has [instructions for regenerating package READMEs](https://repo1.dso.mil/big-bang/product/packages/gluon/-/blob/master/docs/bb-package-readme.md)._
+
