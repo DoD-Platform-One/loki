@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.12.0-bb.1] - 2024-09-12
+
+### Added
+
+- Added a network policy allowing ingress from Grafana Alloy
+
 ## [6.12.0-bb.0] - 2024-09-08
 
 ### Updated
