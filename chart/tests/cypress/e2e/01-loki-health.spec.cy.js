@@ -13,7 +13,7 @@
   
         it('Check Loki is available as a data source in grafana and connected', {retries: 2}, function() {
             cy.wait(10000); 
-            const saveOutputOptions = ['Data source is working', 'Data source successfully connected']
+            const saveOutputOptions = ['Data source is working', 'Data source successfully connected', 'Successfully connected to']
             const saveOutput = new RegExp(`${saveOutputOptions.join('|')}`, 'g')
 
             cy.visit(Cypress.env('grafana_url'))
@@ -29,7 +29,7 @@
             // Click on the 'Save & test` button
             cy.get('button[type="submit"]').click()
             // Check to ensure the data source is working
-            cy.get('data-testid="data-testid Alert success"').contains(saveOutput, { timeout: 120000 });
+            cy.get('[data-testid="data-testid Alert success"]').contains(saveOutput, { timeout: 120000 })
           })
 
         it('Test for Loki Dashboard log data', function () {
