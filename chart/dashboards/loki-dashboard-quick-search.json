@@ -182,7 +182,7 @@
         "useTags": false
       },
       {
-        "allValue": ".*",
+        "allValue": ".+",
         "current": {},
         "datasource": "prometheus",
         "definition": "label_values(container_network_receive_bytes_total{namespace=~\"$namespace\"},pod)",
