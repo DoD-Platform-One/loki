@@ -6,32 +6,27 @@
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
 ## Upstream References
-* <https://grafana.github.io/helm-charts>
+- <https://grafana.github.io/helm-charts>
 
 * <https://github.com/grafana/loki>
 * <https://grafana.com/oss/loki/>
 * <https://grafana.com/docs/loki/latest/>
 
-### Upstream Release Notes
+## Upstream Release Notes
 
-This package has no upstream release note links on file. Please add some to [chart/Chart.yaml](chart/Chart.yaml) under `annotations.bigbang.dev/upstreamReleaseNotesMarkdown`.
-Example:
-```yaml
-annotations:
-  bigbang.dev/upstreamReleaseNotesMarkdown: |
-    - [Find our upstream chart's CHANGELOG here](https://link-goes-here/CHANGELOG.md)
-    - [and our upstream application release notes here](https://another-link-here/RELEASE_NOTES.md)
-```
+- [Find upstream chert's release notes and CHANGELOG here]https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
+- [Find upstream application's release notes and CHANGELOG here](https://grafana.com/docs/loki/latest/release-notes/)
 
 ## Learn More
-* [Application Overview](docs/overview.md)
-* [Other Documentation](docs/)
+
+- [Application Overview](docs/overview.md)
+- [Other Documentation](docs/)
 
 ## Pre-Requisites
 
-* Kubernetes Cluster deployed
-* Kubernetes config installed in `~/.kube/config`
-* Helm installed
+- Kubernetes Cluster deployed
+- Kubernetes config installed in `~/.kube/config`
+- Helm installed
 
 Install Helm
 
@@ -39,8 +34,9 @@ https://helm.sh/docs/intro/install/
 
 ## Deployment
 
-* Clone down the repository
-* cd into directory
+- Clone down the repository
+- cd into directory
+
 ```bash
 helm install loki chart/
 ```
