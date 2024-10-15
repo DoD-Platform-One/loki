@@ -32,6 +32,9 @@ dependencies:
 annotations:
   bigbang.dev/applicationVersions: |
     - Loki: 3.1.1
+  bigbang.dev/upstreamReleaseNotesMarkdown: |
+    - [Find upstream chert's release notes and CHANGELOG here]https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
+    - [Find upstream application's release notes and CHANGELOG here](https://grafana.com/docs/loki/latest/release-notes/)
   helm.sh/images: |
     - name: loki
       image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.1.1
