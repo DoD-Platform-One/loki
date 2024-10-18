@@ -14,7 +14,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: minio
+      {{- include "minio.labels" . | nindent 6 }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   ingress:
     - from:
@@ -39,7 +39,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: minio
+      {{- include "minio.labels" . | nindent 6 }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   egress:
     - to:
