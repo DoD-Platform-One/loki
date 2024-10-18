@@ -6,6 +6,10 @@ See https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#sy
 {{- (regexReplaceAllLiteral "[^a-zA-Z0-9._-]" . "-") | trunc 63 | trimSuffix "-" | trimSuffix "_" | trimSuffix "." }}
 {{- end }}
 
+{{- define "minio.labels" -}}
+app: minio
+{{- end }}
+
 {{/*
 Expand the name of the chart.
 */}}

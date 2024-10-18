@@ -9,7 +9,7 @@ spec:
     mode: {{ .Values.istio.mtls.mode }}
   selector:
     matchLabels:
-      app: minio
+      {{- include "minio.labels" . | nindent 6 }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   portLevelMtls:
     # Allows minio-operator to reach mino-tenant, can be remove if future implementation allows mounting the Istio proxy mtls certificates
