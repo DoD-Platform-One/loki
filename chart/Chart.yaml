@@ -2,8 +2,8 @@ apiVersion: v2
 name: loki
 description: Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 type: application
-appVersion: 3.1.1
-version: 6.12.0-bb.7
+appVersion: 3.2.0
+version: 6.18.0-bb.0
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -22,7 +22,7 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.5.4
+    version: 0.5.8
     repository: "oci://registry1.dso.mil/bigbang"
   - name: rollout-operator
     alias: rollout_operator
@@ -31,15 +31,15 @@ dependencies:
     condition: rollout_operator.enabled
 annotations:
   bigbang.dev/applicationVersions: |
-    - Loki: 3.1.1
+    - Loki: 3.2.0
   bigbang.dev/upstreamReleaseNotesMarkdown: |
     - [Find upstream chert's release notes and CHANGELOG here]https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
     - [Find upstream application's release notes and CHANGELOG here](https://grafana.com/docs/loki/latest/release-notes/)
   helm.sh/images: |
     - name: loki
-      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.1.1
+      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.2.0
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.29.8
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.30.5
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v1.7.1
       condition: enterprise.enabled
@@ -50,10 +50,10 @@ annotations:
       image: docker.io/grafana/loki-helm-test:latest
       condition: test.enabled
     - name: loki-canary
-      image: docker.io/grafana/loki-canary:3.1.1
+      image: docker.io/grafana/loki-canary:3.2.1
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
-      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.26.2
+      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.27.2
       condition: gateway.enabled
     - name: minio
       image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2024-03-15T01-07-19Z
