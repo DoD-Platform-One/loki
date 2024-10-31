@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.18.0-bb.0] - 2024-10-18
+
+### Updated
+- Updated `loki` from `v3.1.1` -> `v3.2.0`
+- Updated `gluon` from `0.5.4` -> `0.5.8`
+- Updated `k8s-sidecar` from `1.27.5` -> `1.28.0`
+- Updated `kubectl` from `v1.29.8` -> `v1.30.5`
+- Updated `memcached` from `1.6.30` -> `1.6.31`
+- Updated `nginx` from `1.26.2` -> `1.27.2`
 
 ## [6.12.0-bb.7] - 2024-10-07
 

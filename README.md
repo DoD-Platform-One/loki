@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.12.0-bb.7](https://img.shields.io/badge/Version-6.12.0--bb.7-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.1.1](https://img.shields.io/badge/AppVersion-3.1.1-informational?style=flat-square)
+![Version: 6.18.0-bb.0](https://img.shields.io/badge/Version-6.18.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.2.0](https://img.shields.io/badge/AppVersion-3.2.0-informational?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -58,7 +58,7 @@ helm install loki chart/
 | loki | object | See values.yaml | Configuration for running Loki |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"3.1.1"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"3.2.0"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -81,7 +81,7 @@ helm install loki chart/
 | loki.limits_config | object | `{"deletion_mode":"filter-and-delete","discover_service_name":[],"max_cache_freshness_per_query":"10m","query_timeout":"300s","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m","volume_enabled":true}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":1}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","deletion":"loki-deletion","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"backoff_config":{},"disable_dualstack":false,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"chunkDelimiter":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","deletion":"loki-deletion","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"s3":{"accessKeyId":null,"backoff_config":{},"disable_dualstack":false,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3"}` | Storage config. Providing this will automatically populate all necessary storage configs in the templated config. |
 | loki.storage.s3.backoff_config | object | `{}` | Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
@@ -89,7 +89,7 @@ helm install loki chart/
 | loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
 | loki.structuredConfig | object | `{}` | Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig` |
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
-| loki.storage_config | object | `{"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}}}` | Additional storage config |
+| loki.storage_config | object | `{"bloom_shipper":{"working_directory":"/var/loki/data/bloomshipper"},"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}}}` | Additional storage config |
 | loki.compactor | object | `{"compaction_interval":"10m","delete_request_store":"{{ .Values.loki.storage.type }}","retention_delete_delay":"2h","retention_enabled":true}` | Default compactor configuration |
 | loki.pattern_ingester | object | `{"enabled":false}` | Optional pattern ingester configuration |
 | loki.analytics | object | `{"reporting_enabled":false}` | Optional analytics configuration |
@@ -100,9 +100,9 @@ helm install loki chart/
 | loki.index_gateway | object | `{"mode":"simple"}` | Optional index gateway configuration |
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
-| enterprise | object | `{"adminApi":{"enabled":true},"adminToken":{"additionalNamespaces":[],"secret":null},"canarySecret":null,"cluster_name":null,"config":"{{- if .Values.enterprise.adminApi.enabled }}\nadmin_client:\n  {{ include \"enterprise-logs.adminAPIStorageConfig\" . \\| nindent 2 }}\n{{ end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \\| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n","enabled":false,"externalConfigName":"","externalLicenseName":null,"gelGateway":true,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"v1.7.1"},"license":{"contents":"NOTAVALIDLICENSE"},"provisioner":{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}},"tokengen":{"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]},"useExternalLicense":false,"version":"3.1.1"}` | Configuration for running Enterprise Loki |
-| enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use `.Release.Name`. The cluster name must match what is in your GEL license. |
-| enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license. In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the `license.jwt`, or the name Kubernetes Secret that contains your `license.jwt`. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'`. |
+| enterprise | object | `{"adminApi":{"enabled":true},"adminToken":{"additionalNamespaces":[],"secret":null},"canarySecret":null,"cluster_name":null,"config":"{{- if .Values.enterprise.adminApi.enabled }}\nadmin_client:\n  {{ include \"enterprise-logs.adminAPIStorageConfig\" . \\| nindent 2 }}\n{{ end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \\| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n","enabled":false,"externalConfigName":"","externalLicenseName":null,"gelGateway":true,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"v1.7.1"},"license":{"contents":"NOTAVALIDLICENSE"},"provisioner":{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]},"tokengen":{"affinity":{},"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"nodeSelector":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]},"useExternalLicense":false,"version":"3.1.1"}` | Configuration for running Enterprise Loki |
+| enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
+| enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
 | enterprise.externalLicenseName | string | `nil` | Name of external license secret to use |
 | enterprise.externalConfigName | string | `""` | Name of the external config secret to use |
@@ -116,26 +116,31 @@ helm install loki chart/
 | enterprise.adminToken.secret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
 | enterprise.adminToken.additionalNamespaces | list | `[]` | Additional namespace to also create the token in. Useful if your Grafana instance is in a different namespace |
 | enterprise.canarySecret | string | `nil` | Alternative name of the secret to store token for the canary |
-| enterprise.tokengen | object | `{"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]}` | Configuration for `tokengen` target |
+| enterprise.tokengen | object | `{"affinity":{},"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"nodeSelector":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]}` | Configuration for `tokengen` target |
 | enterprise.tokengen.enabled | bool | `true` | Whether the job should be part of the deployment |
 | enterprise.tokengen.targetModule | string | `"tokengen"` | Comma-separated list of Loki modules to load for tokengen |
 | enterprise.tokengen.extraArgs | list | `[]` | Additional CLI arguments for the `tokengen` target |
 | enterprise.tokengen.env | list | `[]` | Additional Kubernetes environment |
 | enterprise.tokengen.labels | object | `{}` | Additional labels for the `tokengen` Job |
 | enterprise.tokengen.annotations | object | `{"sidecar.istio.io/inject":"false"}` | Additional annotations for the `tokengen` Job |
+| enterprise.tokengen.affinity | object | `{}` | Affinity for tokengen Pods |
+| enterprise.tokengen.nodeSelector | object | `{}` | Node selector for tokengen Pods |
 | enterprise.tokengen.tolerations | list | `[]` | Tolerations for tokengen Job |
 | enterprise.tokengen.extraVolumes | list | `[]` | Additional volumes for Pods |
 | enterprise.tokengen.extraVolumeMounts | list | `[]` | Additional volume mounts for Pods |
 | enterprise.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
 | enterprise.tokengen.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the tokengen pods |
 | enterprise.tokengen.priorityClassName | string | `""` | The name of the PriorityClass for tokengen Pods |
-| enterprise.provisioner | object | `{"additionalTenants":[],"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}}` | Configuration for `provisioner` target |
+| enterprise.provisioner | object | `{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `provisioner` target |
 | enterprise.provisioner.enabled | bool | `false` | Whether the job should be part of the deployment |
 | enterprise.provisioner.provisionedSecretPrefix | string | `nil` | Name of the secret to store provisioned tokens in |
 | enterprise.provisioner.additionalTenants | list | `[]` | Additional tenants to be created. Each tenant will get a read and write policy and associated token. Tenant must have a name and a namespace for the secret containting the token to be created in. For example additionalTenants:   - name: loki     secretNamespace: grafana |
 | enterprise.provisioner.env | list | `[]` | Additional Kubernetes environment |
 | enterprise.provisioner.labels | object | `{}` | Additional labels for the `provisioner` Job |
 | enterprise.provisioner.annotations | object | `{}` | Additional annotations for the `provisioner` Job |
+| enterprise.provisioner.affinity | object | `{}` | Affinity for tokengen Pods |
+| enterprise.provisioner.nodeSelector | object | `{}` | Node selector for tokengen Pods |
+| enterprise.provisioner.tolerations | list | `[]` | Tolerations for tokengen Pods |
 | enterprise.provisioner.priorityClassName | string | `nil` | The name of the PriorityClass for provisioner Job |
 | enterprise.provisioner.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
 | enterprise.provisioner.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/enterprise-logs-provisioner","tag":null}` | Provisioner image to Utilize |
@@ -145,10 +150,10 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.29.8"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.5"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.29.8"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.30.5"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -215,6 +220,7 @@ helm install loki chart/
 | networkPolicy.egressWorld.enabled | bool | `false` | Enable additional cilium egress rules to external world for write, read and backend. |
 | networkPolicy.egressKubeApiserver.enabled | bool | `false` | Enable additional cilium egress rules to kube-apiserver for backend. |
 | memberlist.service.publishNotReadyAddresses | bool | `false` |  |
+| memberlist.service.annotations | object | `{}` |  |
 | adminApi | object | `{"affinity":{},"annotations":{},"containerSecurityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true},"env":[],"extraArgs":{},"extraContainers":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"initContainers":[],"labels":{},"nodeSelector":{},"podSecurityContext":{"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"readinessProbe":{"httpGet":{"path":"/ready","port":"http-metrics"},"initialDelaySeconds":45},"replicas":1,"resources":{},"service":{"annotations":{},"labels":{}},"strategy":{"type":"RollingUpdate"},"terminationGracePeriodSeconds":60,"tolerations":[]}` | Configuration for the `admin-api` target |
 | adminApi.replicas | int | `1` | Define the amount of instances |
 | adminApi.hostAliases | list | `[]` | hostAliases to add |
@@ -248,7 +254,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.26.2"` | The gateway image tag |
+| gateway.image.tag | string | `"1.27.2"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -328,9 +334,9 @@ helm install loki chart/
 | enterpriseGateway.nodeSelector | object | `{}` | Node selector for gateway Pods |
 | enterpriseGateway.tolerations | list | `[]` | Tolerations for gateway Pods |
 | enterpriseGateway.terminationGracePeriodSeconds | int | `60` | Grace period to allow the gateway to shutdown before it is killed |
-| ingress | object | `{"annotations":{},"enabled":false,"hosts":["loki.example.com"],"ingressClassName":"","labels":{},"paths":{"distributor":["/api/prom/push","/loki/api/v1/push","/otlp/v1/logs"],"queryFrontend":["/api/prom/query","/api/prom/label","/api/prom/series","/api/prom/tail","/loki/api/v1/query","/loki/api/v1/query_range","/loki/api/v1/tail","/loki/api/v1/label","/loki/api/v1/labels","/loki/api/v1/series","/loki/api/v1/index/stats","/loki/api/v1/index/volume","/loki/api/v1/index/volume_range","/loki/api/v1/format_query","/loki/api/v1/detected_fields","/loki/api/v1/detected_labels","/loki/api/v1/patterns"],"ruler":["/api/prom/rules","/api/prom/api/v1/rules","/api/prom/api/v1/alerts","/loki/api/v1/rules","/prometheus/api/v1/rules","/prometheus/api/v1/alerts"]},"tls":[]}` | Ingress configuration Use either this ingress or the gateway, but not both at once. If you enable this, make sure to disable the gateway. You'll need to supply authn configuration for your ingress controller. |
+| ingress | object | `{"annotations":{},"enabled":false,"hosts":["loki.example.com"],"ingressClassName":"","labels":{},"paths":{"distributor":["/api/prom/push","/loki/api/v1/push","/otlp/v1/logs"],"queryFrontend":["/api/prom/query","/api/prom/label","/api/prom/series","/api/prom/tail","/loki/api/v1/query","/loki/api/v1/query_range","/loki/api/v1/tail","/loki/api/v1/label","/loki/api/v1/labels","/loki/api/v1/series","/loki/api/v1/index/stats","/loki/api/v1/index/volume","/loki/api/v1/index/volume_range","/loki/api/v1/format_query","/loki/api/v1/detected_field","/loki/api/v1/detected_fields","/loki/api/v1/detected_labels","/loki/api/v1/patterns"],"ruler":["/api/prom/rules","/api/prom/api/v1/rules","/api/prom/api/v1/alerts","/loki/api/v1/rules","/prometheus/api/v1/rules","/prometheus/api/v1/alerts"]},"tls":[]}` | Ingress configuration Use either this ingress or the gateway, but not both at once. If you enable this, make sure to disable the gateway. You'll need to supply authn configuration for your ingress controller. |
 | ingress.paths.distributor | list | `["/api/prom/push","/loki/api/v1/push","/otlp/v1/logs"]` | Paths that are exposed by Loki Distributor. If deployment mode is Distributed, the requests are forwarded to the service: `{{"loki.distributorFullname"}}`. If deployment mode is SimpleScalable, the requests are forwarded to write k8s service: `{{"loki.writeFullname"}}`. If deployment mode is SingleBinary, the requests are forwarded to the central/single k8s service: `{{"loki.singleBinaryFullname"}}` |
-| ingress.paths.queryFrontend | list | `["/api/prom/query","/api/prom/label","/api/prom/series","/api/prom/tail","/loki/api/v1/query","/loki/api/v1/query_range","/loki/api/v1/tail","/loki/api/v1/label","/loki/api/v1/labels","/loki/api/v1/series","/loki/api/v1/index/stats","/loki/api/v1/index/volume","/loki/api/v1/index/volume_range","/loki/api/v1/format_query","/loki/api/v1/detected_fields","/loki/api/v1/detected_labels","/loki/api/v1/patterns"]` | Paths that are exposed by Loki Query Frontend. If deployment mode is Distributed, the requests are forwarded to the service: `{{"loki.queryFrontendFullname"}}`. If deployment mode is SimpleScalable, the requests are forwarded to write k8s service: `{{"loki.readFullname"}}`. If deployment mode is SingleBinary, the requests are forwarded to the central/single k8s service: `{{"loki.singleBinaryFullname"}}` |
+| ingress.paths.queryFrontend | list | `["/api/prom/query","/api/prom/label","/api/prom/series","/api/prom/tail","/loki/api/v1/query","/loki/api/v1/query_range","/loki/api/v1/tail","/loki/api/v1/label","/loki/api/v1/labels","/loki/api/v1/series","/loki/api/v1/index/stats","/loki/api/v1/index/volume","/loki/api/v1/index/volume_range","/loki/api/v1/format_query","/loki/api/v1/detected_field","/loki/api/v1/detected_fields","/loki/api/v1/detected_labels","/loki/api/v1/patterns"]` | Paths that are exposed by Loki Query Frontend. If deployment mode is Distributed, the requests are forwarded to the service: `{{"loki.queryFrontendFullname"}}`. If deployment mode is SimpleScalable, the requests are forwarded to write k8s service: `{{"loki.readFullname"}}`. If deployment mode is SingleBinary, the requests are forwarded to the central/single k8s service: `{{"loki.singleBinaryFullname"}}` |
 | ingress.paths.ruler | list | `["/api/prom/rules","/api/prom/api/v1/rules","/api/prom/api/v1/alerts","/loki/api/v1/rules","/prometheus/api/v1/rules","/prometheus/api/v1/alerts"]` | Paths that are exposed by Loki Ruler. If deployment mode is Distributed, the requests are forwarded to the service: `{{"loki.rulerFullname"}}`. If deployment mode is SimpleScalable, the requests are forwarded to k8s service: `{{"loki.backendFullname"}}`. If deployment mode is SimpleScalable but `read.legacyReadTarget` is `true`, the requests are forwarded to k8s service: `{{"loki.readFullname"}}`. If deployment mode is SingleBinary, the requests are forwarded to the central/single k8s service: `{{"loki.singleBinaryFullname"}}` |
 | ingress.hosts | list | `["loki.example.com"]` | Hosts configuration for the ingress, passed through the `tpl` function to allow templating |
 | ingress.tls | list | `[]` | TLS configuration for the ingress. Hosts passed through the `tpl` function to allow templating |
@@ -503,7 +509,7 @@ helm install loki chart/
 | backend.persistence.annotations | object | `{}` | Annotations for volume claim |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| ingester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"lifecycle":{},"livenessProbe":{},"maxUnavailable":1,"nodeSelector":{},"persistence":{"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}],"zoneAwareReplication":{"enabled":true,"maxUnavailablePct":33,"migration":{"enabled":false,"excludeDefaultZone":false,"readPath":false,"writePath":false},"zoneA":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneB":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneC":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}}}}` | Configuration for the ingester |
+| ingester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"lifecycle":{},"livenessProbe":{},"maxUnavailable":1,"nodeSelector":{},"persistence":{"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}],"updateStrategy":{"type":"RollingUpdate"},"zoneAwareReplication":{"enabled":true,"maxUnavailablePct":33,"migration":{"enabled":false,"excludeDefaultZone":false,"readPath":false,"writePath":false},"zoneA":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneB":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneC":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}}}}` | Configuration for the ingester |
 | ingester.replicas | int | `0` | Number of replicas for the ingester, when zoneAwareReplication.enabled is true, the total number of replicas will match this value with each zone having 1/3rd of the total replicas. |
 | ingester.hostAliases | list | `[]` | hostAliases to add |
 | ingester.autoscaling.enabled | bool | `false` | Enable autoscaling for the ingester |
@@ -522,6 +528,7 @@ helm install loki chart/
 | ingester.podLabels | object | `{}` | Labels for ingester pods |
 | ingester.podAnnotations | object | `{}` | Annotations for ingester pods |
 | ingester.serviceLabels | object | `{}` | Labels for ingestor service |
+| ingester.serviceAnnotations | object | `{}` | Annotations for ingestor service |
 | ingester.extraArgs | list | `[]` | Additional CLI args for the ingester |
 | ingester.extraEnv | list | `[]` | Environment variables to add to the ingester pods |
 | ingester.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the ingester pods |
@@ -539,6 +546,8 @@ helm install loki chart/
 | ingester.tolerations | list | `[]` | Tolerations for ingester pods |
 | ingester.readinessProbe | object | `{}` | readiness probe settings for ingester pods. If empty, use `loki.readinessProbe` |
 | ingester.livenessProbe | object | `{}` | liveness probe settings for ingester pods. If empty use `loki.livenessProbe` |
+| ingester.updateStrategy | object | `{"type":"RollingUpdate"}` | UpdateStrategy for the ingester StatefulSets. |
+| ingester.updateStrategy.type | string | `"RollingUpdate"` | One of  'OnDelete' or 'RollingUpdate' |
 | ingester.persistence.enabled | bool | `false` | Enable creating PVCs which is required when using boltdb-shipper |
 | ingester.persistence.inMemory | bool | `false` | Use emptyDir with ramdisk for storage. **Please note that all data in ingester will be lost on pod restart** |
 | ingester.persistence.claims | list |  | List of the ingester PVCs |
@@ -562,7 +571,7 @@ helm install loki chart/
 | ingester.zoneAwareReplication.zoneC.annotations | object | `{}` | Specific annotations to add to zone C statefulset |
 | ingester.zoneAwareReplication.zoneC.podAnnotations | object | `{}` | Specific annotations to add to zone C pods |
 | ingester.zoneAwareReplication.migration | object | `{"enabled":false,"excludeDefaultZone":false,"readPath":false,"writePath":false}` | The migration block allows migrating non zone aware ingesters to zone aware ingesters. |
-| distributor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"distributor"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxSurge":0,"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the distributor |
+| distributor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"distributor"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxSurge":0,"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the distributor |
 | distributor.replicas | int | `0` | Number of replicas for the distributor |
 | distributor.hostAliases | list | `[]` | hostAliases to add |
 | distributor.autoscaling.enabled | bool | `false` | Enable autoscaling for the distributor |
@@ -582,6 +591,7 @@ helm install loki chart/
 | distributor.podLabels | object | `{}` | Labels for distributor pods |
 | distributor.podAnnotations | object | `{}` | Annotations for distributor pods |
 | distributor.serviceLabels | object | `{}` | Labels for distributor service |
+| distributor.serviceAnnotations | object | `{}` | Annotations for distributor service |
 | distributor.extraArgs | list | `[]` | Additional CLI args for the distributor |
 | distributor.extraEnv | list | `[]` | Environment variables to add to the distributor pods |
 | distributor.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the distributor pods |
@@ -597,7 +607,7 @@ helm install loki chart/
 | distributor.tolerations | list | `[]` | Tolerations for distributor pods |
 | distributor.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the distributor service. This allows distributor to work with istio protocol selection. |
 | distributor.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| querier | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"querier"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"dnsConfig":{},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"maxSurge":0,"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enabled":false,"size":"10Gi","storageClass":null},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"querier"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}]}` | Configuration for the querier |
+| querier | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"querier"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"dnsConfig":{},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"maxSurge":0,"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enabled":false,"size":"10Gi","storageClass":null},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"querier"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}]}` | Configuration for the querier |
 | querier.replicas | int | `0` | Number of replicas for the querier |
 | querier.hostAliases | list | `[]` | hostAliases to add |
 | querier.autoscaling.enabled | bool | `false` | Enable autoscaling for the querier, this is only used if `indexGateway.enabled: true` |
@@ -617,6 +627,7 @@ helm install loki chart/
 | querier.podLabels | object | `{}` | Labels for querier pods |
 | querier.podAnnotations | object | `{}` | Annotations for querier pods |
 | querier.serviceLabels | object | `{}` | Labels for querier service |
+| querier.serviceAnnotations | object | `{}` | Annotations for querier service |
 | querier.extraArgs | list | `[]` | Additional CLI args for the querier |
 | querier.extraEnv | list | `[]` | Environment variables to add to the querier pods |
 | querier.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the querier pods |
@@ -639,7 +650,7 @@ helm install loki chart/
 | querier.persistence.annotations | object | `{}` | Annotations for querier PVCs |
 | querier.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the querier service. This allows querier to work with istio protocol selection. |
 | querier.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| queryFrontend | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"query-frontend"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the query-frontend |
+| queryFrontend | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"query-frontend"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the query-frontend |
 | queryFrontend.replicas | int | `0` | Number of replicas for the query-frontend |
 | queryFrontend.hostAliases | list | `[]` | hostAliases to add |
 | queryFrontend.autoscaling.enabled | bool | `false` | Enable autoscaling for the query-frontend |
@@ -659,6 +670,7 @@ helm install loki chart/
 | queryFrontend.podLabels | object | `{}` | Labels for query-frontend pods |
 | queryFrontend.podAnnotations | object | `{}` | Annotations for query-frontend pods |
 | queryFrontend.serviceLabels | object | `{}` | Labels for query-frontend service |
+| queryFrontend.serviceAnnotations | object | `{}` | Annotations for query-frontend service |
 | queryFrontend.extraArgs | list | `[]` | Additional CLI args for the query-frontend |
 | queryFrontend.extraEnv | list | `[]` | Environment variables to add to the query-frontend pods |
 | queryFrontend.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the query-frontend pods |
@@ -673,7 +685,7 @@ helm install loki chart/
 | queryFrontend.tolerations | list | `[]` | Tolerations for query-frontend pods |
 | queryFrontend.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the queryFrontend service. This allows queryFrontend to work with istio protocol selection. |
 | queryFrontend.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| queryScheduler | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"query-scheduler"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":1,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the query-scheduler |
+| queryScheduler | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"query-scheduler"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":1,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the query-scheduler |
 | queryScheduler.replicas | int | `0` | Number of replicas for the query-scheduler. It should be lower than `-querier.max-concurrent` to avoid generating back-pressure in queriers; it's also recommended that this value evenly divides the latter |
 | queryScheduler.hostAliases | list | `[]` | hostAliases to add |
 | queryScheduler.image.registry | string | `nil` | The Docker registry for the query-scheduler image. Overrides `loki.image.registry` |
@@ -683,6 +695,7 @@ helm install loki chart/
 | queryScheduler.podLabels | object | `{}` | Labels for query-scheduler pods |
 | queryScheduler.podAnnotations | object | `{}` | Annotations for query-scheduler pods |
 | queryScheduler.serviceLabels | object | `{}` | Labels for query-scheduler service |
+| queryScheduler.serviceAnnotations | object | `{}` | Annotations for query-scheduler service |
 | queryScheduler.extraArgs | list | `[]` | Additional CLI args for the query-scheduler |
 | queryScheduler.extraEnv | list | `[]` | Environment variables to add to the query-scheduler pods |
 | queryScheduler.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the query-scheduler pods |
@@ -696,7 +709,7 @@ helm install loki chart/
 | queryScheduler.nodeSelector | object | `{}` | Node selector for query-scheduler pods |
 | queryScheduler.tolerations | list | `[]` | Tolerations for query-scheduler pods |
 | queryScheduler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| indexGateway | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"index-gateway"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"joinMemberlist":true,"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[]}` | Configuration for the index-gateway |
+| indexGateway | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"index-gateway"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"joinMemberlist":true,"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"updateStrategy":{"type":"RollingUpdate"}}` | Configuration for the index-gateway |
 | indexGateway.replicas | int | `0` | Number of replicas for the index-gateway |
 | indexGateway.joinMemberlist | bool | `true` | Whether the index gateway should join the memberlist hashring |
 | indexGateway.hostAliases | list | `[]` | hostAliases to add |
@@ -707,6 +720,7 @@ helm install loki chart/
 | indexGateway.podLabels | object | `{}` | Labels for index-gateway pods |
 | indexGateway.podAnnotations | object | `{}` | Annotations for index-gateway pods |
 | indexGateway.serviceLabels | object | `{}` | Labels for index-gateway service |
+| indexGateway.serviceAnnotations | object | `{}` | Annotations for index-gateway service |
 | indexGateway.extraArgs | list | `[]` | Additional CLI args for the index-gateway |
 | indexGateway.extraEnv | list | `[]` | Environment variables to add to the index-gateway pods |
 | indexGateway.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the index-gateway pods |
@@ -727,7 +741,9 @@ helm install loki chart/
 | indexGateway.persistence.annotations | object | `{}` | Annotations for index gateway PVCs |
 | indexGateway.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | indexGateway.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| compactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"compactor"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the compactor |
+| indexGateway.updateStrategy | object | `{"type":"RollingUpdate"}` | UpdateStrategy for the indexGateway StatefulSet. |
+| indexGateway.updateStrategy.type | string | `"RollingUpdate"` | One of  'OnDelete' or 'RollingUpdate' |
+| compactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"compactor"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{"limits":{"cpu":"300m","memory":"2Gi"},"requests":{"cpu":"300m","memory":"2Gi"}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the compactor |
 | compactor.replicas | int | `0` | Number of replicas for the compactor |
 | compactor.hostAliases | list | `[]` | hostAliases to add |
 | compactor.image.registry | string | `nil` | The Docker registry for the compactor image. Overrides `loki.image.registry` |
@@ -739,6 +755,7 @@ helm install loki chart/
 | compactor.podAnnotations | object | `{}` | Annotations for compactor pods |
 | compactor.affinity | object | Hard node anti-affinity | Affinity for compactor pods. |
 | compactor.serviceLabels | object | `{}` | Labels for compactor service |
+| compactor.serviceAnnotations | object | `{}` | Annotations for compactor service |
 | compactor.extraArgs | list | `[]` | Additional CLI args for the compactor |
 | compactor.extraEnv | list | `[]` | Environment variables to add to the compactor pods |
 | compactor.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the compactor pods |
@@ -763,7 +780,7 @@ helm install loki chart/
 | compactor.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the compactor service account |
 | compactor.serviceAccount.annotations | object | `{}` | Annotations for the compactor service account |
 | compactor.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
-| bloomGateway | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-gateway"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom gateway |
+| bloomGateway | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-gateway"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom gateway |
 | bloomGateway.replicas | int | `0` | Number of replicas for the bloom-gateway |
 | bloomGateway.hostAliases | list | `[]` | hostAliases to add |
 | bloomGateway.image.registry | string | `nil` | The Docker registry for the bloom-gateway image. Overrides `loki.image.registry` |
@@ -775,6 +792,7 @@ helm install loki chart/
 | bloomGateway.podAnnotations | object | `{}` | Annotations for bloom-gateway pods |
 | bloomGateway.affinity | object | Hard node anti-affinity | Affinity for bloom-gateway pods. |
 | bloomGateway.serviceLabels | object | `{}` | Labels for bloom-gateway service |
+| bloomGateway.serviceAnnotations | object | `{}` | Annotations for bloom-gateway service |
 | bloomGateway.extraArgs | list | `[]` | Additional CLI args for the bloom-gateway |
 | bloomGateway.extraEnv | list | `[]` | Environment variables to add to the bloom-gateway pods |
 | bloomGateway.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-gateway pods |
@@ -790,16 +808,15 @@ helm install loki chart/
 | bloomGateway.tolerations | list | `[]` | Tolerations for bloom-gateway pods |
 | bloomGateway.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | bloomGateway.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom-gateway |
-| bloomGateway.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| bloomGateway.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | bloomGateway.persistence.annotations | object | `{}` | Annotations for bloom-gateway PVCs |
 | bloomGateway.persistence.claims | list |  | List of the bloom-gateway PVCs |
+| bloomGateway.persistence.claims[0].size | string | `"10Gi"` | Size of persistent disk |
 | bloomGateway.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | bloomGateway.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom-gateway. If not set and create is true, a name is generated by appending "-bloom-gateway" to the common ServiceAccount. |
 | bloomGateway.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom-gateway service account |
 | bloomGateway.serviceAccount.annotations | object | `{}` | Annotations for the bloom-gateway service account |
 | bloomGateway.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
-| bloomCompactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-planner"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom compactor |
+| bloomCompactor | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-planner"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom compactor |
 | bloomCompactor.replicas | int | `0` | Number of replicas for the bloom compactor |
 | bloomCompactor.hostAliases | list | `[]` | hostAliases to add |
 | bloomCompactor.image.registry | string | `nil` | The Docker registry for the bloom-planner image. Overrides `loki.image.registry` |
@@ -811,6 +828,7 @@ helm install loki chart/
 | bloomCompactor.podAnnotations | object | `{}` | Annotations for bloom-planner pods |
 | bloomCompactor.affinity | object | Hard node anti-affinity | Affinity for bloom-planner pods. |
 | bloomCompactor.serviceLabels | object | `{}` | Labels for bloom-planner service |
+| bloomCompactor.serviceAnnotations | object | `{}` | Annotations for bloom-planner service |
 | bloomCompactor.extraArgs | list | `[]` | Additional CLI args for the bloom-planner |
 | bloomCompactor.extraEnv | list | `[]` | Environment variables to add to the bloom-planner pods |
 | bloomCompactor.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-planner pods |
@@ -826,16 +844,15 @@ helm install loki chart/
 | bloomCompactor.tolerations | list | `[]` | Tolerations for bloom-planner pods |
 | bloomCompactor.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | bloomCompactor.persistence.enabled | bool | `false` | Enable creating PVCs for the bloom-planner |
-| bloomCompactor.persistence.size | string | `"10Gi"` | Size of persistent disk |
-| bloomCompactor.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | bloomCompactor.persistence.annotations | object | `{}` | Annotations for bloom-planner PVCs |
-| bloomCompactor.persistence.claims | list | [] | List of the bloom-planner PVCs |
+| bloomCompactor.persistence.claims | list |  | List of the bloom-planner PVCs |
+| bloomCompactor.persistence.claims[0].size | string | `"10Gi"` | Size of persistent disk |
 | bloomCompactor.persistence.enableStatefulSetAutoDeletePVC | bool | `false` | Enable StatefulSetAutoDeletePVC feature |
 | bloomCompactor.serviceAccount.name | string | `nil` | The name of the ServiceAccount to use for the bloom-planner. If not set and create is true, a name is generated by appending "-bloom-planner" to the common ServiceAccount. |
 | bloomCompactor.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the bloom-planner service account |
 | bloomCompactor.serviceAccount.annotations | object | `{}` | Annotations for the bloom-planner service account |
 | bloomCompactor.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
-| bloomBuilder | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-builder"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom-builder |
+| bloomBuilder | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"bloom-builder"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the bloom-builder |
 | bloomBuilder.replicas | int | `0` | Number of replicas for the bloom-builder |
 | bloomBuilder.hostAliases | list | `[]` | hostAliases to add |
 | bloomBuilder.autoscaling.enabled | bool | `false` | Enable autoscaling for the bloom-builder |
@@ -855,6 +872,7 @@ helm install loki chart/
 | bloomBuilder.podLabels | object | `{}` | Labels for bloom-builder pods |
 | bloomBuilder.podAnnotations | object | `{}` | Annotations for bloom-builder pods |
 | bloomBuilder.serviceLabels | object | `{}` | Labels for bloom-builder service |
+| bloomBuilder.serviceAnnotations | object | `{}` | Annotations for bloom-builder service |
 | bloomBuilder.extraArgs | list | `[]` | Additional CLI args for the bloom-builder |
 | bloomBuilder.extraEnv | list | `[]` | Environment variables to add to the bloom-builder pods |
 | bloomBuilder.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the bloom-builder pods |
@@ -869,7 +887,7 @@ helm install loki chart/
 | bloomBuilder.tolerations | list | `[]` | Tolerations for bloom-builder pods |
 | bloomBuilder.appProtocol | object | `{"grpc":""}` | Adds the appProtocol field to the queryFrontend service. This allows bloomBuilder to work with istio protocol selection. |
 | bloomBuilder.appProtocol.grpc | string | `""` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
-| patternIngester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"pattern-ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the pattern ingester |
+| patternIngester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"pattern-ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"livenessProbe":{},"nodeSelector":{},"persistence":{"annotations":{},"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"size":"10Gi","storageClass":null,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{"limits":{"cpu":"100m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"256Mi"}},"serviceAccount":{"annotations":{},"automountServiceAccountToken":false,"create":false,"imagePullSecrets":[],"name":null},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":30,"tolerations":[]}` | Configuration for the pattern ingester |
 | patternIngester.replicas | int | `0` | Number of replicas for the pattern ingester |
 | patternIngester.hostAliases | list | `[]` | hostAliases to add |
 | patternIngester.image.registry | string | `nil` | The Docker registry for the pattern ingester image. Overrides `loki.image.registry` |
@@ -881,6 +899,7 @@ helm install loki chart/
 | patternIngester.podAnnotations | object | `{}` | Annotations for pattern ingester pods |
 | patternIngester.affinity | object | Hard node anti-affinity | Affinity for pattern ingester pods. |
 | patternIngester.serviceLabels | object | `{}` | Labels for pattern ingester service |
+| patternIngester.serviceAnnotations | object | `{}` | Annotations for pattern ingester service |
 | patternIngester.extraArgs | list | `[]` | Additional CLI args for the pattern ingester |
 | patternIngester.extraEnv | list | `[]` | Environment variables to add to the pattern ingester pods |
 | patternIngester.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the pattern ingester pods |
@@ -905,7 +924,7 @@ helm install loki chart/
 | patternIngester.serviceAccount.imagePullSecrets | list | `[]` | Image pull secrets for the pattern ingester service account |
 | patternIngester.serviceAccount.annotations | object | `{}` | Annotations for the pattern ingester service account |
 | patternIngester.serviceAccount.automountServiceAccountToken | bool | `false` | Set this toggle to false to opt out of automounting API credentials for the service account |
-| ruler | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ruler"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"directories":{},"dnsConfig":{},"enabled":true,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enabled":false,"size":"10Gi","storageClass":null},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[]}` | Configuration for the ruler |
+| ruler | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ruler"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"directories":{},"dnsConfig":{},"enabled":true,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"maxUnavailable":null,"nodeSelector":{},"persistence":{"annotations":{},"enabled":false,"size":"10Gi","storageClass":null},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[]}` | Configuration for the ruler |
 | ruler.enabled | bool | `true` | The ruler component is optional and can be disabled if desired. |
 | ruler.replicas | int | `0` | Number of replicas for the ruler |
 | ruler.hostAliases | list | `[]` | hostAliases to add |
@@ -917,6 +936,7 @@ helm install loki chart/
 | ruler.podLabels | object | `{}` | Labels for compactor pods |
 | ruler.podAnnotations | object | `{}` | Annotations for ruler pods |
 | ruler.serviceLabels | object | `{}` | Labels for ruler service |
+| ruler.serviceAnnotations | object | `{}` | Annotations for ruler service |
 | ruler.extraArgs | list | `[]` | Additional CLI args for the ruler |
 | ruler.extraEnv | list | `[]` | Environment variables to add to the ruler pods |
 | ruler.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the ruler pods |
@@ -938,9 +958,9 @@ helm install loki chart/
 | ruler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | ruler.directories | object | `{}` | Directories containing rules files |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.30"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.31"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
-| memcached.podSecurityContext | object | `{}` | The SecurityContext override for memcached pods |
+| memcached.podSecurityContext | object | `{"fsGroup":11211,"runAsGroup":11211,"runAsNonRoot":true,"runAsUser":11211}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
 | memcached.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"fsGroup":10001,"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | The SecurityContext for memcached containers |
 | memcachedExporter.enabled | bool | `false` | Whether memcached metrics should be exported |
@@ -984,7 +1004,7 @@ helm install loki chart/
 | resultsCache.service | object | `{"annotations":{},"labels":{}}` | Service annotations and labels |
 | resultsCache.persistence | object | `{"enabled":false,"mountPath":"/data","storageClass":null,"storageSize":"10G"}` | Persistence settings for the results-cache |
 | resultsCache.persistence.enabled | bool | `false` | Enable creating PVCs for the results-cache |
-| resultsCache.persistence.storageSize | string | `"10G"` | Size of persistent disk |
+| resultsCache.persistence.storageSize | string | `"10G"` | Size of persistent disk, must be in G or Gi |
 | resultsCache.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | resultsCache.persistence.mountPath | string | `"/data"` | Volume mount path |
 | chunksCache.enabled | bool | `false` | Specifies whether memcached based chunks-cache should be enabled |
@@ -1022,7 +1042,7 @@ helm install loki chart/
 | chunksCache.service | object | `{"annotations":{},"labels":{}}` | Service annotations and labels |
 | chunksCache.persistence | object | `{"enabled":false,"mountPath":"/data","storageClass":null,"storageSize":"10G"}` | Persistence settings for the chunks-cache |
 | chunksCache.persistence.enabled | bool | `false` | Enable creating PVCs for the chunks-cache |
-| chunksCache.persistence.storageSize | string | `"10G"` | Size of persistent disk |
+| chunksCache.persistence.storageSize | string | `"10G"` | Size of persistent disk, must be in G or Gi |
 | chunksCache.persistence.storageClass | string | `nil` | Storage class to be used. If defined, storageClassName: <storageClass>. If set to "-", storageClassName: "", which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
 | chunksCache.persistence.mountPath | string | `"/data"` | Volume mount path |
 | rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator |
@@ -1035,7 +1055,7 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
-| sidecar.image.tag | string | `"1.27.5"` | Docker image tag |
+| sidecar.image.tag | string | `"1.28.0"` | Docker image tag |
 | sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |

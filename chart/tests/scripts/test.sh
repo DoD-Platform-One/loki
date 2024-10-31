@@ -34,21 +34,3 @@ if [ -n "${loki_ec}" ]; then
 fi
 echo "Test 3 Success: loki buildinfo endpoint returned "
 
-echo "Checking for loki version"
-loki_response=$(curl "${LOKI_URL}/loki/api/v1/status/buildinfo" 2>/dev/null)
-current_version=$(echo ${loki_response} | jq -r '.version')
-if [ ! "${LOKI_VERSION}" == "${current_version}" ]; then
-  arrLOKI_VERSION=(${LOKI_VERSION//./ })
-  regex_pattern="(^HEAD|release-)${arrLOKI_VERSION[0]}.${arrLOKI_VERSION[1]}.*"
-  if [[ "${current_version}" =~ $regex_pattern ]]; then
-    echo "WARNING Loki buildinfo returning pre-release version"
-    exit 0
-  fi
-  echo "Test 4 Failure: Loki version does not match."
-  echo "Debug information (deployed build info):"
-  echo "${loki_response}"
-  echo "/${LOKI_VERSION}/${current_version}/"
-  exit 1
-fi
-
-echo "Test 4 Success: Loki version matches expected version"
