@@ -3,9 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [6.18.0-bb.1] - 2024-11-06
+
+### Changed
+
+- Now setting `istio.loki.enabled` to `false` by default
+
 ## [6.18.0-bb.0] - 2024-10-18
 
 ### Updated
+
 - Updated `loki` from `v3.1.1` -> `v3.2.0`
 - Updated `gluon` from `0.5.4` -> `0.5.8`
 - Updated `k8s-sidecar` from `1.27.5` -> `1.28.0`
@@ -58,6 +66,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [6.12.0-bb.0] - 2024-09-08
 
 ### Updated
+
 - Updated `gluon` from `0.5.3` -> `0.5.4`
 - Updated `minio-instance` from `5.0.16-bb.0` -> `6.0.2-bb.0`
 - Updated `k8s-sidecar` from `1.27.5` -> `1.27.6`
@@ -73,8 +82,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Updated `loki` from `v3.1.0` -> `v3.1.1`
 - Updated `gluon` from `v0.5.0` -> `v0.5.3`
 - Updated `grafana-agent-operator` from `v0.4.0` -> `v0.4.1`
-
-
 
 ## [6.7.1-bb.2] - 2024-08-12
 
@@ -460,7 +467,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Helm validation for backend scaling requirements introduced with loki 2.9.*
+- Helm validation for backend scaling requirements introduced with loki 2.9.\*
 
 ## [5.23.1-bb.0] - 2023-09-29
 
