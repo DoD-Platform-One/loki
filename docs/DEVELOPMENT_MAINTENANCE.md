@@ -1180,6 +1180,8 @@ istioOperator:
 
 istio:
   enabled: true
+  loki:
+    enabled: true
 
 monitoring:
   enabled: true

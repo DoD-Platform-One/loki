@@ -3592,7 +3592,7 @@ istio:
       principals:
       - cluster.local/ns/minio-operator/sa/minio-operator
   loki:
-    enabled: true
+    enabled: false
     annotations: {}
     labels: {}
     gateways:
