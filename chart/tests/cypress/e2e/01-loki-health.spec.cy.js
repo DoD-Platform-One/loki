@@ -46,7 +46,7 @@
             cy.wait(1000);
             cy.loadGrafanaDashboard("Loki Dashboard quick search");
             cy.wait(1000);
-            cy.get('[id="react-select-4-input"]').click()
+            cy.get('[data-testid*="data-testid Dashboard template variables Variable Value DropDown value link text"]').first().click()
             cy.get('[data-testid="data-testid Select option"]').each(($option) => {
                 // loop over namespace sub-menu options and select istio-system if found
               if ($option.text().includes('istio-system')) {
