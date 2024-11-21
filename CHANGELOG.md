@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.18.0-bb.2] - 2024-11-19
+
+### Changed
+
+- Modified cypress test `id` field value to accommodate latest Grafana updates.
+
 ## [6.18.0-bb.1] - 2024-11-06
 
 ### Changed

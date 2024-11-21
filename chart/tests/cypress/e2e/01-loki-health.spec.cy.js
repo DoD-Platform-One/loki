@@ -46,8 +46,14 @@
             cy.wait(1000);
             cy.loadGrafanaDashboard("Loki Dashboard quick search");
             cy.wait(1000);
-            cy.get('[id=var-namespace]').click()
-            cy.get('[data-testid*="istio-system"]').click()
+            cy.get('[id="react-select-4-input"]').click()
+            cy.get('[data-testid="data-testid Select option"]').each(($option) => {
+                // loop over namespace sub-menu options and select istio-system if found
+              if ($option.text().includes('istio-system')) {
+                cy.get($option).click()
+              } 
+            }
+          )
             cy.get('[class$=-logs-row]').should('have.length.at.least', 10);
           });
     }
