@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Modified cypress test to not use dynamic code, and replaced with a static & predictable value
+- Added the maintenance track annotation and badge
 
 ## [6.18.0-bb.2] - 2024-11-19
 

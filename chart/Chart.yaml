@@ -30,6 +30,7 @@ dependencies:
     version: 0.16.0
     condition: rollout_operator.enabled
 annotations:
+  bigbang.dev/maintenanceTrack: bb_integrated
   bigbang.dev/applicationVersions: |
     - Loki: 3.2.0
   bigbang.dev/upstreamReleaseNotesMarkdown: |
