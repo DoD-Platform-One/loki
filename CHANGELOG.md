@@ -4,6 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.22.0-bb.0] - 2024-12-03
+
+### Updated
+
+- Updated `loki` from `v3.2.0` -> `v3.3.0`
+- Updated `gluon` from `0.5.8` -> `0.5.12`
+- Updated `kubectl` from `v1.30.5` -> `v1.30.7`
+- Updated `loki-canary` from `3.2.1` -> `3.3.0`
+- Updated `nginx` from `1.27.2` -> `1.27.3`
+- Updated `minio-instance` from `6.0.2-bb.0` -> `6.0.4-bb.2`
+- Updated `grafana-agent-operator` from `0.4.1` -> `0.5.0`
+- Updated `rollout-operator` from `0.16.0` -> `0.20.0`
+
 ## [6.18.0-bb.3] - 2024-11-20
 
 ### Changed

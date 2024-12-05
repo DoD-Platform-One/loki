@@ -13,7 +13,7 @@
     - Run a KPT update against the main chart folder:
 
     ```shell
-      # To find the chart version for the commmand below:
+      # To find the chart version for the command below:
       # - Browse to the [upstream](https://github.com/grafana/loki/tree/main/production/helm/loki).
       # - Click on the drop-down menu on the upper left, then on Tags.
       # - Scroll/Search through the tags until you get to the Helm chart version tags (e.g. helm-loki-5.9.2, helm-loki-5.9.1, etc.).
@@ -82,7 +82,7 @@
 
 9. As part of your MR that modifies bigbang packages, you should modify the bigbang  [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages. 
 
-    - To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) with changes for Loki enabled (the below is a reference, actual changes could be more depending on what changes where made to Loki in the pakcage MR).
+    - To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) with changes for Loki enabled (the below is a reference, actual changes could be more depending on what changes where made to Loki in the package MR).
 
 ### [test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads)
     ```yaml
@@ -95,7 +95,7 @@
         istio:
           hardened:
             enabled: true
-      ### Additional compononents of Loki should be changed to reflect testing changes introduced in the package MR
+      ### Additional components of Loki should be changed to reflect testing changes introduced in the package MR
     ```
 
 
@@ -214,7 +214,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
       # -- Docker image repository
       repository: ironbank/opensource/grafana/loki
       # -- Overrides the image tag whose default is the chart's appVersion
-      tag: vX.X.X
+      tag: X.X.X
   ```
 
 - Ensure `loki.auth_enabled` is set to `false`
@@ -260,7 +260,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
         index:
           prefix: loki_tsdb_
           period: 24h
-      - from: 2024-04-01
+      - from: 2024-05-30
         store: tsdb
         object_store: "{{ .Values.loki.storage.type }}"
         schema: v13
@@ -284,8 +284,8 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
   ```yaml
   storage_config:
     tsdb_shipper:
-      active_index_directory: /var/loki/tsdb-shipper-active
-      cache_location: /var/loki/tsdb-shipper-cache
+      active_index_directory: /var/loki/tsdb-index
+      cache_location: /var/loki/tsdb-cache
       cache_ttl: 24h
   ```
 
@@ -365,7 +365,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     enabled: false
   ```
 
-- Ensure `service.automountServiceAccountToken` is set to `false`:
+- Ensure `serviceAccount.automountServiceAccountToken` is set to `false`:
 
   ```yaml
   serviceAccount:
@@ -389,7 +389,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     # -- The gateway image repository
     repository: ironbank/opensource/nginx/nginx
     # -- The gateway image tag
-    tag: vX.X.X
+    tag: X.X.X
   ```
 
 - Ensure that at the bottom of the `gateway:` block, there is a `podDisruptionBudget` section
@@ -656,6 +656,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
       buckets:
         - name: loki
         - name: loki-admin
+        - name: loki-deletion
       # -- Users to to be provisioned to for tenant
       users:
         - name: minio-user
@@ -666,13 +667,19 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
         password: ""
       ## Specification for MinIO Pool(s) in this Tenant.
       pools:
-        - servers: 1
+        - name: pool-0
+          servers: 1
           volumesPerServer: 4
           size: 750Mi
           securityContext:
             runAsUser: 1001
             runAsGroup: 1001
             fsGroup: 1001
+          containerSecurityContext:
+            capabilities:
+              drop:
+                - ALL
+
       metrics:
         enabled: false
         port: 9000
@@ -795,9 +802,6 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
         - istio-system/public
       hosts:
         - "loki.{{ .Values.domain }}"
-      service: ""
-      port: ""
-      exposeReadyEndpoint: false
     mtls:
       # STRICT = Allow only mutual TLS traffic
       # PERMISSIVE = Allow both plain text and mutual TLS traffic
@@ -842,26 +846,11 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
   - Ensure `monitoring.serviceMonitor.metricsInstance.enabled` is set to `false`
   - Ensure `monitoring.selfMonitoring.enabled` is set to `false`
 
-- In the `DEPRECATED VALUES` section (if that section is present), set `monitoring.serviceMonitor.metricsInstance.enabled` to `false`
-
-    ```yaml
-    metricsInstance:
-      # -- If enabled, MetricsInstance resources for Grafana Agent Operator are created
-      enabled: false
-    ```
-
 - In the `DEPRECATED VALUES` section (if that section is present), ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
-
-- In the `Chart Testing` section, ensure `monitoring.lokiCanary.enabled` is set to `false`
-
-  ```yaml
-  lokiCanary:
-    enabled: false
-  ```
 
 ### ```chart/ci/```
 
-- In each of the 4 files in the `chart/ci` directory (`default-single-binary-values.yaml`, `default-values.yaml`, `ingress-values.yaml`, and `legacy-monitoring-values.yaml`), ensure that the `loki.storage.bucketNames` are set to:
+- In these four files in the `chart/ci` directory: `default-single-binary-values.yaml`, `default-values.yaml`, `ingress-values.yaml`, and `legacy-monitoring-values.yaml`, ensure that `loki.storage.bucketNames` is set to:
 
     ```yaml
     storage:
@@ -898,13 +887,13 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
   - 775:
 
     ```json
-    "expr": "sum(rate({namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\" } |logfmt|= \"$filter\" [5m])) by (level)",
+    "expr": "sum(rate({namespace=\"$namespace\", pod=~\"$deployment.+\", pod=~\"$pod\", container=~\"$container\" } |logfmt|= \"$filter\" [5m])) by (level)",
     ```
 
   - 840:
 
     ```json
-    "expr": "{namespace=\"$namespace\", pod=~\"$deployment.*\", pod=~\"$pod\", container=~\"$container\"} | logfmt | level=\"$level\" |= \"$filter\"",
+    "expr": "{namespace=\"$namespace\", pod=~\"$deployment.+\", pod=~\"$pod\", container=~\"$container\"} | logfmt | level=\"$level\" |= \"$filter\"",
     ```
 
 ### ```chart/templates/backend/poddisruptionbudget-backend.yaml```
@@ -979,7 +968,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     {{- end }}
   ```
 
-### ```chart/templates/backend/service-read.yaml```
+### ```chart/templates/read/service-read.yaml```
 
 - Ensure that the `grpc` port specifies an `appProtocol` of `tcp`, as in:
 
@@ -1016,7 +1005,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
   spec:
     podSelector:
       matchLabels:
-        app: minio
+        {{- include "minio.labels" . | nindent 6 }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     ingress:
       - from:
@@ -1041,7 +1030,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
   spec:
     podSelector:
       matchLabels:
-        app: minio
+        {{- include "minio.labels" . | nindent 6 }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     egress:
       - to:
@@ -1112,26 +1101,26 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 
 ### ```chart/templates/_helpers.tpl```
 
-- On line 13 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
+- On line 17 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
 
   ```yaml
   {{- $default := "loki" }
   ```
 
-- On line 201, ensure the following block for minio looks like:
+- On line 211, ensure the following block for minio looks like:
 
   ```yaml
   {{- if .Values.minio.enabled -}}
   s3:
     endpoint: {{ include "loki.minio" $ }}
     bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
-    secret_access_key: {{ $.Values.minio.secrets.secretKey }}
-    access_key_id: {{ $.Values.minio.secrets.accessKey }}
+    secret_access_key: {{ $.Values.minio.tenant.configSecret.secretKey }}
+    access_key_id: {{ $.Values.minio.tenant.configSecret.accessKey }}
     s3forcepathstyle: true
     insecure: true
   ```
 
-- On line 349, ensure that `s3.bucketnames` looks like:
+- On line 337, ensure that `s3.bucketnames` looks like:
 
   ```yaml
   s3:
@@ -1180,8 +1169,6 @@ istioOperator:
 
 istio:
   enabled: true
-  loki:
-    enabled: true
 
 monitoring:
   enabled: true
@@ -1293,7 +1280,7 @@ kyvernoPolicies:
           - /var/lib/rancher/k3s/storage/pvc-*
 ```
 
-- Visit `https://grafana.bigbang.dev` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
+- Visit `https://grafana.dev.bigbang.mil` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
 - Navigate to `Connections -> Data Sources -> Loki`
   - Click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
