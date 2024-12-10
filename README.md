@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.22.0-bb.0](https://img.shields.io/badge/Version-6.22.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.23.0-bb.0](https://img.shields.io/badge/Version-6.23.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -14,7 +14,7 @@ Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, 
 
 ## Upstream Release Notes
 
-- [Find upstream chert's release notes and CHANGELOG here](https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
+- [Find upstream chart's release notes and CHANGELOG here](https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
 - [Find upstream application's release notes and CHANGELOG here](https://grafana.com/docs/loki/latest/release-notes/)
 
 ## Learn More
@@ -59,7 +59,7 @@ helm install loki chart/
 | loki | object | See values.yaml | Configuration for running Loki |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"3.3.0"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"3.3.1"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -87,7 +87,7 @@ helm install loki chart/
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
 | loki.useTestSchema | bool | `false` | a real Loki install requires a proper schemaConfig defined above this, however for testing or playing around you can enable useTestSchema |
-| loki.rulerConfig | object | `{}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
+| loki.rulerConfig | object | `{"wal":{"dir":"/var/loki/ruler-wal"}}` | Check https://grafana.com/docs/loki/latest/configuration/#ruler for more info on configuring ruler |
 | loki.structuredConfig | object | `{}` | Structured loki configuration, takes precedence over `loki.config`, `loki.schemaConfig`, `loki.storageConfig` |
 | loki.query_scheduler | object | `{}` | Additional query scheduler config |
 | loki.storage_config | object | `{"bloom_shipper":{"working_directory":"/var/loki/data/bloomshipper"},"boltdb_shipper":{"active_index_directory":"/var/loki/boltdb-shipper-active","cache_location":"/var/loki/boltdb-shipper-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}},"hedging":{"at":"250ms","max_per_second":20,"up_to":3},"tsdb_shipper":{"active_index_directory":"/var/loki/tsdb-index","cache_location":"/var/loki/tsdb-cache","cache_ttl":"24h","index_gateway_client":{"server_address":"{{ include \"loki.indexGatewayAddress\" . }}"}}}` | Additional storage config |
@@ -970,7 +970,7 @@ helm install loki chart/
 | ruler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | ruler.directories | object | `{}` | Directories containing rules files |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.32"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.33"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
 | memcached.podSecurityContext | object | `{"fsGroup":11211,"runAsGroup":11211,"runAsNonRoot":true,"runAsUser":11211}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
@@ -1059,7 +1059,7 @@ helm install loki chart/
 | chunksCache.persistence.mountPath | string | `"/data"` | Volume mount path |
 | rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator |
 | rollout_operator.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | podSecurityContext is the pod security context for the rollout operator. When installing on OpenShift, override podSecurityContext settings with  rollout_operator:   podSecurityContext:     fsGroup: null     runAsGroup: null     runAsUser: null |
-| minio | object | `{"address":"minio.logging.svc.cluster.local","enabled":false,"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}],"configSecret":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"name":"pool-0","securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]}}` | Configuration for the minio subchart |
+| minio | object | `{"address":"minio.logging.svc.cluster.local","enabled":false,"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}],"configSecret":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"name":"pool-0","securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]},"waitJob":{"enabled":false}}` | Configuration for the minio subchart |
 | minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
 | minio.tenant.configSecret | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
 | minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}]` | Buckets to be provisioned to for tenant |

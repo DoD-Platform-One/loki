@@ -684,6 +684,8 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
         enabled: false
         port: 9000
         memory: 128M
+    waitJob:
+      enabled: false
   ```
 
 - Ensure the `sidecar.image` is set to the equivalent registry1 image:
@@ -841,12 +843,11 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 
 - In the `DEPRECATED VALUES` section (if that section is present), ensure all `monitoring:` sub-components are set to `enabled: false`
   - Ensure `monitoring.dashboards.enabled` is set to `false`
-  - Ensure `monitoring.rules.enabldd` is set to `false`
+  - Ensure `monitoring.rules.enabled` is set to `false`
   - Ensure `monitoring.serviceMonitor.enabled` is set to `false`
   - Ensure `monitoring.serviceMonitor.metricsInstance.enabled` is set to `false`
   - Ensure `monitoring.selfMonitoring.enabled` is set to `false`
-
-- In the `DEPRECATED VALUES` section (if that section is present), ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
+  - Ensure `monitoring.selfMonitoring.grafanaAgent.installOperator` is set to `false`
 
 ### ```chart/ci/```
 
@@ -1087,7 +1088,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
       {{- end }}
     ```
 
-### ```chart/templates/backend/service-write.yaml```
+### ```chart/templates/write/service-write.yaml```
 
 - Ensure that the `grpc` port specifies an `appProtocol` of `tcp`, as in:
 
@@ -1101,13 +1102,13 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 
 ### ```chart/templates/_helpers.tpl```
 
-- On line 17 for the `$default` function, remove the `ternary` function and ensure the definition looks just like:
+- For the `$default` function, remove the `ternary` function and ensure the definition looks just like:
 
   ```yaml
   {{- $default := "loki" }
   ```
 
-- On line 211, ensure the following block for minio looks like:
+- Ensure the following block for minio looks like:
 
   ```yaml
   {{- if .Values.minio.enabled -}}
@@ -1120,7 +1121,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     insecure: true
   ```
 
-- On line 337, ensure that `s3.bucketnames` looks like:
+- In the `Storage config for ruler` section, ensure that `s3.bucketnames` looks like:
 
   ```yaml
   s3:

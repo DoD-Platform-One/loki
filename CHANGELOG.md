@@ -4,6 +4,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.23.0-bb.0] - 2024-12-09
+
+### Updated
+
+- Updated `loki` from `v3.3.0` -> `v3.3.1`
+- Updated `loki-canary` from `3.3.0` -> `3.3.1`
+- Updated `memcached` from `1.6.32` -> `1.6.33`
+
 ## [6.22.0-bb.0] - 2024-12-03
 
 ### Updated
