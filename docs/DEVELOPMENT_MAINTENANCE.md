@@ -426,7 +426,7 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
       memory: 256Mi
   ```
 
-- Ensure that `singleBinary.persistence.enableStatefulAutoDeletePVC` is set to `false`.
+- Ensure that `singleBinary.persistence.enableStatefulSetAutoDeletePVC` is set to `false`.
 
 - Ensure that `singleBinary.persistence.size` is set to `12Gi`
 
