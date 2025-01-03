@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.23.0-bb.1](https://img.shields.io/badge/Version-6.23.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.1](https://img.shields.io/badge/AppVersion-3.3.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.24.0-bb.0](https://img.shields.io/badge/Version-6.24.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.2](https://img.shields.io/badge/AppVersion-3.3.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -59,7 +59,7 @@ helm install loki chart/
 | loki | object | See values.yaml | Configuration for running Loki |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"3.3.1"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"3.3.2"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -151,10 +151,10 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.7"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.8"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.30.7"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.30.8"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -515,7 +515,7 @@ helm install loki chart/
 | backend.persistence.annotations | object | `{}` | Annotations for volume claim |
 | backend.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | backend.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| ingester | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"lifecycle":{},"livenessProbe":{},"maxUnavailable":1,"nodeSelector":{},"persistence":{"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}],"updateStrategy":{"type":"RollingUpdate"},"zoneAwareReplication":{"enabled":true,"maxUnavailablePct":33,"migration":{"enabled":false,"excludeDefaultZone":false,"readPath":false,"writePath":false},"zoneA":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneB":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneC":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}}}}` | Configuration for the ingester |
+| ingester | object | `{"addIngesterNamePrefix":false,"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"autoscaling":{"behavior":{"enabled":false,"scaleDown":{},"scaleUp":{}},"customMetrics":[],"enabled":false,"maxReplicas":3,"minReplicas":1,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"command":null,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"lifecycle":{},"livenessProbe":{},"maxUnavailable":1,"nodeSelector":{},"persistence":{"claims":[{"name":"data","size":"10Gi","storageClass":null}],"enableStatefulSetAutoDeletePVC":false,"enabled":false,"inMemory":false,"whenDeleted":"Retain","whenScaled":"Retain"},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"readinessProbe":{},"replicas":0,"resources":{},"rolloutGroupPrefix":null,"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"ingester"}},"maxSkew":1,"topologyKey":"kubernetes.io/hostname","whenUnsatisfiable":"ScheduleAnyway"}],"updateStrategy":{"type":"RollingUpdate"},"zoneAwareReplication":{"enabled":true,"maxUnavailablePct":33,"migration":{"enabled":false,"excludeDefaultZone":false,"readPath":false,"writePath":false},"zoneA":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneB":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}},"zoneC":{"annotations":{},"extraAffinity":{},"nodeSelector":null,"podAnnotations":{}}}}` | Configuration for the ingester |
 | ingester.replicas | int | `0` | Number of replicas for the ingester, when zoneAwareReplication.enabled is true, the total number of replicas will match this value with each zone having 1/3rd of the total replicas. |
 | ingester.hostAliases | list | `[]` | hostAliases to add |
 | ingester.autoscaling.enabled | bool | `false` | Enable autoscaling for the ingester |
@@ -1067,7 +1067,7 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
-| sidecar.image.tag | string | `"1.28.0"` | Docker image tag |
+| sidecar.image.tag | string | `"1.28.4"` | Docker image tag |
 | sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |
