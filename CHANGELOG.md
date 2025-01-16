@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+
+## [6.24.0-bb.1] - 2025-01-16
+
+### Changed
+
+- No longer enabling istio hardening integrations with other Big Bang packages by default
+
 ## [6.24.0-bb.0] - 2025-01-02
 
 ### Updated
