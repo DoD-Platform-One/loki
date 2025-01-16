@@ -1415,8 +1415,8 @@ singleBinary:
     # -- Size of persistent disk
     size: 12Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -1550,8 +1550,8 @@ write:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -1674,8 +1674,8 @@ read:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -1793,8 +1793,8 @@ backend:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -1943,8 +1943,8 @@ ingester:
       - name: data
         size: 10Gi
         #   -- Storage class to be used.
-        #   If defined, storageClassName: <storageClass>.
-        #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+        #   If defined, `storageClassName: <storageClass>`.
+        #   If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
         #   If empty or set to null, no storageClassName spec is
         #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
         storageClass: null
@@ -2217,8 +2217,8 @@ querier:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -2455,8 +2455,8 @@ indexGateway:
     # -- Size of persistent or memory disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -2554,8 +2554,8 @@ compactor:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -2567,8 +2567,8 @@ compactor:
       - name: data
         size: 10Gi
         #   -- Storage class to be used.
-        #   If defined, storageClassName: <storageClass>.
-        #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+        #   If defined, `storageClassName: <storageClass>`.
+        #   If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
         #   If empty or set to null, no storageClassName spec is
         #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
         storageClass: null
@@ -2668,8 +2668,8 @@ bloomGateway:
         # -- Size of persistent disk
         size: 10Gi
         #   -- Storage class to be used.
-        #   If defined, storageClassName: <storageClass>.
-        #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+        #   If defined, `storageClassName: <storageClass>`.
+        #   If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
         #   If empty or set to null, no storageClassName spec is
         #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
         storageClass: null
@@ -2767,8 +2767,8 @@ bloomCompactor:
         # -- Size of persistent disk
         size: 10Gi
         #   -- Storage class to be used.
-        #   If defined, storageClassName: <storageClass>.
-        #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+        #   If defined, `storageClassName: <storageClass>`.
+        #   If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
         #   If empty or set to null, no storageClassName spec is
         #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
         storageClass: null
@@ -2958,8 +2958,8 @@ patternIngester:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -2971,8 +2971,8 @@ patternIngester:
       - name: data
         size: 10Gi
         #   -- Storage class to be used.
-        #   If defined, storageClassName: <storageClass>.
-        #   If set to "-", storageClassName: "", which disables dynamic provisioning.
+        #   If defined, `storageClassName: <storageClass>`.
+        #   If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
         #   If empty or set to null, no storageClassName spec is
         #   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
         storageClass: null
@@ -3067,8 +3067,8 @@ ruler:
     # -- Size of persistent disk
     size: 10Gi
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -3290,8 +3290,8 @@ resultsCache:
     # -- Size of persistent disk, must be in G or Gi
     storageSize: 10G
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -3392,8 +3392,8 @@ chunksCache:
     # -- Size of persistent disk, must be in G or Gi
     storageSize: 10G
     # -- Storage class to be used.
-    # If defined, storageClassName: <storageClass>.
-    # If set to "-", storageClassName: "", which disables dynamic provisioning.
+    # If defined, `storageClassName: <storageClass>`.
+    # If set to "-", `storageClassName: ""`, which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
     storageClass: null
@@ -3603,7 +3603,7 @@ istio:
     #   enabled: true
     #   spec: {}
     monitoring:
-      enabled: true
+      enabled: false
       namespaces:
         - monitoring
       principals:
@@ -3614,19 +3614,19 @@ istio:
         - cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics
         - cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter
     promtail:
-      enabled: true
+      enabled: false
       namespaces:
       - promtail
       principals:
       - cluster.local/ns/promtail/sa/promtail-promtail
     fluentbit:
-      enabled: true
+      enabled: false
       namespaces:
       - fluentbit
       principals:
       - cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit
     minioOperator:
-      enabled: true
+      enabled: false
       namespaces:
       - minio-operator
       principals:
