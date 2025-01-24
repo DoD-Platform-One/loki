@@ -4,36 +4,36 @@
     "dependencyDashboard": true,
     "dependencyDashboardTitle": "Renovate: Upgrade Loki Package Dependencies",
     "draftPR": true,
-    "enabledManagers": ["helm-values","regex","helmv3"],
+    "enabledManagers": ["custom.regex", "helm-values", "helmv3"],
     "ignorePaths": ["chart/charts/**"],
-    "labels": ["loki","renovate", "kind::maintenance"],
+    "labels": ["loki", "renovate", "kind::maintenance", "team::Observability"],
     "packageRules": [
-        {
-            "matchDatasources": ["docker"],
-            "groupName": "Ironbank",
-            "registryUrls": ["https://registry1.dso.mil"]
-        }
+      {
+        "matchDatasources": ["docker"],
+        "groupName": "Ironbank",
+        "registryUrls": ["https://registry1.dso.mil"]
+      }
     ],
     "ignoreDeps": ["prom/memcached-exporter"],
-    "regexManagers": [
-        {
-            "fileMatch": ["^chart/Chart\\.yaml$"],
-            "matchStrings": [
-                "- Loki:\\s*(?<currentValue>.+)",
-                "appVersion:\\s+(?<currentValue>.+)"
-            ],
-            "depNameTemplate": "ironbank/opensource/grafana/loki",
-            "datasourceTemplate": "docker",
-            "registryUrlTemplate": "https://registry1.dso.mil"
-        },
-        {
-            "fileMatch": ["^chart/Chart\\.yaml$"],
-            "matchStrings": [
-              "image:[^\\S\\r\\n]+(?<depName>.+):(?<currentValue>.+)"
-             ],
-             "datasourceTemplate": "docker"
-        }
+    "customManagers": [
+      {
+        "customType": "regex",
+        "fileMatch": ["^chart/Chart\\.yaml$"],
+        "matchStrings": [
+          "- Loki:\\s*(?<currentValue>.+)",
+          "appVersion:\\s+(?<currentValue>.+)"
+        ],
+        "depNameTemplate": "ironbank/opensource/grafana/loki",
+        "datasourceTemplate": "docker",
+        "registryUrlTemplate": "https://registry1.dso.mil"
+      },
+      {
+        "customType": "regex",
+        "fileMatch": ["^chart/Chart\\.yaml$"],
+        "matchStrings": ["image:[^\\S\\r\\n]+(?<depName>.+):(?<currentValue>.+)"],
+        "datasourceTemplate": "docker"
+      }
     ],
     "separateMajorMinor": false,
     "postUpdateOptions": ["helmUpdateSubChartArchives"]
-}
+  }
