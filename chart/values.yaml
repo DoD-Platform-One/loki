@@ -3456,6 +3456,8 @@ minio:
     ## Specification for MinIO Pool(s) in this Tenant.
     pools:
       - name: pool-0
+        labels:
+          app: minio
         servers: 1
         volumesPerServer: 4
         size: 750Mi

@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.24.0-bb.2] - 2025-01-29
+
+### Added
+
+- Added the `app: minio` label to the default tenant configuration
+
 ## [6.24.0-bb.1] - 2025-01-16
 
 ### Changed
