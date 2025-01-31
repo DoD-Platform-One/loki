@@ -4,6 +4,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.24.0-bb.3] - 2025-01-31
+
+### Added
+
+- Added the `app.kubernetes.io: minio` label to the default tenant configuration
+
 ## [6.24.0-bb.2] - 2025-01-29
 
 ### Added
