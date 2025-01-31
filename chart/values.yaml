@@ -3430,6 +3430,7 @@ rollout_operator:
     allowPrivilegeEscalation: false
 # -- Configuration for the minio subchart
 minio:
+
   # -- Enable minio instance support, must have minio-operator installed
   enabled: false
   # Allow the address used by Loki to refer to Minio to be overridden
@@ -3458,6 +3459,7 @@ minio:
       - name: pool-0
         labels:
           app: minio
+          app.kubernetes.io/name: minio
         servers: 1
         volumesPerServer: 4
         size: 750Mi
