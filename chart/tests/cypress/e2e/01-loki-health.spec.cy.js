@@ -54,7 +54,7 @@
               } 
             }
           )
-            cy.get('[class$=-logs-row]').should('have.length.at.least', 10);
+            cy.get('tr[class^=css-][class*=-logs-row]').should('have.length.at.least', 10);
           });
     }
   })
