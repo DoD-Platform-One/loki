@@ -1180,6 +1180,8 @@ monitoring:
 loki:
   enabled: true
   values:
+    minio:
+      enabled: true
     istio:
       enabled: true
   git:
