@@ -4,6 +4,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [6.25.1-bb.0] - 2025-02-11
+
+### Updated
+
+- Updated `gluon` from `0.5.12` -> `0.5.14`
+- Updated `k8s-sidecar` from `1.28.4` -> `1.30.0`
+- Updated `kubectl` from `v1.30.8` -> `v1.30.9`
+- Updated `memcached` from `1.6.33` -> `1.6.36`
+- Updated `nginx` from `1.27.3` -> `1.27.4`
+- Updated `grafana-agent-operator` from `0.5.0` -> `0.5.1`
+- Updated `rollout-operator` from `0.21.0` -> `0.23.0`
+
 ## [6.24.0-bb.5] - 2025-02-12
 
 ### Changed

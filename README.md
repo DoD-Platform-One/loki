@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.24.0-bb.5](https://img.shields.io/badge/Version-6.24.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.2](https://img.shields.io/badge/AppVersion-3.3.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.25.1-bb.0](https://img.shields.io/badge/Version-6.25.1--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.2](https://img.shields.io/badge/AppVersion-3.3.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -151,10 +151,10 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.8"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.9"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.30.8"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.30.9"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"docker.io","repository":"grafana/loki-helm-test","tag":"ewelch-distributed-helm-chart-17db5ee"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -257,7 +257,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.27.3"` | The gateway image tag |
+| gateway.image.tag | string | `"1.27.4"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -466,6 +466,7 @@ helm install loki chart/
 | read.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for read pods |
 | read.tolerations | list | `[]` | Tolerations for read pods |
 | read.podManagementPolicy | string | `"Parallel"` | The default is to deploy all pods in parallel. |
+| read.persistence | object | `{"annotations":{},"enableStatefulSetAutoDeletePVC":true,"selector":null,"size":"10Gi","storageClass":null}` | read.persistence is used only if legacyReadTarget is set to true |
 | read.persistence.enableStatefulSetAutoDeletePVC | bool | `true` | Enable StatefulSetAutoDeletePVC feature |
 | read.persistence.size | string | `"10Gi"` | Size of persistent disk |
 | read.persistence.storageClass | string | `nil` | Storage class to be used. If defined, `storageClassName: <storageClass>`. If set to "-", `storageClassName: ""`, which disables dynamic provisioning. If empty or set to null, no storageClassName spec is set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack). |
@@ -969,8 +970,36 @@ helm install loki chart/
 | ruler.persistence.annotations | object | `{}` | Annotations for ruler PVCs |
 | ruler.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | ruler.directories | object | `{}` | Directories containing rules files |
+| overridesExporter | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"overrides-exporter"}},"topologyKey":"kubernetes.io/hostname"}]}},"appProtocol":{"grpc":""},"command":null,"enabled":false,"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"hostAliases":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"maxUnavailable":null,"nodeSelector":{},"podAnnotations":{},"podLabels":{},"priorityClassName":null,"replicas":0,"resources":{},"serviceAnnotations":{},"serviceLabels":{},"terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[]}` | Configuration for the overrides-exporter |
+| overridesExporter.enabled | bool | `false` | The overrides-exporter component is optional and can be disabled if desired. |
+| overridesExporter.replicas | int | `0` | Number of replicas for the overrides-exporter |
+| overridesExporter.hostAliases | list | `[]` | hostAliases to add |
+| overridesExporter.image.registry | string | `nil` | The Docker registry for the overrides-exporter image. Overrides `loki.image.registry` |
+| overridesExporter.image.repository | string | `nil` | Docker image repository for the overrides-exporter image. Overrides `loki.image.repository` |
+| overridesExporter.image.tag | string | `nil` | Docker image tag for the overrides-exporter image. Overrides `loki.image.tag` |
+| overridesExporter.command | string | `nil` | Command to execute instead of defined in Docker image |
+| overridesExporter.priorityClassName | string | `nil` | The name of the PriorityClass for overrides-exporter pods |
+| overridesExporter.podLabels | object | `{}` | Labels for overrides-exporter pods |
+| overridesExporter.podAnnotations | object | `{}` | Annotations for overrides-exporter pods |
+| overridesExporter.serviceLabels | object | `{}` | Labels for overrides-exporter service |
+| overridesExporter.serviceAnnotations | object | `{}` | Annotations for overrides-exporter service |
+| overridesExporter.extraArgs | list | `[]` | Additional CLI args for the overrides-exporter |
+| overridesExporter.extraEnv | list | `[]` | Environment variables to add to the overrides-exporter pods |
+| overridesExporter.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the overrides-exporter pods |
+| overridesExporter.extraVolumeMounts | list | `[]` | Volume mounts to add to the overrides-exporter pods |
+| overridesExporter.extraVolumes | list | `[]` | Volumes to add to the overrides-exporter pods |
+| overridesExporter.resources | object | `{}` | Resource requests and limits for the overrides-exporter |
+| overridesExporter.extraContainers | list | `[]` | Containers to add to the overrides-exporter pods |
+| overridesExporter.initContainers | list | `[]` | Init containers to add to the overrides-exporter pods |
+| overridesExporter.terminationGracePeriodSeconds | int | `300` | Grace period to allow the overrides-exporter to shutdown before it is killed |
+| overridesExporter.affinity | object | Hard node anti-affinity | Affinity for overrides-exporter pods. |
+| overridesExporter.maxUnavailable | string | `nil` | Pod Disruption Budget maxUnavailable |
+| overridesExporter.nodeSelector | object | `{}` | Node selector for overrides-exporter pods |
+| overridesExporter.topologySpreadConstraints | list | `[]` | Topology Spread Constraints for overrides-exporter pods |
+| overridesExporter.tolerations | list | `[]` | Tolerations for overrides-exporter pods |
+| overridesExporter.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.33"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.36"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
 | memcached.podSecurityContext | object | `{"fsGroup":11211,"runAsGroup":11211,"runAsNonRoot":true,"runAsUser":11211}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
@@ -1067,7 +1096,7 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
-| sidecar.image.tag | string | `"1.28.4"` | Docker image tag |
+| sidecar.image.tag | string | `"1.30.0"` | Docker image tag |
 | sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |

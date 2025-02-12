@@ -1215,6 +1215,10 @@ kyvernoPolicies:
         parameters:
           allow:
           - /var/lib/rancher/k3s/storage/pvc-*
+
+addons:
+  minioOperator:
+    enabled: true
 ```
 
 - Visit `https://grafana.dev.bigbang.mil` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
