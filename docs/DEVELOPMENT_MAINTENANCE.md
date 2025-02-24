@@ -1179,14 +1179,15 @@ monitoring:
 
 loki:
   enabled: true
+  git:
+    tag: ""
+    branch: "renovate/ironbank"
+  strategy: scalable
   values:
     minio:
       enabled: true
     istio:
       enabled: true
-  git:
-    tag: ""
-    branch: "renovate/ironbank"
 
 promtail:
   enabled: true
