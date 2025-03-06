@@ -1,7 +1,7 @@
 dependencies:
 - name: minio-instance
   repository: oci://registry1.dso.mil/bigbang
-  version: 6.0.4-bb.2
+  version: 7.0.0-bb.2
 - name: grafana-agent-operator
   repository: https://grafana.github.io/helm-charts
   version: 0.5.1
@@ -11,5 +11,5 @@ dependencies:
 - name: rollout-operator
   repository: https://grafana.github.io/helm-charts
   version: 0.23.0
-digest: sha256:9c614e4de888961e88991a7a9d45b37d55444eb4000f3bc21bd64d31249a4346
-generated: "2025-01-07T07:15:46.250132683Z"
+digest: sha256:7a50a3716d84104c70f0934c74e08c0e0409323b5f6ef733dd9b1fc223515ea3
+generated: "2025-03-04T07:17:32.566466148Z"
