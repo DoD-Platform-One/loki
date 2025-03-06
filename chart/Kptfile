@@ -5,7 +5,7 @@ metadata:
 upstream:
   type: git
   git:
-    commit: 0c38b947648510894d0d8f50d5cccc9a57576298
+    commit: 258f8267477f9c4d1d950a6a0887c7a902af05ff
     repo: https://github.com/grafana/loki
     directory: /production/helm/loki
-    ref: helm-loki-6.25.1
+    ref: helm-loki-6.27.0
