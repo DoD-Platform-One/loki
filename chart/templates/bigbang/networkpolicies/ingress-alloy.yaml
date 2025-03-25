@@ -14,10 +14,10 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          app.kubernetes.io/name: monitoring
+          app.kubernetes.io/name: alloy
       podSelector:
         matchLabels:
-          app.kubernetes.io/name: alloy
+          app.kubernetes.io/instance: alloy
     ports:
       - port: 3100
         protocol: TCP
