@@ -9,7 +9,7 @@
     "labels": ["loki", "renovate", "kind::maintenance", "team::Observability"],
     "packageRules": [
       {
-        "matchDatasources": ["docker"],
+        "matchDatasources": ["docker", "helm"],
         "groupName": "Ironbank",
         "registryUrls": ["https://registry1.dso.mil"]
       }

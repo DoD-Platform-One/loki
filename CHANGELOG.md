@@ -3,6 +3,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.27.0-bb.2] (2025-04-01)
+### Updated
+
+- Updated `minio` from `RELEASE.2024-06-04T19-20-08Z` -> `RELEASE.2025-01-20T14-49-07Z` 
+
 ## [6.27.0-bb.1] (2025-03-21)
 ### Changed
 
@@ -10,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [6.27.0-bb.0] (2025-03-05)
 ### Changed
+
 - docker.io/grafana/loki-canary 3.3.2 -> 3.4.2
 - minio-instance 6.0.4-bb.2 -> 7.0.0-bb.2
 - registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs v3.3.0 -> v3.4.1
