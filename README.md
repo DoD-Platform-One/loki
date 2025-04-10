@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.27.0-bb.2](https://img.shields.io/badge/Version-6.27.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.4.2](https://img.shields.io/badge/AppVersion-3.4.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.27.0-bb.3](https://img.shields.io/badge/Version-6.27.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.4.2](https://img.shields.io/badge/AppVersion-3.4.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
 
@@ -1147,6 +1147,9 @@ helm install loki chart/
 | istio.hardened.promtail.enabled | bool | `false` |  |
 | istio.hardened.promtail.namespaces[0] | string | `"promtail"` |  |
 | istio.hardened.promtail.principals[0] | string | `"cluster.local/ns/promtail/sa/promtail-promtail"` |  |
+| istio.hardened.alloy.enabled | bool | `false` |  |
+| istio.hardened.alloy.namespaces[0] | string | `"alloy"` |  |
+| istio.hardened.alloy.principals[0] | string | `"cluster.local/ns/alloy/sa/alloy-alloy-logs"` |  |
 | istio.hardened.fluentbit.enabled | bool | `false` |  |
 | istio.hardened.fluentbit.namespaces[0] | string | `"fluentbit"` |  |
 | istio.hardened.fluentbit.principals[0] | string | `"cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit"` |  |
