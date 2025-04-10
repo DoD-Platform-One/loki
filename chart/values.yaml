@@ -3751,6 +3751,12 @@ istio:
       - promtail
       principals:
       - cluster.local/ns/promtail/sa/promtail-promtail
+    alloy:
+      enabled: false
+      namespaces:
+      - alloy
+      principals:
+      - cluster.local/ns/alloy/sa/alloy-alloy-logs
     fluentbit:
       enabled: false
       namespaces:
