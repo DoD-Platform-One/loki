@@ -1,16 +1,50 @@
+#########################
+# Disable Core Packages #
+#########################
+bbctl:
+  enabled: false
+kyvernoReporter:
+  enabled: false
+neuvector:
+  enabled: false
+# promtail:
+#   enabled: false
+tempo:
+  enabled: false
+kiali:
+  enabled: false
+addons:
+  # minioOperator:
+  #   enabled: false
+########################
+# Required for package #
+########################
+  minioOperator:
+    enabled: true
+    values:
+      bbtests:
+        enabled: false
+promtail:
+  enabled: true
 loki:
-  storage:
-    type: "filesystem"
-  rulerConfig:
-    storage:
-      type: local
-  storage_config:
-    filesystem:
-      directory: /var/loki/chunks
-
-networkPolicies:
   enabled: true
-  controlPlaneCidr: 172.16.0.0/12
-
-bbtests:
+grafana:
   enabled: true
+  values:
+    bbtests:
+      enabled: false
+monitoring:
+  enabled: true
+  values:
+    bbtests:
+      enabled: false
+kyverno:
+  values:
+    bbtests:
+      enabled: false
+kyvernoPolicies:
+  values:
+    bbtests:
+      enabled: false
+
+
