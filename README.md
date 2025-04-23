@@ -1,9 +1,9 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.27.0-bb.3](https://img.shields.io/badge/Version-6.27.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.4.2](https://img.shields.io/badge/AppVersion-3.4.2-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.29.0-bb.0](https://img.shields.io/badge/Version-6.29.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.4.3](https://img.shields.io/badge/AppVersion-3.4.3-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
-Helm chart for Grafana Loki and Grafana Enterprise Logs supporting both simple, scalable and distributed modes.
+Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
 ## Upstream References
 
@@ -64,7 +64,7 @@ helm install loki chart/
 | loki | object | See values.yaml | Configuration for running Loki |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"3.4.2"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"3.4.3"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -87,7 +87,7 @@ helm install loki chart/
 | loki.limits_config | object | `{"deletion_mode":"filter-and-delete","discover_service_name":[],"max_cache_freshness_per_query":"10m","query_timeout":"300s","reject_old_samples":true,"reject_old_samples_max_age":"168h","split_queries_by_interval":"15m","volume_enabled":true}` | Limits config |
 | loki.runtimeConfig | object | `{}` | Provides a reloadable runtime configuration file for some specific configuration |
 | loki.commonConfig | object | `{"compactor_address":"{{ include \"loki.compactorAddress\" . }}","path_prefix":"/var/loki","replication_factor":1}` | Check https://grafana.com/docs/loki/latest/configuration/#common_config for more info on how to provide a common configuration |
-| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"chunkDelimiter":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","deletion":"loki-deletion","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"object_store":{"azure":{"account_key":null,"account_name":null},"gcs":{"bucket_name":null,"service_account":null},"prefix":null,"s3":{"access_key_id":null,"endpoint":null,"http":{},"insecure":false,"region":null,"secret_access_key":null,"sse":{}},"type":"s3"},"s3":{"accessKeyId":null,"backoff_config":{},"disable_dualstack":false,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3","use_thanos_objstore":false}` | In case of using thanos storage, enable use_thanos_objstore and the configuration should be done inside the object_store section. |
+| loki.storage | object | `{"azure":{"accountKey":null,"accountName":null,"chunkDelimiter":null,"connectionString":null,"endpointSuffix":null,"requestTimeout":null,"useFederatedToken":false,"useManagedIdentity":false,"userAssignedId":null},"bucketNames":{"admin":"loki-admin","chunks":"loki","deletion":"loki-deletion","ruler":"loki"},"filesystem":{"admin_api_directory":"/var/loki/admin","chunks_directory":"/var/loki/chunks","rules_directory":"/var/loki/rules"},"gcs":{"chunkBufferSize":0,"enableHttp2":true,"requestTimeout":"0s"},"object_store":{"azure":{"account_key":null,"account_name":null},"gcs":{"bucket_name":null,"service_account":null},"s3":{"access_key_id":null,"endpoint":null,"http":{},"insecure":false,"region":null,"secret_access_key":null,"sse":{}},"storage_prefix":null,"type":"s3"},"s3":{"accessKeyId":null,"backoff_config":{},"disable_dualstack":false,"endpoint":null,"http_config":{},"insecure":false,"region":null,"s3":null,"s3ForcePathStyle":false,"secretAccessKey":null,"signatureVersion":null},"swift":{"auth_url":null,"auth_version":null,"connect_timeout":null,"container_name":null,"domain_id":null,"domain_name":null,"internal":null,"max_retries":null,"password":null,"project_domain_id":null,"project_domain_name":null,"project_id":null,"project_name":null,"region_name":null,"request_timeout":null,"user_domain_id":null,"user_domain_name":null,"user_id":null,"username":null},"type":"s3","use_thanos_objstore":false}` | In case of using thanos storage, enable use_thanos_objstore and the configuration should be done inside the object_store section. |
 | loki.storage.s3.backoff_config | object | `{}` | Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config |
 | loki.memcached | object | `{"chunk_cache":{"batch_size":256,"enabled":false,"host":"","parallelism":10,"service":"memcached-client"},"results_cache":{"default_validity":"12h","enabled":false,"host":"","service":"memcached-client","timeout":"500ms"}}` | Configure memcached as an external cache for chunk and results cache. Disabled by default must enable and specify a host for each cache you would like to use. |
 | loki.schemaConfig | object | `{"configs":[{"from":"2022-01-11","index":{"period":"24h","prefix":"loki_index_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"boltdb-shipper"},{"from":"2023-08-01","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v12","store":"tsdb"},{"from":"2024-05-30","index":{"period":"24h","prefix":"loki_tsdb_"},"object_store":"{{ .Values.loki.storage.type }}","schema":"v13","store":"tsdb"}]}` | Check https://grafana.com/docs/loki/latest/configuration/#schema_config for more info on how to configure schemas |
@@ -100,13 +100,14 @@ helm install loki chart/
 | loki.pattern_ingester | object | `{"enabled":false}` | Optional pattern ingester configuration |
 | loki.analytics | object | `{"reporting_enabled":false}` | Optional analytics configuration |
 | loki.analytics.reporting_enabled | bool | `false` | Disable anonymous usage statistics |
+| loki.ui | object | `{"enabled":false,"gateway":{"enabled":true}}` | Optional Loki UI: Provides access to a operators UI for Loki distributed. When enabled UI will be available at /ui/ of loki-gateway |
 | loki.query_range | object | `{}` | Optional querier configuration |
 | loki.querier | object | `{}` | Optional querier configuration |
 | loki.ingester | object | `{"autoforget_unhealthy":true,"chunk_target_size":196608,"flush_check_period":"5s","flush_op_timeout":"100m","lifecycler":{"ring":{"kvstore":{"store":"memberlist"},"replication_factor":1}}}` | Optional ingester configuration |
 | loki.index_gateway | object | `{"mode":"simple"}` | Optional index gateway configuration |
 | loki.distributor | object | `{}` | Optional distributor configuration |
 | loki.tracing | object | `{"enabled":false}` | Enable tracing |
-| enterprise | object | `{"adminApi":{"enabled":true},"adminToken":{"additionalNamespaces":[],"secret":null},"canarySecret":null,"cluster_name":null,"config":"{{- if .Values.enterprise.adminApi.enabled }}\nadmin_client:\n  {{ include \"enterprise-logs.adminAPIStorageConfig\" . \\| nindent 2 }}\n{{ end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \\| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n","enabled":false,"externalConfigName":"","externalLicenseName":null,"gelGateway":true,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"v3.4.1"},"license":{"contents":"NOTAVALIDLICENSE"},"provisioner":{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"hookType":"post-install","image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.1"},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]},"tokengen":{"affinity":{},"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"nodeSelector":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]},"useExternalLicense":false,"version":"3.4.0"}` | Configuration for running Enterprise Loki |
+| enterprise | object | `{"adminApi":{"enabled":true},"adminToken":{"additionalNamespaces":[],"secret":null},"canarySecret":null,"cluster_name":null,"config":"{{- if .Values.enterprise.adminApi.enabled }}\nadmin_client:\n  {{ include \"enterprise-logs.adminAPIStorageConfig\" . \\| nindent 2 }}\n{{ end }}\nauth:\n  type: {{ .Values.enterprise.adminApi.enabled \\| ternary \"enterprise\" \"trust\" }}\nauth_enabled: {{ .Values.loki.auth_enabled }}\ncluster_name: {{ include \"loki.clusterName\" . }}\nlicense:\n  path: /etc/loki/license/license.jwt\n","enabled":false,"externalConfigName":"","externalLicenseName":null,"gelGateway":true,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/grafana/grafana-enterprise-logs","tag":"v3.4.2"},"license":{"contents":"NOTAVALIDLICENSE"},"provisioner":{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"hookType":"post-install","image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.2"},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]},"tokengen":{"affinity":{},"annotations":{"sidecar.istio.io/inject":"false"},"enabled":true,"env":[],"extraArgs":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"labels":{},"nodeSelector":{},"priorityClassName":"","securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"targetModule":"tokengen","tolerations":[]},"useExternalLicense":false,"version":"3.4.0"}` | Configuration for running Enterprise Loki |
 | enterprise.cluster_name | string | `nil` | Optional name of the GEL cluster, otherwise will use .Release.Name The cluster name must match what is in your GEL license |
 | enterprise.license | object | `{"contents":"NOTAVALIDLICENSE"}` | Grafana Enterprise Logs license In order to use Grafana Enterprise Logs features, you will need to provide the contents of your Grafana Enterprise Logs license, either by providing the contents of the license.jwt, or the name Kubernetes Secret that contains your license.jwt. To set the license contents, use the flag `--set-file 'enterprise.license.contents=./license.jwt'` |
 | enterprise.useExternalLicense | bool | `false` | Set to true when providing an external license |
@@ -116,7 +117,7 @@ helm install loki chart/
 | enterprise.adminApi | object | `{"enabled":true}` | If enabled, the correct admin_client storage will be configured. If disabled while running enterprise, make sure auth is set to `type: trust`, or that `auth_enabled` is set to `false`. |
 | enterprise.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.image.repository | string | `"ironbank/grafana/grafana-enterprise-logs"` | Docker image repository |
-| enterprise.image.tag | string | `"v3.4.1"` | Docker image tag, default is the chart's appVersion |
+| enterprise.image.tag | string | `"v3.4.2"` | Docker image tag, default is the chart's appVersion |
 | enterprise.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.adminToken.secret | string | `nil` | Alternative name for admin token secret, needed by tokengen and provisioner jobs |
@@ -137,7 +138,7 @@ helm install loki chart/
 | enterprise.tokengen.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
 | enterprise.tokengen.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the tokengen pods |
 | enterprise.tokengen.priorityClassName | string | `""` | The name of the PriorityClass for tokengen Pods |
-| enterprise.provisioner | object | `{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"hookType":"post-install","image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.1"},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `provisioner` target |
+| enterprise.provisioner | object | `{"additionalTenants":[],"affinity":{},"annotations":{},"enabled":false,"env":[],"extraVolumeMounts":[],"hookType":"post-install","image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.2"},"labels":{},"nodeSelector":{},"priorityClassName":null,"provisionedSecretPrefix":null,"securityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001},"tolerations":[]}` | Configuration for `provisioner` target |
 | enterprise.provisioner.enabled | bool | `false` | Whether the job should be part of the deployment |
 | enterprise.provisioner.provisionedSecretPrefix | string | `nil` | Name of the secret to store provisioned tokens in |
 | enterprise.provisioner.hookType | string | `"post-install"` | Hook type(s) to customize when the job runs.  defaults to post-install |
@@ -150,17 +151,17 @@ helm install loki chart/
 | enterprise.provisioner.tolerations | list | `[]` | Tolerations for tokengen Pods |
 | enterprise.provisioner.priorityClassName | string | `nil` | The name of the PriorityClass for provisioner Job |
 | enterprise.provisioner.securityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | Run containers as user `enterprise-logs(uid=10001)` |
-| enterprise.provisioner.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.1"}` | Provisioner image to Utilize |
+| enterprise.provisioner.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner","tag":"3.4.2"}` | Provisioner image to Utilize |
 | enterprise.provisioner.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | enterprise.provisioner.image.repository | string | `"ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner"` | Docker image repository |
-| enterprise.provisioner.image.tag | string | `"3.4.1"` | Overrides the image tag whose default is the chart's appVersion |
+| enterprise.provisioner.image.tag | string | `"3.4.2"` | Overrides the image tag whose default is the chart's appVersion |
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.30.10"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.32.3"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.30.10"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.32.3"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-helm-test","tag":"0.0.1"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -192,10 +193,10 @@ helm install loki chart/
 | lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
 | lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
 | lokiCanary.priorityClassName | string | `nil` | The name of the PriorityClass for loki-canary pods |
-| lokiCanary.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-canary","tag":"3.4.2"}` | Image to use for loki canary |
+| lokiCanary.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-canary","tag":"3.4.3"}` | Image to use for loki canary |
 | lokiCanary.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | lokiCanary.image.repository | string | `"ironbank/bigbang/grafana/loki-canary"` | Docker image repository |
-| lokiCanary.image.tag | string | `"3.4.2"` | Overrides the image tag whose default is the chart's appVersion |
+| lokiCanary.image.tag | string | `"3.4.3"` | Overrides the image tag whose default is the chart's appVersion |
 | lokiCanary.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | lokiCanary.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | lokiCanary.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | Update strategy for the `loki-canary` Daemonset pods |
@@ -263,7 +264,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.27.4"` | The gateway image tag |
+| gateway.image.tag | string | `"1.27.5"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -480,7 +481,7 @@ helm install loki chart/
 | read.persistence.annotations | object | `{}` | Annotations for volume claim |
 | read.podDisruptionBudget.minAvailable | string | `""` (defaults to 0 if not specified) | Number of pods that are available after eviction as number or percentage (eg.: 50%) |
 | read.podDisruptionBudget.maxUnavailable | string | `"1"` | Number of pods that are unavailable after eviction as number or percentage (eg.: 50%). # Has higher precedence over `controller.pdb.minAvailable` |
-| backend | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"backend"}},"topologyKey":"kubernetes.io/hostname"}]}},"annotations":{},"autoscaling":{"behavior":{},"enabled":false,"maxReplicas":6,"minReplicas":3,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"dnsConfig":{},"extraArgs":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"nodeSelector":{},"persistence":{"annotations":{},"dataVolumeParameters":{"emptyDir":{}},"enableStatefulSetAutoDeletePVC":true,"selector":null,"size":"10Gi","storageClass":null,"volumeClaimsEnabled":true},"podAnnotations":{},"podDisruptionBudget":{"maxUnavailable":"1","minAvailable":""},"podLabels":{},"podManagementPolicy":"Parallel","priorityClassName":null,"replicas":0,"resources":{},"selectorLabels":{},"service":{"annotations":{},"labels":{}},"targetModule":"backend","terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[]}` | Configuration for the backend pod(s) |
+| backend | object | `{"affinity":{"podAntiAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":[{"labelSelector":{"matchLabels":{"app.kubernetes.io/component":"backend"}},"topologyKey":"kubernetes.io/hostname"}]}},"annotations":{},"autoscaling":{"behavior":{},"enabled":false,"maxReplicas":6,"minReplicas":3,"targetCPUUtilizationPercentage":60,"targetMemoryUtilizationPercentage":null},"dnsConfig":{},"extraArgs":[],"extraContainers":[],"extraEnv":[],"extraEnvFrom":[],"extraVolumeMounts":[],"extraVolumes":[],"image":{"registry":null,"repository":null,"tag":null},"initContainers":[],"nodeSelector":{},"persistence":{"annotations":{},"dataVolumeParameters":{"emptyDir":{}},"enableStatefulSetAutoDeletePVC":true,"selector":null,"size":"10Gi","storageClass":null,"volumeClaimsEnabled":true},"podAnnotations":{},"podDisruptionBudget":{"maxUnavailable":"1","minAvailable":""},"podLabels":{},"podManagementPolicy":"Parallel","priorityClassName":null,"replicas":0,"resources":{},"selectorLabels":{},"service":{"annotations":{},"labels":{}},"targetModule":"backend","terminationGracePeriodSeconds":300,"tolerations":[],"topologySpreadConstraints":[]}` | Configuration for the backend pod(s) |
 | backend.replicas | int | `0` | Number of replicas for the backend |
 | backend.autoscaling.enabled | bool | `false` | Enable autoscaling for the backend. |
 | backend.autoscaling.minReplicas | int | `3` | Minimum autoscaling replicas for the backend. |
@@ -503,6 +504,7 @@ helm install loki chart/
 | backend.extraEnv | list | `[]` | Environment variables to add to the backend pods |
 | backend.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the backend pods |
 | backend.initContainers | list | `[]` | Init containers to add to the backend pods |
+| backend.extraContainers | list | `[]` | Containers to add to the backend pods |
 | backend.extraVolumeMounts | list | `[]` | Volume mounts to add to the backend pods |
 | backend.extraVolumes | list | `[]` | Volumes to add to the backend pods |
 | backend.resources | object | `{}` | Resource requests and limits for the backend |
@@ -1005,14 +1007,14 @@ helm install loki chart/
 | overridesExporter.tolerations | list | `[]` | Tolerations for overrides-exporter pods |
 | overridesExporter.appProtocol | object | `{"grpc":""}` | Set the optional grpc service protocol. Ex: "grpc", "http2" or "https" |
 | memcached.image.repository | string | `"registry1.dso.mil/ironbank/opensource/memcached/memcached"` | Memcached Docker image repository |
-| memcached.image.tag | string | `"1.6.37"` | Memcached Docker image tag |
+| memcached.image.tag | string | `"1.6.38"` | Memcached Docker image tag |
 | memcached.image.pullPolicy | string | `"IfNotPresent"` | Memcached Docker image pull policy |
 | memcached.podSecurityContext | object | `{"fsGroup":11211,"runAsGroup":11211,"runAsNonRoot":true,"runAsUser":11211}` | The SecurityContext override for memcached pods |
 | memcached.priorityClassName | string | `nil` | The name of the PriorityClass for memcached pods |
 | memcached.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"fsGroup":10001,"readOnlyRootFilesystem":true,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001}` | The SecurityContext for memcached containers |
 | memcachedExporter.enabled | bool | `false` | Whether memcached metrics should be exported |
 | memcachedExporter.image.repository | string | `"prom/memcached-exporter"` |  |
-| memcachedExporter.image.tag | string | `"v0.15.0"` |  |
+| memcachedExporter.image.tag | string | `"v0.15.2"` |  |
 | memcachedExporter.image.pullPolicy | string | `"IfNotPresent"` |  |
 | memcachedExporter.resources.requests | object | `{}` |  |
 | memcachedExporter.resources.limits | object | `{}` |  |
@@ -1102,7 +1104,7 @@ helm install loki chart/
 | minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
-| sidecar.image.tag | string | `"1.30.0"` | Docker image tag |
+| sidecar.image.tag | string | `"1.30.3"` | Docker image tag |
 | sidecar.image.sha | string | `""` | Docker image sha. If empty, no sha will be used |
 | sidecar.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | sidecar.resources.limits.cpu | string | `"100m"` |  |
