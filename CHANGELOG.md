@@ -3,6 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.29.0-bb.0] (2025-04-18)
+
+### Changed
+
+- Updated `loki` from 3.4.2 -> 3.4.3
+- Updated `loki-canary` from 3.4.2 -> 3.4.3
+- Updated `grafana-enterprise-logs` from v3.4.1 -> v3.4.2
+- Updated `enterprise-logs-provisioner` from 3.4.1 -> 3.4.2
+- Updated `k8s-sidecar` from 1.30.0 -> 1.30.3
+- Updated `kubectl` from v1.30.10 -> v1.32.3
+- Updated `memcached` from 1.6.37 -> 1.6.38
+- Updated `nginx` from 1.27.4 -> 1.27.5
+- Updated `gluon` from 0.5.14 -> 0.5.15
+- Updated `rollout-operator` from 0.23.0 -> 0.24.0
+
+
 ## [6.27.0-bb.3] (2025-04-07)
 ### Updated
 
