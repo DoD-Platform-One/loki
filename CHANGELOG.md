@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.29.0-bb.1] (2025-04-30)
+
+### Changed
+
+- Updated `registry1.dso.mil/ironbank/opensource/grafana/loki` from 3.4.3 -> 3.5.0
+- Updated `ironbank/opensource/grafana/loki` from 3.4.3 -> 3.5.0
+- Updated `docker.io/grafana/loki-canary` from 3.4.3 -> 3.5.0
+- Updated `registry1.dso.mil/ironbank/bigbang/grafana/loki-canary` from 3.4.3 -> 3.5.0
+- Updated `kubectl` from v1.32.3 -> v1.32.4
+- Updated `gluon` from 0.5.15 -> 0.5.16
+- Updated `minio-instance` from 7.0.0-bb.2 -> 7.0.1-bb.0
+
+
 ## [6.29.0-bb.0] (2025-04-18)
 
 ### Changed
