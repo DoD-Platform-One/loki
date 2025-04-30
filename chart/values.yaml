@@ -76,7 +76,7 @@ loki:
     # -- Docker image repository
     repository: ironbank/opensource/grafana/loki
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 3.4.3
+    tag: 3.5.0
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy
@@ -758,7 +758,7 @@ kubectlImage:
   # -- Docker image repository
   repository: ironbank/opensource/kubernetes/kubectl
   # -- Overrides the image tag whose default is the chart's appVersion
-  tag: v1.32.3
+  tag: v1.32.4
   # -- Overrides the image tag with an image digest
   digest: null
   # -- Docker image pull policy
@@ -841,7 +841,7 @@ lokiCanary:
     # -- Docker image repository
     repository: ironbank/bigbang/grafana/loki-canary
     # -- Overrides the image tag whose default is the chart's appVersion
-    tag: 3.4.3
+    tag: 3.5.0
     # -- Overrides the image tag with an image digest
     digest: null
     # -- Docker image pull policy

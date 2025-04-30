@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.29.0-bb.0](https://img.shields.io/badge/Version-6.29.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.4.3](https://img.shields.io/badge/AppVersion-3.4.3-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.29.0-bb.1](https://img.shields.io/badge/Version-6.29.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.0](https://img.shields.io/badge/AppVersion-3.5.0-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -64,7 +64,7 @@ helm install loki chart/
 | loki | object | See values.yaml | Configuration for running Loki |
 | loki.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | loki.image.repository | string | `"ironbank/opensource/grafana/loki"` | Docker image repository |
-| loki.image.tag | string | `"3.4.3"` | Overrides the image tag whose default is the chart's appVersion |
+| loki.image.tag | string | `"3.5.0"` | Overrides the image tag whose default is the chart's appVersion |
 | loki.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | loki.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | loki.annotations | object | `{}` | Common annotations for all deployments/StatefulSets |
@@ -158,10 +158,10 @@ helm install loki chart/
 | enterprise.provisioner.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.32.3"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.32.4"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.32.3"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.32.4"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://loki-canary:3500/metrics","enabled":false,"image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-helm-test","tag":"0.0.1"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -193,10 +193,10 @@ helm install loki chart/
 | lokiCanary.nodeSelector | object | `{}` | Node selector for canary pods |
 | lokiCanary.tolerations | list | `[]` | Tolerations for canary pods |
 | lokiCanary.priorityClassName | string | `nil` | The name of the PriorityClass for loki-canary pods |
-| lokiCanary.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-canary","tag":"3.4.3"}` | Image to use for loki canary |
+| lokiCanary.image | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-canary","tag":"3.5.0"}` | Image to use for loki canary |
 | lokiCanary.image.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | lokiCanary.image.repository | string | `"ironbank/bigbang/grafana/loki-canary"` | Docker image repository |
-| lokiCanary.image.tag | string | `"3.4.3"` | Overrides the image tag whose default is the chart's appVersion |
+| lokiCanary.image.tag | string | `"3.5.0"` | Overrides the image tag whose default is the chart's appVersion |
 | lokiCanary.image.digest | string | `nil` | Overrides the image tag with an image digest |
 | lokiCanary.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | lokiCanary.updateStrategy | object | `{"rollingUpdate":{"maxUnavailable":1},"type":"RollingUpdate"}` | Update strategy for the `loki-canary` Daemonset pods |
