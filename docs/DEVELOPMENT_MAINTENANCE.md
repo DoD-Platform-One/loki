@@ -80,24 +80,24 @@
 
     - Reach out to the CODEOWNERS if needed.
 
-9. As part of your MR that modifies bigbang packages, you should modify the bigbang  [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages. 
+9. (_Optional, only required if package changes are expected to have cascading effects on bigbang umbrella chart_) As part of your MR that modifies bigbang packages, you should modify the bigbang [bigbang/tests/test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads) against your branch for the CI/CD MR testing by enabling your packages. 
 
     - To do this, at a minimum, you will need to follow the instructions at [bigbang/docs/developer/test-package-against-bb.md](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/developer/test-package-against-bb.md?ref_type=heads) with changes for Loki enabled (the below is a reference, actual changes could be more depending on what changes where made to Loki in the package MR).
 
 ### [test-values.yaml](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/tests/test-values.yaml?ref_type=heads)
-    ```yaml
-    loki:
-      enabled: true
-      git:
-        tag: null
-        branch: <my-package-branch-that-needs-testing>
-      values:
-        istio:
-          hardened:
-            enabled: true
-      ### Additional components of Loki should be changed to reflect testing changes introduced in the package MR
-    ```
 
+```yaml
+loki:
+  enabled: true
+  git:
+    tag: null
+    branch: "renovate/ironbank"
+  values:
+    istio:
+      hardened:
+        enabled: true
+  ### Additional components of Loki should be changed to reflect testing changes introduced in the package MR
+```
 
 10. Follow the `Testing new Loki Version` section of this document for manual testing.
 
@@ -110,12 +110,13 @@
 - Ensure minio and gluon dependencies are present and up to date
 
   ```yaml
+  appVersion: $LOKI_APP_VERSION
   version: $VERSION-bb.0
   dependencies:
     - name: minio-instance
       alias: minio
       version: $MINIO_VERSION
-      repository: file://./deps/minio
+      repository: oci://registry1.dso.mil/bigbang
       condition: minio.enabled
     - name: grafana-agent-operator
       alias: grafana-agent-operator
@@ -124,7 +125,12 @@
       condition: monitoring.selfMonitoring.grafanaAgent.installOperator
     - name: gluon
       version: $GLUON_VERSION
-      repository: "oci://registry.dso.mil/platform-one/big-bang/apps/library-charts/gluon"
+      repository: "oci://registry1.dso.mil/bigbang"
+    - name: rollout-operator
+      alias: rollout_operator
+      repository: https://grafana.github.io/helm-charts
+      version: $ROLLOUT_OPERATOR_VERSION
+      condition: rollout_operator.enabled
   annotations:
     bigbang.dev/applicationVersions: |
       - Loki: $LOKI_APP_VERSION
@@ -132,7 +138,7 @@
 
 ### ```chart/values.yaml```
 
-- Verify that Renovate updated the loki: section with the correct value for  `tag`. For example, if Renovate wants to update Loki to version 2.8.3, you should see:
+- Verify that Renovate updated the `loki:` section with the correct value for `tag`. For example, if Renovate wants to update Loki to version 2.8.3, you should see:
 
   ```yaml
   loki:
