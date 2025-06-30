@@ -1160,22 +1160,23 @@ This policy revokes access to the K8s API for Pods utilizing said ServiceAccount
 
 You will want to install with:
 
-- Loki, Promtail, Fluentbit, Tempo, Monitoring, MinioOperator and Istio packages enabled
+- Loki, Alloy, Fluentbit, Tempo, Monitoring, MinioOperator and Istio packages enabled
 
-`overrides/loki.yaml`
+`overrides/testing-loki-scalable.yaml`
 
 ```yaml
-clusterAuditor:
-  enabled: false
+istiod:
+  enabled: true
+  values:
+    hardened:
+      enabled: true
+istioCRDs:
+  enabled: true
+istioGateway:
+  enabled: true
 
 gatekeeper:
   enabled: false
-
-istioOperator:
-  enabled: true
-
-istio:
-  enabled: true
 
 monitoring:
   enabled: true
@@ -1196,13 +1197,21 @@ loki:
       enabled: true
 
 promtail:
+  enabled: false
+
+alloy:
   enabled: true
+  alloyLogs: 
+    enabled: true
+  values:
+    k8s-monitoring:
+      destinations:
+        - name: loki
+          type: loki
+          url: http://logging-loki-write.logging.svc.cluster.local:3100/loki/api/v1/push
 
 tempo:
   enabled: true
-
-jaeger:
-  enabled: false
 
 twistlock:
   enabled: false
@@ -1233,46 +1242,65 @@ addons:
   - Click `Save & Test` to ensure Data Source changes can be saved successfully.
 - Search dashboards for `Loki Dashboard Quick Search` and confirm log data is being populated/no error messages.
 
-### Deploy Loki Monolith as a part of BigBang
+### Deploy Loki Monolith as a part of BigBang (Without Object Storage)
 
 > Loki Monolith is tested during the "package tests" stage of loki pipelines.
 
 You will want to install with:
 
-- Loki, Promtail, Tempo, Monitoring and Istio packages enabled
+- Loki, Alloy, Tempo, Monitoring and Istio packages enabled
 
-`overrides/loki.yaml`
+`overrides/testing-loki-monolith.yaml`
 
 ```yaml
-clusterAuditor:
-  enabled: false
+istiod:
+  enabled: true
+  values:
+    hardened:
+      enabled: true
+istioCRDs:
+  enabled: true
+istioGateway:
+  enabled: true
 
 gatekeeper:
   enabled: false
-
-istioOperator:
-  enabled: true
-
-istio:
-  enabled: true
 
 monitoring:
   enabled: true
 
 loki:
   enabled: true
+  strategy: monolith
   git:
     tag: ""
     branch: "renovate/ironbank"
+  values:
+    minio:
+      enabled: false
+    read:
+      replicas: 0
+    write:
+      replicas: 0
+    backend:
+      replicas: 0
 
 promtail:
+  enabled: false
+
+alloy:
   enabled: true
+  alloyLogs: 
+    enabled: true
+  values:
+    k8s-monitoring:
+      destinations:
+        - name: loki
+          type: loki
+          url: http://logging-loki.logging.svc.cluster.local:3100/loki/api/v1/push
 
 tempo:
   enabled: true
-
-jaeger:
-  enabled: false
 
 twistlock:
   enabled: false
@@ -1292,6 +1320,10 @@ kyvernoPolicies:
         parameters:
           allow:
           - /var/lib/rancher/k3s/storage/pvc-*
+
+addons:
+  minioOperator:
+    enabled: false
 ```
 
 - Visit `https://grafana.dev.bigbang.mil` and login with [default credentials](https://repo1.dso.mil/big-bang/bigbang/-/blob/master/docs/guides/using-bigbang/default-credentials.md)
