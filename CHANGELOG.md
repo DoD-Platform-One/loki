@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.30.1-bb.2] (2025-06-20)
+
+### Changed
+
+- Updated registry1.dso.mil/ironbank/opensource/kubernetes/kubectl from v1.32.5 -> v1.32.6
+- Updated registry1.dso.mil/ironbank/opensource/nginx/nginx from 1.27.5 -> 1.28.0
+- Updated registry1.dso.mil/ironbank/opensource/prometheus/memcached-exporter from v0.15.2 -> v0.15.3
+- Updated rollout-operator from 0.28.0 -> 0.30.0
+
 ## [6.30.1-bb.1] (2025-06-03)
 
 ### Fixed
