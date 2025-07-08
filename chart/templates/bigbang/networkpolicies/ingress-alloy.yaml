@@ -16,8 +16,12 @@ spec:
         matchLabels:
           app.kubernetes.io/name: alloy
       podSelector:
-        matchLabels:
-          app.kubernetes.io/instance: alloy
+        matchExpressions:
+          - key: app.kubernetes.io/instance
+            operator: In
+            values:
+              - alloy
+              - alloy-alloy-logs
     ports:
       - port: 3100
         protocol: TCP
