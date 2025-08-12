@@ -3743,8 +3743,6 @@ openshift: false
 
 fluentbit:
   enabled: false
-promtail:
-  enabled: false
 
 istio:
   enabled: false
@@ -3779,12 +3777,6 @@ istio:
         - cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-prometheus
         - cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics
         - cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter
-    promtail:
-      enabled: false
-      namespaces:
-      - promtail
-      principals:
-      - cluster.local/ns/promtail/sa/promtail-promtail
     alloy:
       enabled: false
       namespaces:

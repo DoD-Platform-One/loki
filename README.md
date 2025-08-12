@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.30.1-bb.3](https://img.shields.io/badge/Version-6.30.1--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.1](https://img.shields.io/badge/AppVersion-3.5.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.30.1-bb.4](https://img.shields.io/badge/Version-6.30.1--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.1](https://img.shields.io/badge/AppVersion-3.5.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -1136,7 +1136,6 @@ helm install loki chart/
 | domain | string | `"dev.bigbang.mil"` |  |
 | openshift | bool | `false` |  |
 | fluentbit.enabled | bool | `false` |  |
-| promtail.enabled | bool | `false` |  |
 | istio.enabled | bool | `false` |  |
 | istio.hardened.enabled | bool | `false` |  |
 | istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
@@ -1150,9 +1149,6 @@ helm install loki chart/
 | istio.hardened.monitoring.principals[3] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-prometheus"` |  |
 | istio.hardened.monitoring.principals[4] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics"` |  |
 | istio.hardened.monitoring.principals[5] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter"` |  |
-| istio.hardened.promtail.enabled | bool | `false` |  |
-| istio.hardened.promtail.namespaces[0] | string | `"promtail"` |  |
-| istio.hardened.promtail.principals[0] | string | `"cluster.local/ns/promtail/sa/promtail-promtail"` |  |
 | istio.hardened.alloy.enabled | bool | `false` |  |
 | istio.hardened.alloy.namespaces[0] | string | `"alloy"` |  |
 | istio.hardened.alloy.principals[0] | string | `"cluster.local/ns/alloy/sa/alloy-alloy-logs"` |  |
