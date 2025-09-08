@@ -29,7 +29,7 @@ spec:
   {{- end }}
   http:
     - route:
-      {{- if eq .Values.deploymentMode "SimpleScalable" }}
+      {{- if or (eq .Values.deploymentMode "SimpleScalable") (eq .Values.deploymentMode "Distributed") }}
       - destination:
           port:
             number: {{ $.Values.gateway.service.port }}

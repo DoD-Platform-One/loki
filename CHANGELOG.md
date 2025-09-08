@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.30.1-bb.5] (2025-08-29)
+
+### Added
+
+- Added support minimums for loki distributed deployment mode. Review `docs/overview.md` for additional information.
+- Added option to disable helm validation checks that prevent deployment configurations using `.Values.experimentalMode.enabled=true`
+  - NOTE: Disabling validations may result in unsupported configurations that could cause deployment issues
+
 ## [6.30.1-bb.4] (2025-08-12)
 
 ### Changed

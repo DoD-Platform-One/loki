@@ -3738,10 +3738,14 @@ sidecar:
 
 domain: dev.bigbang.mil
 
-# Default to false, override in openshift-test-values.yaml 
+# Default to false, override in openshift-test-values.yaml
 openshift: false
 
 fluentbit:
+  enabled: false
+
+experimentalMode:
+  # -- Toggle enabling of configurations and deployment modes currently unsupported by Big Bang
   enabled: false
 
 istio:
@@ -3810,7 +3814,7 @@ istio:
 
 networkPolicies:
   enabled: false
-  # -- Control Plane CIDR to allow init job communication to the Kubernetes API.  
+  # -- Control Plane CIDR to allow init job communication to the Kubernetes API.
   # Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster
   controlPlaneCidr: 0.0.0.0/0
   ingressLabels:
