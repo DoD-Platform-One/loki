@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.30.1-bb.4](https://img.shields.io/badge/Version-6.30.1--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.1](https://img.shields.io/badge/AppVersion-3.5.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.30.1-bb.5](https://img.shields.io/badge/Version-6.30.1--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.1](https://img.shields.io/badge/AppVersion-3.5.1-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -1136,6 +1136,7 @@ helm install loki chart/
 | domain | string | `"dev.bigbang.mil"` |  |
 | openshift | bool | `false` |  |
 | fluentbit.enabled | bool | `false` |  |
+| experimentalMode.enabled | bool | `false` | Toggle enabling of configurations and deployment modes currently unsupported by Big Bang |
 | istio.enabled | bool | `false` |  |
 | istio.hardened.enabled | bool | `false` |  |
 | istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
@@ -1165,7 +1166,7 @@ helm install loki chart/
 | istio.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
 | networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API.   Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
+| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API. Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
 | networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
 | networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
 | networkPolicies.additionalPolicies | list | `[]` |  |

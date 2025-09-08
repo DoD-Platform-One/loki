@@ -214,7 +214,7 @@ object_store:
 {{- else }}
 {{- if .Values.minio.enabled -}}
 s3:
-  endpoint: {{ include "loki.minio" $ }}  
+  endpoint: {{ include "loki.minio" $ }}
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
   secret_access_key: {{ $.Values.minio.tenant.configSecret.secretKey }}
   access_key_id: {{ $.Values.minio.tenant.configSecret.accessKey }}
