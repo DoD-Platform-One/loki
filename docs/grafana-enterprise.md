@@ -8,16 +8,16 @@
 * Install BigBang with [values.yaml](#values)
 
 ## GEL Configuration in Grafana
-* Navigate to https://grafana.bigbang.dev/plugins/grafana-enterprise-logs-app
+* Navigate to https://grafana.dev.bigbang.mil/plugins/grafana-enterprise-logs-app
 * Populate fields with:
   - Access token: Admin token from `kubectl get secret/gel-admin-token -n logging -o json | jq -r '.data.token' | base64 --decode`
   - Grafana Enterprise Logs URL: http://logging-loki-gel-gateway.logging.svc.cluster.local
 * Click "Enable"
-* Navigate to https://grafana.bigbang.dev/a/grafana-enterprise-logs-app?path=tenants
+* Navigate to https://grafana.dev.bigbang.mil/a/grafana-enterprise-logs-app?path=tenants
 * Click Create Tenant, and create a new Tenant
 
-## Create Policy/Token for Promtail
-* Navigate to https://grafana.bigbang.dev/a/grafana-enterprise-logs-app?path=access-policies and create an access policy with the `logs:write` scope, ensure you've selected the tenant you just created.
+## Create Policy/Token for Alloy/Promtail
+* Navigate to https://grafana.dev.bigbang.mil/a/grafana-enterprise-logs-app?path=access-policies and create an access policy with the `logs:write` scope, ensure you've selected the tenant you just created.
 * Now create a token for that access policy by clicking 'Add Token' on the policy name. Copy the token and save it for the next step.
 
 ## Promtail Configuration
@@ -43,7 +43,7 @@ promtail:
 
 
 ## Create Grafana Datasource
-* Navigate to https://grafana.bigbang.dev/a/grafana-enterprise-logs-app?path=access-policies and create an access policy, ensuring to tick the box that you intend to create a data source with this policy. It should auto populate the required scopes.
+* Navigate to https://grafana.dev.bigbang.mil/a/grafana-enterprise-logs-app?path=access-policies and create an access policy, ensuring to tick the box that you intend to create a data source with this policy. It should auto populate the required scopes.
 * Click 'Add Token', and then click 'Create', and then click 'Create a datasource' which will create a new datasource pre-configured to use the token.
 
 
