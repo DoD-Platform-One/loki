@@ -1,10 +1,10 @@
 # Loki in Production
 
-This chart supports running Loki in two architecture modes, monolith and simple-scalable. It is strongly encouraged to utilize the simple-scalable architecture in production environments as it allows more fine grained control over scaling of read/write nodes compared to the monolith. 
+This chart supports running Loki in two architecture modes, monolith and simple-scalable. It is strongly encouraged to utilize the simple-scalable architecture in production environments as it allows more fine grained control over scaling of read/write nodes compared to the monolith.
 
 
 ## Big Bang Simple Scalable Recommended Production Configuration
-This example assumes external dependencies of: 
+This example assumes external dependencies of:
 * AWS S3
 ```yaml
 loki:
@@ -52,7 +52,7 @@ To use AWS IRSA within Loki, ensure the following values are set along with the 
           s3:
             endpoint: ""
       serviceAccount:
-        annotations: 
+        annotations:
           eks.amazonaws.com/role-arn: "my-role-arn"
   ```
 
@@ -85,10 +85,10 @@ loki:
               prefix: prefix_loki_logs_
               period: 24h
 ```
-See the [Examples for cloud configuration provided by Grafana.](https://grafana.com/docs/loki/latest/configuration/examples/)
+See the [Examples for cloud configuration provided by Grafana.](https://grafana.com/docs/loki/latest/configure/examples/configuration-examples/)
 
 ## Monolith Recommended Configuration
-If you wish to use the monolith chart in production it is recommended that you instead utilize the simple-scalable-chart and external object storage, but you can deploy the monolith installation which is a single loki pod which writes/stores to local PVC storage: 
+If you wish to use the monolith chart in production it is recommended that you instead utilize the simple-scalable-chart and external object storage, but you can deploy the monolith installation which is a single loki pod which writes/stores to local PVC storage:
 ```yaml
 loki:
   strategy: monolith

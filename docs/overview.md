@@ -25,9 +25,11 @@ loki:
   strategy: "scalable"  # Options: "monolithic", "scalable", "distributed"
 ```
 
-### Monolithic Mode
+### Monolithic Mode (Default)
 
 **Architecture:** All Loki components run within a single pod.
+
+**Object Storage:** Not required
 
 **Use Cases:**
 
@@ -38,9 +40,11 @@ loki:
 
 Monolithic mode has a simple setup, minimal resource overhead, but has limited scalability, and single point of failure
 
-### Simple Scalable Mode (Default)
+### Simple Scalable Mode
 
 **Architecture:**  Loki components are combined into read, write, and backend pods.
+
+**Object Storage:** Required
 
 **Use Cases:**
 
@@ -48,12 +52,14 @@ Monolithic mode has a simple setup, minimal resource overhead, but has limited s
 - Environments requiring horizontal scaling
 - Balanced complexity vs. performance requirements
 
-Simple Scalable is the default configuration provided by the chart and what Big Bang tests with by default. This architecture is considered to be a good balance between monolithic and microservices modes, allowing easier scalability without adding too much additional complexity.
+Simple Scalable is the recommended configuration provided by the chart and what Big Bang tests with by default. This architecture is considered to be a good balance between monolithic and microservices modes, allowing easier scalability without adding too much additional complexity.
 
 
 ### Microservices Mode (Distributed)
 
 **Architecture:** Each Loki component runs as a separate pod (ingester, distributor, querier, query-frontend, etc.).
+
+**Object Storage:** Required
 
 **Use Cases:**
 
