@@ -79,7 +79,7 @@
         "version:\\s+(?<currentValue>.+)-bb\\.\\d+"
       ],
       "autoReplaceStringTemplate": "version: {{newValue}}-bb.0",
-      "depNameTemplate": "helm-loki",
+      "depNameTemplate": "loki",
       "datasourceTemplate": "helm",
       "registryUrlTemplate": "https://grafana.github.io/helm-charts"
     }
