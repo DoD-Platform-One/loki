@@ -3,7 +3,7 @@ name: loki
 description: Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 type: application
 appVersion: 3.5.1
-version: 6.30.1-bb.5
+version: 6.30.1-bb.6
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -22,7 +22,7 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.6.2
+    version: 0.9.3
     repository: "oci://registry1.dso.mil/bigbang"
   - name: rollout-operator
     alias: rollout_operator
