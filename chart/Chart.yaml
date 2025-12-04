@@ -2,8 +2,8 @@ apiVersion: v2
 name: loki
 description: Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 type: application
-appVersion: 3.5.1
-version: 6.30.1-bb.7
+appVersion: 3.5.7
+version: 6.46.0-bb.0
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -27,45 +27,45 @@ dependencies:
   - name: rollout-operator
     alias: rollout_operator
     repository: https://grafana.github.io/helm-charts
-    version: 0.30.0
+    version: 0.33.2
     condition: rollout_operator.enabled
 annotations:
   bigbang.dev/maintenanceTrack: bb_integrated
   bigbang.dev/applicationVersions: |
-    - Loki: 3.5.1
+    - Loki: 3.5.5
   bigbang.dev/upstreamReleaseNotesMarkdown: |
     - [Find upstream chart's release notes and CHANGELOG here](https://github.com/grafana/loki/blob/main/production/helm/loki/CHANGELOG.md)
     - [Find upstream application's release notes and CHANGELOG here](https://grafana.com/docs/loki/latest/release-notes/)
   helm.sh/images: |
     - name: loki
-      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.5.1
+      image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.5.7
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.32.6
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.33.5
     - name: grafana-enterprise-logs
-      image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v3.5.1
+      image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v3.5.4
       condition: enterprise.enabled
     - name: enterprise-logs-provisioner
-      image: registry1.dso.mil/ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner:3.5.1
+      image: registry1.dso.mil/ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner:3.5.4
       condition: enterprise.provisioner.enabled
     - name: loki-helm-test
       image: registry1.dso.mil/ironbank/bigbang/grafana/loki-helm-test:0.0.1
       condition: test.enabled
     - name: loki-canary
-      image: registry1.dso.mil/ironbank/bigbang/grafana/loki-canary:3.5.1
+      image: registry1.dso.mil/ironbank/bigbang/grafana/loki-canary:3.5.5
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
-      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.28.0
+      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.1
       condition: gateway.enabled
     - name: minio
       image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2025-04-22T22-12-26Z
       condition: minio.enabled
     - name: memcached
-      image: registry1.dso.mil/ironbank/opensource/memcached/memcached:1.6.38
+      image: registry1.dso.mil/ironbank/opensource/memcached/memcached:1.6.39
     - name: memcached-exporter
       image: registry1.dso.mil/ironbank/opensource/prometheus/memcached-exporter:v0.15.3
       condition: memcachedExporter.enabled
     - name: k8s-sidecar
-      image: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar:1.30.3
+      image: registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar:1.30.9
     - name: base
       image: registry1.dso.mil/ironbank/big-bang/base:2.1.0
 maintainers:
