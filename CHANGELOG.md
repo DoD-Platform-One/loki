@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.46.0-bb.0] (2025-12-03)
+
+### Changed
+
+- Updated loki chart from 6.30.0 -> 6.46.0
+- Update gluon 0.6.2 -> 0.9.2
+- Update rollout_operator 0.30.0 -> 0.33.2
+- Update registry1.dso.mil/ironbank/opensource/grafana/loki:3.5.1 -> registry1.dso.mil/ironbank/opensource/grafana/loki:3.5.7
+- Update registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.32.6 -> registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.33.5
+- Update registry1.dso.mil/ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner:3.5.1 -> registry1.dso.mil/ironbank/ironbank/opensource/grafana/enterprise-logs-provisioner:3.5.4
+- Update registry1.dso.mil/ironbank/bigbang/grafana/loki-canary:3.5.1 -> registry1.dso.mil/ironbank/bigbang/grafana/loki-canary:3.5.5
+
 ## [6.30.1-bb.7] (2025-12-03)
 
 ### Changed
