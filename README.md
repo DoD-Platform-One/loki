@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.46.0-bb.0](https://img.shields.io/badge/Version-6.46.0--bb.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.46.0-bb.1](https://img.shields.io/badge/Version-6.46.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -169,10 +169,10 @@ helm install loki chart/
 | enterprise.provisioner.image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | enterprise.provisioner.extraVolumeMounts | list | `[]` | Volume mounts to add to the provisioner pods |
 | enterprise.provisioner.extraVolumes | list | `[]` | Additional volumes for Pods |
-| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.33.5"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
+| kubectlImage | object | `{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/opensource/kubernetes/kubectl","tag":"v1.33.6"}` | kubetclImage is used in the enterprise provisioner and tokengen jobs |
 | kubectlImage.registry | string | `"registry1.dso.mil"` | The Docker registry |
 | kubectlImage.repository | string | `"ironbank/opensource/kubernetes/kubectl"` | Docker image repository |
-| kubectlImage.tag | string | `"v1.33.5"` | Overrides the image tag whose default is the chart's appVersion |
+| kubectlImage.tag | string | `"v1.33.6"` | Overrides the image tag whose default is the chart's appVersion |
 | kubectlImage.digest | string | `nil` | Overrides the image tag with an image digest |
 | kubectlImage.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy |
 | test | object | `{"annotations":{},"canaryServiceAddress":"http://{{ include \"loki-canary.fullname\" $ }}.{{ include \"loki.namespace\" $ }}.svc.{{ .Values.global.clusterDomain }}:3500/metrics","enabled":false,"hostUsers":"nil","image":{"digest":null,"pullPolicy":"IfNotPresent","registry":"registry1.dso.mil","repository":"ironbank/bigbang/grafana/loki-helm-test","tag":"0.0.1"},"labels":{},"prometheusAddress":"http://prometheus:9090","timeout":"1m"}` | Section for configuring optional Helm test |
@@ -287,7 +287,7 @@ helm install loki chart/
 | gateway.deploymentStrategy.type | string | `"RollingUpdate"` |  |
 | gateway.image.registry | string | `"registry1.dso.mil"` | The Docker registry for the gateway image |
 | gateway.image.repository | string | `"ironbank/opensource/nginx/nginx"` | The gateway image repository |
-| gateway.image.tag | string | `"1.29.1"` | The gateway image tag |
+| gateway.image.tag | string | `"1.29.3"` | The gateway image tag |
 | gateway.image.digest | string | `nil` | Overrides the gateway image tag with an image digest |
 | gateway.image.pullPolicy | string | `"IfNotPresent"` | The gateway image pull policy |
 | gateway.priorityClassName | string | `nil` | The name of the PriorityClass for gateway pods |
@@ -1255,12 +1255,7 @@ helm install loki chart/
 | chunksCache.l2.persistence.mountPath | string | `"/data"` | Volume mount path |
 | rollout_operator | object | `{"enabled":false,"podSecurityContext":{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}}` | Setting for the Grafana Rollout Operator https://github.com/grafana/helm-charts/tree/main/charts/rollout-operator |
 | rollout_operator.podSecurityContext | object | `{"fsGroup":10001,"runAsGroup":10001,"runAsNonRoot":true,"runAsUser":10001,"seccompProfile":{"type":"RuntimeDefault"}}` | podSecurityContext is the pod security context for the rollout operator. When installing on OpenShift, override podSecurityContext settings with  rollout_operator:   podSecurityContext:     fsGroup: null     runAsGroup: null     runAsUser: null |
-| minio | object | `{"address":"minio.logging.svc.cluster.local","enabled":false,"tenant":{"buckets":[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}],"configSecret":{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"},"defaultUserCredentials":{"password":"","username":"minio-user"},"metrics":{"enabled":false,"memory":"128M","port":9000},"pools":[{"containerSecurityContext":{"capabilities":{"drop":["ALL"]}},"labels":{"app":"minio","app.kubernetes.io/name":"minio"},"name":"pool-0","securityContext":{"fsGroup":1001,"runAsGroup":1001,"runAsUser":1001},"servers":1,"size":"750Mi","volumesPerServer":4}],"users":[{"name":"minio-user"}]},"waitJob":{"enabled":false}}` | Configuration for the minio subchart |
-| minio.enabled | bool | `false` | Enable minio instance support, must have minio-operator installed |
-| minio.tenant.configSecret | object | `{"accessKey":"minio","name":"loki-objstore-creds","secretKey":"minio123"}` | Minio root credentials |
-| minio.tenant.buckets | list | `[{"name":"loki"},{"name":"loki-admin"},{"name":"loki-deletion"}]` | Buckets to be provisioned to for tenant |
-| minio.tenant.users | list | `[{"name":"minio-user"}]` | Users to to be provisioned to for tenant |
-| minio.tenant.defaultUserCredentials | object | `{"password":"","username":"minio-user"}` | User credentials to create for above user. Otherwise password is randomly generated. This auth is not required to be set or reclaimed for minio use with Loki |
+| minio | object | Values to pass to [Big Bang MinIO values](https://repo1.dso.mil/big-bang/product/packages/minio/-/blob/main/chart/values.yaml) | Big Bang MinIO |
 | extraObjects | list | `[]` |  |
 | sidecar.image.repository | string | `"registry1.dso.mil/ironbank/kiwigrid/k8s-sidecar"` | The Docker registry and image for the k8s sidecar |
 | sidecar.image.tag | string | `"1.30.9"` | Docker image tag |

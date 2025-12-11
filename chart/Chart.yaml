@@ -3,7 +3,7 @@ name: loki
 description: Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 type: application
 appVersion: 3.5.7
-version: 6.46.0-bb.0
+version: 6.46.0-bb.1
 home: https://grafana.github.io/helm-charts
 sources:
   - https://github.com/grafana/loki
@@ -13,7 +13,7 @@ icon: https://grafana.com/docs/loki/latest/logo_and_name.png
 dependencies:
   - name: minio-instance
     alias: minio
-    version: 7.1.1-bb.0
+    version: 7.1.1-bb.15
     repository: oci://registry1.dso.mil/bigbang
     condition: minio.enabled
   - name: grafana-agent-operator
@@ -22,7 +22,7 @@ dependencies:
     repository: https://grafana.github.io/helm-charts
     condition: monitoring.selfMonitoring.grafanaAgent.installOperator
   - name: gluon
-    version: 0.9.3
+    version: 0.9.7
     repository: "oci://registry1.dso.mil/bigbang"
   - name: rollout-operator
     alias: rollout_operator
@@ -40,7 +40,7 @@ annotations:
     - name: loki
       image: registry1.dso.mil/ironbank/opensource/grafana/loki:3.5.7
     - name: kubectl
-      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.33.5
+      image: registry1.dso.mil/ironbank/opensource/kubernetes/kubectl:v1.33.6
     - name: grafana-enterprise-logs
       image: registry1.dso.mil/ironbank/grafana/grafana-enterprise-logs:v3.5.4
       condition: enterprise.enabled
@@ -54,10 +54,10 @@ annotations:
       image: registry1.dso.mil/ironbank/bigbang/grafana/loki-canary:3.5.5
       condition: monitoring.lokiCanary.enabled
     - name: nginx-gateway
-      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.1
+      image: registry1.dso.mil/ironbank/opensource/nginx/nginx:1.29.3
       condition: gateway.enabled
     - name: minio
-      image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2025-04-22T22-12-26Z
+      image: registry1.dso.mil/ironbank/opensource/minio/minio:RELEASE.2025-10-15T17-29-55Z
       condition: minio.enabled
     - name: memcached
       image: registry1.dso.mil/ironbank/opensource/memcached/memcached:1.6.39

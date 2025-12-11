@@ -6,6 +6,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
 type: Opaque
 data:
-  CONSOLE_ACCESS_KEY: {{ .Values.minio.tenant.defaultUserCredentials.username | b64enc }}
-  CONSOLE_SECRET_KEY: {{ (.Values.minio.tenant.defaultUserCredentials.password | default (randAlphaNum 8)) | b64enc }}
+  CONSOLE_ACCESS_KEY: {{ .Values.minio.upstream.tenant.defaultUserCredentials.username | b64enc }}
+  CONSOLE_SECRET_KEY: {{ (.Values.minio.upstream.tenant.defaultUserCredentials.password | default (randAlphaNum 8)) | b64enc }}
 {{- end }}
