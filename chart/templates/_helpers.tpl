@@ -216,8 +216,8 @@ object_store:
 s3:
   endpoint: {{ include "loki.minio" $ }}
   bucketnames: {{ $.Values.loki.storage.bucketNames.chunks }}
-  secret_access_key: {{ $.Values.minio.tenant.configSecret.secretKey }}
-  access_key_id: {{ $.Values.minio.tenant.configSecret.accessKey }}
+  secret_access_key: {{ $.Values.minio.upstream.tenant.configSecret.secretKey }}
+  access_key_id: {{ $.Values.minio.upstream.tenant.configSecret.accessKey }}
   s3forcepathstyle: true
   insecure: true
 {{- else if (eq (include "loki.isUsingObjectStorage" . ) "true")  -}}
@@ -670,7 +670,7 @@ Create the service endpoint including port for MinIO.
 */}}
 {{- define "loki.minio" -}}
 {{- if .Values.minio.enabled -}}
-{{- .Values.minio.address | default (printf "%s-%s.%s.svc:%s" .Release.Name "minio" (include "loki.namespace" .) (.Values.minio.service.port | toString)) -}}
+{{- .Values.minio.address | default (printf "%s-%s.%s.svc:%s" .Release.Name "minio" (include "loki.namespace" .) (.Values.minio.upstream.service.port | toString)) -}}
 {{- end -}}
 {{- end -}}
 

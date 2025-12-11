@@ -652,44 +652,46 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
     enabled: false
     # Allow the address used by Loki to refer to Minio to be overridden
     address: "minio.logging.svc.cluster.local"
+    port: 9000
     # -- Minio root credentials
     secrets:
       name: "loki-objstore-creds"
       accessKey: "minio"
       secretKey: "minio123" # default key, change this!
-    tenant:
-      # -- Buckets to be provisioned to for tenant
-      buckets:
-        - name: loki
-        - name: loki-admin
-        - name: loki-deletion
-      # -- Users to to be provisioned to for tenant
-      users:
-        - name: minio-user
-      # -- User credentials to create for above user. Otherwise password is randomly generated.
-      # This auth is not required to be set or reclaimed for minio use with Loki
-      defaultUserCredentials:
-        username: "minio-user"
-        password: ""
-      ## Specification for MinIO Pool(s) in this Tenant.
-      pools:
-        - name: pool-0
-          servers: 1
-          volumesPerServer: 4
-          size: 750Mi
-          securityContext:
-            runAsUser: 1001
-            runAsGroup: 1001
-            fsGroup: 1001
-          containerSecurityContext:
-            capabilities:
-              drop:
-                - ALL
+    upstream:
+      tenant:
+        # -- Buckets to be provisioned to for tenant
+        buckets:
+          - name: loki
+          - name: loki-admin
+          - name: loki-deletion
+        # -- Users to to be provisioned to for tenant
+        users:
+          - name: minio-user
+        # -- User credentials to create for above user. Otherwise password is randomly generated.
+        # This auth is not required to be set or reclaimed for minio use with Loki
+        defaultUserCredentials:
+          username: "minio-user"
+          password: ""
+        ## Specification for MinIO Pool(s) in this Tenant.
+        pools:
+          - name: pool-0
+            servers: 1
+            volumesPerServer: 4
+            size: 750Mi
+            securityContext:
+              runAsUser: 1001
+              runAsGroup: 1001
+              fsGroup: 1001
+            containerSecurityContext:
+              capabilities:
+                drop:
+                  - ALL
 
-      metrics:
-        enabled: false
-        port: 9000
-        memory: 128M
+        metrics:
+          enabled: false
+          port: 9000
+          memory: 128M
     waitJob:
       enabled: false
   ```
@@ -748,8 +750,6 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
 
   fluentbit:
     enabled: false
-  promtail:
-    enabled: false
 
   istio:
     enabled: false
@@ -784,12 +784,6 @@ This is a high-level list of modifications that Big Bang has made to the upstrea
           - cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-prometheus
           - cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics
           - cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter
-      promtail:
-        enabled: true
-        namespaces:
-        - promtail
-        principals:
-        - cluster.local/ns/promtail/sa/promtail-promtail
       fluentbit:
         enabled: true
         namespaces:
@@ -1196,9 +1190,6 @@ loki:
     istio:
       enabled: true
 
-promtail:
-  enabled: false
-
 alloy:
   enabled: true
   alloyLogs: 
@@ -1284,9 +1275,6 @@ loki:
       replicas: 0
     backend:
       replicas: 0
-
-promtail:
-  enabled: false
 
 alloy:
   enabled: true
