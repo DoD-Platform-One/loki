@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
+## [6.46.0-bb.2] (2025-12-17)
+
+### Changed
+
+- Add bb-common 0.11.3 as chart dependency
+- Replaced netpols, authpols, peerauths, and virtual service with bb-common generated resources
+
 ## [6.46.0-bb.1] (2025-12-09)
 
 ### Changed
