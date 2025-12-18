@@ -8,8 +8,11 @@ dependencies:
 - name: gluon
   repository: oci://registry1.dso.mil/bigbang
   version: 0.9.7
+- name: bb-common
+  repository: oci://registry1.dso.mil/bigbang
+  version: 0.11.3
 - name: rollout-operator
   repository: https://grafana.github.io/helm-charts
   version: 0.33.2
-digest: sha256:8ddea1ebc49cba5c0b0f7f522cffbcbd5830560352cb7c14d226a1a852fdc056
-generated: "2025-12-09T17:01:01.086873-05:00"
+digest: sha256:ee2f5d6727349a0719ef20fe7d8899c402444b4449815f432bcdf925236c9680
+generated: "2025-12-18T05:16:26.122717-06:00"

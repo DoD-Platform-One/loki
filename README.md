@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.46.0-bb.1](https://img.shields.io/badge/Version-6.46.0--bb.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.46.0-bb.2](https://img.shields.io/badge/Version-6.46.0--bb.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -1290,37 +1290,31 @@ helm install loki chart/
 | fluentbit.enabled | bool | `false` |  |
 | experimentalMode.enabled | bool | `false` | Toggle enabling of configurations and deployment modes currently unsupported by Big Bang |
 | istio.enabled | bool | `false` |  |
-| istio.hardened.enabled | bool | `false` |  |
-| istio.hardened.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
-| istio.hardened.customServiceEntries | list | `[]` |  |
-| istio.hardened.customAuthorizationPolicies | list | `[]` |  |
-| istio.hardened.monitoring.enabled | bool | `false` |  |
-| istio.hardened.monitoring.namespaces[0] | string | `"monitoring"` |  |
-| istio.hardened.monitoring.principals[0] | string | `"cluster.local/ns/monitoring/sa/monitoring-grafana"` |  |
-| istio.hardened.monitoring.principals[1] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-alertmanager"` |  |
-| istio.hardened.monitoring.principals[2] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-operator"` |  |
-| istio.hardened.monitoring.principals[3] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-prometheus"` |  |
-| istio.hardened.monitoring.principals[4] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-kube-state-metrics"` |  |
-| istio.hardened.monitoring.principals[5] | string | `"cluster.local/ns/monitoring/sa/monitoring-monitoring-prometheus-node-exporter"` |  |
-| istio.hardened.alloy.enabled | bool | `false` |  |
-| istio.hardened.alloy.namespaces[0] | string | `"alloy"` |  |
-| istio.hardened.alloy.principals[0] | string | `"cluster.local/ns/alloy/sa/alloy-alloy-logs"` |  |
-| istio.hardened.fluentbit.enabled | bool | `false` |  |
-| istio.hardened.fluentbit.namespaces[0] | string | `"fluentbit"` |  |
-| istio.hardened.fluentbit.principals[0] | string | `"cluster.local/ns/fluentbit/sa/fluentbit-fluent-bit"` |  |
-| istio.hardened.minioOperator.enabled | bool | `false` |  |
-| istio.hardened.minioOperator.namespaces[0] | string | `"minio-operator"` |  |
-| istio.hardened.minioOperator.principals[0] | string | `"cluster.local/ns/minio-operator/sa/minio-operator"` |  |
-| istio.loki.enabled | bool | `false` |  |
-| istio.loki.annotations | object | `{}` |  |
-| istio.loki.labels | object | `{}` |  |
-| istio.loki.gateways[0] | string | `"istio-system/public"` |  |
-| istio.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
+| istio.sidecar.enabled | bool | `false` |  |
+| istio.sidecar.outboundTrafficPolicyMode | string | `"REGISTRY_ONLY"` |  |
+| istio.serviceEntries.custom | list | `[]` |  |
+| istio.authorizationPolicies.enabled | bool | `false` |  |
+| istio.authorizationPolicies.custom | list | `[]` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
+| routes.inbound.loki.enabled | bool | `true` |  |
+| routes.inbound.loki.gateways[0] | string | `"istio-gateway/public-ingressgateway"` |  |
+| routes.inbound.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
+| routes.inbound.loki.service | string | `"logging-loki-gateway.logging.svc.cluster.local"` |  |
+| routes.inbound.loki.port | int | `80` |  |
+| routes.inbound.loki.selector."app.kubernetes.io/name" | string | `"logging-loki"` |  |
 | networkPolicies.enabled | bool | `false` |  |
-| networkPolicies.controlPlaneCidr | string | `"0.0.0.0/0"` | Control Plane CIDR to allow init job communication to the Kubernetes API. Use `kubectl get endpoints kubernetes` to get the CIDR range needed for your cluster |
-| networkPolicies.ingressLabels.app | string | `"public-ingressgateway"` |  |
-| networkPolicies.ingressLabels.istio | string | `"ingressgateway"` |  |
+| networkPolicies.ingress.to.loki:8080.podSelector.matchLabels."app.kubernetes.io/name" | string | `"logging-loki"` |  |
+| networkPolicies.ingress.to.loki:8080.podSelector.matchLabels."app.kubernetes.io/component" | string | `"gateway"` |  |
+| networkPolicies.ingress.to.loki:8080.from.k8s.monitoring-grafana@monitoring/grafana | bool | `true` |  |
+| networkPolicies.ingress.to.logging-loki:3100.from.k8s.alloy-alloy-operator@alloy/alloy | bool | `true` |  |
+| networkPolicies.ingress.to.logging-loki:3100.from.k8s.alloy-alloy-logs@alloy/alloy-logs | bool | `true` |  |
+| networkPolicies.ingress.to.logging-loki:3100.from.k8s.fluentbit-fluent-bit@fluentbit/fluent-bit | bool | `true` |  |
+| networkPolicies.ingress.to.logging-loki:3100.from.k8s.monitoring-grafana@monitoring/grafana | bool | `true` |  |
+| networkPolicies.ingress.to.logging-loki:3100.from.k8s.monitoring-monitoring-kube-prometheus@monitoring/prometheus | bool | `true` |  |
+| networkPolicies.ingress.to.minio:9000.from.k8s.minio-operator@minio-operator/minio-operator | bool | `true` |  |
+| networkPolicies.egress.from.logging-loki.to.k8s.tempo/tempo:9411 | bool | `true` |  |
+| networkPolicies.egress.from.minio.to.k8s.minio-operator/minio-operator:4222 | bool | `true` |  |
+| networkPolicies.egress.from.minio.to.definition.kubeAPI | bool | `true` |  |
 | networkPolicies.additionalPolicies | list | `[]` |  |
 | bbtests.enabled | bool | `false` |  |
 | bbtests.cypress.artifacts | bool | `true` |  |
