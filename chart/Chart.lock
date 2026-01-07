@@ -10,9 +10,9 @@ dependencies:
   version: 0.9.7
 - name: bb-common
   repository: oci://registry1.dso.mil/bigbang
-  version: 0.11.3
+  version: 0.12.2
 - name: rollout-operator
   repository: https://grafana.github.io/helm-charts
   version: 0.33.2
-digest: sha256:ee2f5d6727349a0719ef20fe7d8899c402444b4449815f432bcdf925236c9680
-generated: "2025-12-18T05:16:26.122717-06:00"
+digest: sha256:dcd784a6efd275c66d38b85bdb286314ea08b714cf78c1f35a1b0a0dd1abd963
+generated: "2026-01-06T15:11:24.553017-07:00"

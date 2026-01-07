@@ -101,6 +101,23 @@ loki:
 
 10. Follow the `Testing new Loki Version` section of this document for manual testing.
 
+### Local chart rendering (routes/netpols)
+
+When rendering the chart locally, note that Istio resources (including `routes.inbound` netpols) only render if the Istio API is present. Add the API version to your `helm template` call and set `containerPort` if you want it reflected in the netpol port.
+
+```shell
+helm dependency update ./chart
+
+helm template loki ./chart \
+  --namespace logging \
+  --set networkPolicies.enabled=true \
+  --set routes.inbound.loki.containerPort=8080 \
+  --api-versions networking.istio.io/v1 \
+  > /tmp/loki-render.yaml
+
+rg -n "NetworkPolicy|VirtualService" /tmp/loki-render.yaml
+```
+
 ## Update main chart
 
 ### ```chart/Chart.yaml```
