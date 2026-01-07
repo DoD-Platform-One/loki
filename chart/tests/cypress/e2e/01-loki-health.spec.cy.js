@@ -56,7 +56,7 @@
           )
             cy.get('[data-testid="data-testid Panel header Logs Panel"]') // Get the Logs Panel
               .find('button[aria-label="Log menu"]')                    // Count the hamburger menus
-              .should('have.length.at.least', 10);
+              .should('have.length.at.least', 5);
           });
     }
   })

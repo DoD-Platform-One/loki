@@ -4322,6 +4322,7 @@ routes:
         - loki.{{ .Values.domain }}
       service: logging-loki-gateway.logging.svc.cluster.local
       port: 80
+      containerPort: 8080
       selector:
         app.kubernetes.io/name: logging-loki
 
