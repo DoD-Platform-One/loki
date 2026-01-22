@@ -4328,6 +4328,7 @@ routes:
 
 networkPolicies:
   enabled: false
+  prependReleaseName: true
   ingress:
     to:
       loki:8080:
