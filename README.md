@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.46.0-bb.3](https://img.shields.io/badge/Version-6.46.0--bb.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.46.0-bb.4](https://img.shields.io/badge/Version-6.46.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -1301,8 +1301,10 @@ helm install loki chart/
 | routes.inbound.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
 | routes.inbound.loki.service | string | `"logging-loki-gateway.logging.svc.cluster.local"` |  |
 | routes.inbound.loki.port | int | `80` |  |
+| routes.inbound.loki.containerPort | int | `8080` |  |
 | routes.inbound.loki.selector."app.kubernetes.io/name" | string | `"logging-loki"` |  |
 | networkPolicies.enabled | bool | `false` |  |
+| networkPolicies.prependReleaseName | bool | `true` |  |
 | networkPolicies.ingress.to.loki:8080.podSelector.matchLabels."app.kubernetes.io/name" | string | `"logging-loki"` |  |
 | networkPolicies.ingress.to.loki:8080.podSelector.matchLabels."app.kubernetes.io/component" | string | `"gateway"` |  |
 | networkPolicies.ingress.to.loki:8080.from.k8s.monitoring-grafana@monitoring/grafana | bool | `true` |  |
