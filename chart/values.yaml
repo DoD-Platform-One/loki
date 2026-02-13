@@ -4315,7 +4315,10 @@ istio:
 routes:
   inbound:
     loki:
-      enabled: true
+      # -- VirtualService for external access to Loki. Disabled by default as Loki
+      # is a backend service. Enable explicitly if external access is required.
+      # When enabled, recommend also enabling istio.hardened to generate AuthorizationPolicies.
+      enabled: false
       gateways:
         - istio-gateway/public-ingressgateway
       hosts:
