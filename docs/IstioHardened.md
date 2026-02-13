@@ -109,3 +109,71 @@ spec:
         namespaces:
         - "my-namespace"
 ```
+
+## Loki VirtualService Access
+
+By default, the Loki VirtualService route is **disabled** (`routes.inbound.loki.enabled: false`). This prevents
+exposing the Loki HTTP API through the Istio ingress gateway without authorization.
+
+### Enabling External Access
+
+If external access to Loki is required, enable the route in your values:
+
+```yaml
+routes:
+  inbound:
+    loki:
+      enabled: true
+```
+
+> **Security Warning**: Enabling the VirtualService without an AuthorizationPolicy exposes the Loki API
+> (log reads and writes) to any client that can reach the ingress gateway. Always pair this with
+> appropriate authorization controls.
+
+### Recommended: Enable Istio Hardened Mode
+
+When enabling the VirtualService, also enable Istio hardened mode to automatically generate
+AuthorizationPolicies that restrict access to Loki:
+
+```yaml
+istio:
+  enabled: true
+  hardened:
+    enabled: true
+
+routes:
+  inbound:
+    loki:
+      enabled: true
+```
+
+This generates a default-deny AuthorizationPolicy plus allow rules for known Big Bang integrations
+(Alloy, Grafana, Prometheus).
+
+### Alternative: Custom AuthorizationPolicies
+
+For fine-grained control, use custom AuthorizationPolicies to restrict access by path or source:
+
+```yaml
+istio:
+  enabled: true
+  authorizationPolicies:
+    enabled: true
+    custom:
+      - name: "allow-loki-push-only"
+        enabled: true
+        spec:
+          selector:
+            matchLabels:
+              app.kubernetes.io/name: logging-loki
+          action: ALLOW
+          rules:
+            - from:
+                - source:
+                    namespaces:
+                      - alloy
+              to:
+                - operation:
+                    methods: ["POST"]
+                    paths: ["/loki/api/v1/push"]
+```

@@ -35,6 +35,11 @@ loki:
     # MinIO required for Loki Scalable
     minio:
       enabled: true
+    # Re-enable VirtualService for CI tests (alloy script test queries via VS)
+    routes:
+      inbound:
+        loki:
+          enabled: true
     bbtests:
       enabled: true
       scripts:

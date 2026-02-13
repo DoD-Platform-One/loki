@@ -1,7 +1,7 @@
 <!-- Warning: Do not manually edit this file. See notes on gluon + helm-docs at the end of this file for more information. -->
 # loki
 
-![Version: 6.46.0-bb.4](https://img.shields.io/badge/Version-6.46.0--bb.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
+![Version: 6.46.0-bb.5](https://img.shields.io/badge/Version-6.46.0--bb.5-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.5.7](https://img.shields.io/badge/AppVersion-3.5.7-informational?style=flat-square) ![Maintenance Track: bb_integrated](https://img.shields.io/badge/Maintenance_Track-bb_integrated-green?style=flat-square)
 
 Helm chart for Grafana Loki and Grafana Enterprise Logs supporting monolithic, simple scalable, and microservices modes.
 
@@ -1296,7 +1296,7 @@ helm install loki chart/
 | istio.authorizationPolicies.enabled | bool | `false` |  |
 | istio.authorizationPolicies.custom | list | `[]` |  |
 | istio.mtls.mode | string | `"STRICT"` |  |
-| routes.inbound.loki.enabled | bool | `true` |  |
+| routes.inbound.loki.enabled | bool | `false` | VirtualService for external access to Loki. Disabled by default as Loki is a backend service. Enable explicitly if external access is required. When enabled, recommend also enabling istio.hardened to generate AuthorizationPolicies. |
 | routes.inbound.loki.gateways[0] | string | `"istio-gateway/public-ingressgateway"` |  |
 | routes.inbound.loki.hosts[0] | string | `"loki.{{ .Values.domain }}"` |  |
 | routes.inbound.loki.service | string | `"logging-loki-gateway.logging.svc.cluster.local"` |  |
